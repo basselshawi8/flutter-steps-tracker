@@ -1,0 +1,106 @@
+name: micropolis_test
+description: A new Flutter application.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 0.1.1+13
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  badges: ^1.1.1
+  launch_review: ^2.0.0
+  # To get current locations
+  geolocator: ^5.3.2+2
+  google_maps_flutter: ^0.5.32
+  # Service locator
+  get_it: ^5.0.0
+  # State management
+  flutter_bloc: ^7.0.1
+  equatable: ^1.2.5
+  # RX programing
+  rxdart: ^0.24.1
+  # For API call
+  dio: ^3.0.10
+  dartz: ^0.9.1
+  google_fonts: ^1.1.0
+  pull_to_refresh: ^1.6.2
+  fluttertoast: ^7.0.2
+  permission: ^0.1.7
+  location: ^3.0.2
+  shared_preferences: ^2.0.6
+  package_info: ^0.4.1
+  url_launcher: ^5.7.0
+
+
+  # To know if keyboard is visibility or not
+  animated_text_kit: ^2.2.0
+  percent_indicator: ^2.1.5
+  flutter_screenutil: ^5.0.0+2
+  flutter_keyboard_visibility: ^3.2.1
+  cupertino_icons: ^0.1.3
+  uuid: ^2.2.0
+  carousel_slider: ^2.2.1
+  intro_slider: ^2.3.1
+  video_player: ^2.1.6
+  modal_progress_hud: ^0.1.3
+  shimmer: ^1.1.1
+  groovin_widgets: ^1.6.0
+  modal_bottom_sheet: ^0.2.0+1
+  photo_view: ^0.10.2
+  path_provider: ^2.0.2
+  flutter_sequence_animation: ^3.0.1
+  polygon_clipper: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  assets:
+
+    - assets/images/png/
+    - assets/locales/
+    - assets/vid/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
