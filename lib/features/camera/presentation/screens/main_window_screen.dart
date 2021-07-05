@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,7 +44,8 @@ class _MainWindowScreenState extends State<MainWindowScreen> {
           ),
           MainNavigationWidget(),
           CameraDirectionWidget(),
-          IncidentsWidget()
+          IncidentsWidget(),
+          AIWidget()
         ],
       ),
       backgroundColor: Colors.black,

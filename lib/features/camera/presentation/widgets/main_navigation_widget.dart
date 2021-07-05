@@ -19,7 +19,7 @@ class _MainNavigationWidgetState extends State<MainNavigationWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        bottom: 0,
+        bottom: -20.h,
         left: (1920 / 2 - 225).w,
         child: Container(
           width: 520.w,
