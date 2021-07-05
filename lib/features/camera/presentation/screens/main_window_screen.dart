@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/incidents_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
 
 class MainWindowScreen extends StatefulWidget {
@@ -39,7 +41,9 @@ class _MainWindowScreenState extends State<MainWindowScreen> {
 
             },
           ),
-          MainNavigationWidget()
+          MainNavigationWidget(),
+          CameraDirectionWidget(),
+          IncidentsWidget()
         ],
       ),
       backgroundColor: Colors.black,

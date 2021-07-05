@@ -54,6 +54,19 @@ const IMG_UBBAHA_LOGO = 'assets/images/png/ubbaha-logo.png';
 const IMG_UBBAHA_STAR = 'assets/images/png/star.png';
 
 const IMG_SLIDER = 'assets/images/png/slider.png';
+const IMG_UP_ARROWS = 'assets/images/png/upArrows.png';
+const IMG_BULK_CATEGORY = 'assets/images/png/bulkCategory.png';
+const IMG_DOWN_ARROW = 'assets/images/png/downArrow.png';
+const IMG_LEFT_ARROW = 'assets/images/png/leftArrow.png';
+const IMG_RIGHT_ARROW = 'assets/images/png/rightArrow.png';
+const IMG_UP_ARROW = 'assets/images/png/upArrow.png';
+const IMG_WHEEL = 'assets/images/png/wheel.png';
+const IMG_CAMERA_MOVEMENT = 'assets/images/png/camera_moving.png';
+const IMG_WHEEL_GREY = 'assets/images/png/wheel_grey.png';
+
+const IMG_USER1 = 'assets/images/png/user1.png';
+const IMG_USER2 = 'assets/images/png/user2.png';
+const IMG_USER3 = 'assets/images/png/user3.png';
 
 // Languages
 const LANG_AR = 'ar';
