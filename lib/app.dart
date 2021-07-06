@@ -9,6 +9,7 @@ import 'core/Common/route_generator.dart';
 import 'core/constants.dart';
 import 'core/localization/flutter_localization.dart';
 
+import 'features/camera/presentation/notifiers/actions_change_notifier.dart';
 import 'features/camera/presentation/screens/main_window_screen.dart';
 import 'features/restaurants/presentation/bloc/restaurants_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,7 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
 
+
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,9 @@ class _AppState extends State<App> {
       providers: [
         ChangeNotifierProvider.value(
           value: widget.appLanguage,
+        ),
+        ChangeNotifierProvider.value(
+          value: ActionsChangeNotifier(),
         ),
         BlocProvider(
           create: (_) => RestaurantsBloc(),

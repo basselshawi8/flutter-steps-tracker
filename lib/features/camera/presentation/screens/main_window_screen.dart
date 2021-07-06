@@ -5,6 +5,8 @@ import 'package:micropolis_test/features/camera/presentation/widgets/camera_widg
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/pinned_list_widget.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/pinned_widget.dart';
 
 class MainWindowScreen extends StatefulWidget {
   @override
@@ -45,7 +47,9 @@ class _MainWindowScreenState extends State<MainWindowScreen> {
           MainNavigationWidget(),
           CameraDirectionWidget(),
           IncidentsWidget(),
-          AIWidget()
+          AIWidget(),
+          PinnedListWidget(),
+          PinnedWidget(),
         ],
       ),
       backgroundColor: Colors.black,

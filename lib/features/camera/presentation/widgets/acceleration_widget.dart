@@ -11,8 +11,32 @@ class AccelerationWidget extends StatefulWidget {
   }
 }
 
-class _AccelerationWidgetState extends State<AccelerationWidget> {
+class _AccelerationWidgetState extends State<AccelerationWidget>
+    with SingleTickerProviderStateMixin {
   var wheelPosition = (83 - 15).h;
+  AnimationController _controller;
+  Animation _wheelBackAnimation;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _wheelBackAnimation = Tween<double>(
+            begin: wheelPosition, end: wheelPosition)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +65,6 @@ class _AccelerationWidgetState extends State<AccelerationWidget> {
                             offset: Offset(0, 12.h),
                             color: CoreStyle.operationShadow3Color)
                       ]),
-
                 ),
               ),
               Positioned(
@@ -55,7 +78,7 @@ class _AccelerationWidgetState extends State<AccelerationWidget> {
               ),
               Positioned(
                 left: 0,
-                top: wheelPosition,
+                top:_controller.isAnimating == true ? _wheelBackAnimation.value : wheelPosition,
                 child: GestureDetector(
                   onPanUpdate: (update) {
                     if (wheelPosition + update.delta.dy > 0.h &&
@@ -65,14 +88,24 @@ class _AccelerationWidgetState extends State<AccelerationWidget> {
                       });
                   },
                   onPanEnd: (end) {
-                    setState(() {
+
+                      _wheelBackAnimation = Tween<double>(
+                              begin: wheelPosition, end: (83 - 15).h)
+                          .animate(CurvedAnimation(
+                              parent: _controller, curve: Curves.easeOut));
+                      _controller.value = 0;
+                      _controller.forward();
                       wheelPosition = (83 - 15).h;
-                    });
+
                   },
                   onPanCancel: () {
-                    setState(() {
-                      wheelPosition = (83 - 15).h;
-                    });
+                    _wheelBackAnimation = Tween<double>(
+                        begin: wheelPosition, end: (83 - 15).h)
+                        .animate(CurvedAnimation(
+                        parent: _controller, curve: Curves.easeOut));
+                    _controller.value = 0;
+                    _controller.forward();
+                    wheelPosition = (83 - 15).h;
                   },
                   child: Container(
                     width: 80.w,
@@ -81,7 +114,6 @@ class _AccelerationWidgetState extends State<AccelerationWidget> {
                   ),
                 ),
               ),
-
             ],
           ),
         ));

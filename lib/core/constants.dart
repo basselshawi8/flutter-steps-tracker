@@ -68,6 +68,8 @@ const IMG_USER1 = 'assets/images/png/user1.png';
 const IMG_USER2 = 'assets/images/png/user2.png';
 const IMG_USER3 = 'assets/images/png/user3.png';
 
+const IMG_SCAN = 'assets/images/png/scan.png';
+
 // Languages
 const LANG_AR = 'ar';
 const LANG_EN = 'en';
