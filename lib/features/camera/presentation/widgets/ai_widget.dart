@@ -24,6 +24,7 @@ class _ToggleWidgetState extends State<ToggleWidget>
   Animation _thumbColorAnimation;
   Animation _thumbLocation;
   Animation _textLocation;
+
   bool _val;
 
   @override
@@ -75,8 +76,7 @@ class _ToggleWidgetState extends State<ToggleWidget>
         if (widget.valueUpdated != null) widget.valueUpdated(_val);
       },
       child: Container(
-        width: 160.w,
-        height: 70.h,
+
         decoration: BoxDecoration(
             color: _backgroundColorAnimation.value,
             borderRadius: BorderRadius.circular(22.r)),
@@ -114,14 +114,18 @@ class _ToggleWidgetState extends State<ToggleWidget>
             ),
             Positioned(
                 top: 5.h,
+                bottom: 5.h,
                 left: _textLocation.value,
-                child: FittedBox(
-                  child: Text(
-                    widget.name,
-                    style: TextStyle(
-                        fontSize: 37.sp,
-                        color: CoreStyle.white,
-                        fontWeight: FontWeight.w600),
+                child: Container(
+                  width: 40.w,
+                  child: FittedBox(
+                    child: Text(
+                      widget.name,
+                      style: TextStyle(
+                          fontSize: 37.sp,
+                          color: CoreStyle.white,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ))
           ],
@@ -155,28 +159,36 @@ class _AIWidgetState extends State<AIWidget> {
               borderRadius: BorderRadius.circular(30.r),
               boxShadow: [
                 BoxShadow(
-                    blurRadius: 40,
-                    offset: Offset(0, 10),
+                    blurRadius: 40.r,
+                    offset: Offset(0,  10.h),
                     color: CoreStyle.operationShadowColor)
               ]),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ToggleWidget(
-                name: "AI",
-                valueUpdated: (val) {
-                  print(val);
-                },
+              Container(
+                width: 160.w,
+                height: 70.h,
+                child: ToggleWidget(
+                  name: "AI",
+                  valueUpdated: (val) {
+                    print(val);
+                  },
+                ),
               ),
               SizedBox(
                 width: 30.w,
               ),
-              ToggleWidget(
-                name: "RC",
-                initialValue: true,
-                valueUpdated: (val) {
-                  print(val);
-                },
+              Container(
+                width: 160.w,
+                height: 70.h,
+                child: ToggleWidget(
+                  name: "RC",
+                  initialValue: true,
+                  valueUpdated: (val) {
+                    print(val);
+                  },
+                ),
               ),
             ],
           ),

@@ -35,12 +35,7 @@ class _MainNavigationWidgetState extends State<MainNavigationWidget> {
                   decoration: BoxDecoration(
                       color: Color(0xFF232323),
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 40,
-                            offset: Offset(0, 10),
-                            color: CoreStyle.operationShadow2Color)
-                      ]),
+                     ),
                 ),
               ),
               Positioned(

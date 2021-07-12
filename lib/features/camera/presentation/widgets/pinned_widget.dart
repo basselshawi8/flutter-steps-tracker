@@ -34,7 +34,7 @@ class _PinnedWidgetState extends State<PinnedWidget>
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _arrowAnimation = Tween<double>(begin: 0, end: pi)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    _counterAnimation = Tween<double>(begin: 23.sp, end: 27.5.sp)
+    _counterAnimation = Tween<double>(begin: 26.sp, end: 32.5.sp)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     super.initState();
   }
@@ -75,8 +75,8 @@ class _PinnedWidgetState extends State<PinnedWidget>
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                    blurRadius: 30,
-                    offset: Offset(0, 11),
+                    blurRadius: 30.r,
+                    offset: Offset(0, 11.h),
                     color: CoreStyle.operationShadowColor)
               ]),
           padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -120,18 +120,15 @@ class _PinnedWidgetState extends State<PinnedWidget>
               Container(
                 width: 30.w,
                 height: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "4",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: _counterAnimation.value,
-                          fontWeight: FontWeight.w500,
-                          color: CoreStyle.white),
-                    ),
-                  ],
+                child: Center(
+                  child: Text(
+                    "4",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: _counterAnimation.value,
+                        fontWeight: FontWeight.w500,
+                        color: CoreStyle.white),
+                  ),
                 ),
               )
             ],

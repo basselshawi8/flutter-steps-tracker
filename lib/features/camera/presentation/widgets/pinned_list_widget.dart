@@ -63,8 +63,8 @@ class _PinnedListWidgetState extends State<PinnedListWidget>
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                      blurRadius: 50,
-                      offset: Offset(0, 23),
+                      blurRadius: 50.r,
+                      offset: Offset(0, 23.h),
                       color: CoreStyle.operationShadowColor)
                 ]),
 

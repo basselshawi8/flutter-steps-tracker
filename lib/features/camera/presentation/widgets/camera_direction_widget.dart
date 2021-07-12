@@ -3,6 +3,8 @@ import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'direction_widget.dart';
+
 class CameraDirectionWidget extends StatefulWidget {
   @override
   _CameraDirectionWidgetState createState() {
@@ -12,6 +14,8 @@ class CameraDirectionWidget extends StatefulWidget {
 }
 
 class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
+  var _currentDirection = Directions.none;
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -36,81 +40,127 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
                   height: 165.w,
                 ),
               ),
+              Positioned.fill(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    print(constraints);
+                    var width = constraints.maxWidth;
+                    var height = constraints.maxHeight;
+                    return GestureDetector(
+                      onTapDown: (details) {
+                        print(
+                            "x: ${details.localPosition.dx} y:${details.localPosition.dy}");
+                        print("x: ${width} y:${height}");
+                        if (details.localPosition.dy < height / 3.5) {
+                          _currentDirection = Directions.top;
+                        } else if (details.localPosition.dx < width / 3.5) {
+                          _currentDirection = Directions.left;
+                        } else if (details.localPosition.dx > width * 0.65) {
+                          _currentDirection = Directions.right;
+                        } else if (details.localPosition.dy > height * 0.65) {
+                          _currentDirection = Directions.bottom;
+                        } else {
+                          _currentDirection = Directions.none;
+                        }
+                        print(_currentDirection);
+                      },
+                      onTapUp: (details) {
+                        _currentDirection = Directions.none;
+                        print(_currentDirection);
+                      },
+                      onTapCancel: () {
+                        _currentDirection = Directions.none;
+                        print(_currentDirection);
+                      },
+                    );
+                  },
+                ),
+              ),
               Positioned(
                 bottom: 70.w,
                 left: 60.w,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: CoreStyle.operationBlack2Color,
-                      borderRadius: BorderRadius.all(Radius.circular(14)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: CoreStyle.operationShadowColor,
-                            blurRadius: 30.r,
-                            offset: Offset(0, 12.h))
-                      ]),
-                  width: 68.w,
-                  height: 68.w,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
+                child: GestureDetector(
+                  onTap: () {
+                    print("minus");
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: CoreStyle.operationBlack2Color,
+                        borderRadius: BorderRadius.all(Radius.circular(14)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: CoreStyle.operationShadowColor,
+                              blurRadius: 30.r,
+                              offset: Offset(0, 12.h))
+                        ]),
+                    width: 68.w,
+                    height: 68.w,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                          ),
+                          color: CoreStyle.operationBorder2Color,
+                          height: 4.h,
                         ),
-                        color: CoreStyle.operationBorder2Color,
-                        height: 4.h,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
               Positioned(
                 bottom: 70.w,
                 right: 60.w,
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: CoreStyle.operationBlack2Color,
-                      borderRadius: BorderRadius.all(Radius.circular(14)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: CoreStyle.operationShadowColor,
-                            blurRadius: 30.r,
-                            offset: Offset(0, 12.h))
-                      ]),
-                  width: 68.w,
-                  height: 68.w,
+                child: GestureDetector(
+                  onTap: () {
+                    print("plus");
+                  },
                   child: Container(
+                    decoration: BoxDecoration(
+                        color: CoreStyle.operationBlack2Color,
+                        borderRadius: BorderRadius.all(Radius.circular(14)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: CoreStyle.operationShadowColor,
+                              blurRadius: 30.r,
+                              offset: Offset(0, 12.h))
+                        ]),
                     width: 68.w,
                     height: 68.w,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
+                    child: Container(
+                      width: 68.w,
+                      height: 68.w,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w,
+                                  ),
+                                  color: CoreStyle.operationBorder2Color,
+                                  height: 4.h,
+                                )
+                              ])),
+                          Positioned.fill(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
                               Container(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 16.w,
+                                  vertical: 16.w,
                                 ),
                                 color: CoreStyle.operationBorder2Color,
-                                height: 4.h,
-                              )
-                            ])),
-                        Positioned.fill(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 16.w,
+                                width: 4.h,
                               ),
-                              color: CoreStyle.operationBorder2Color,
-                              width: 4.h,
-                            ),
-                          ],
-                        ))
-                      ],
+                            ],
+                          ))
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -28,8 +28,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                    blurRadius: 40,
-                    offset: Offset(0, 10),
+                    blurRadius: 40.r,
+                    offset: Offset(0, 10.h),
                     color: CoreStyle.operationShadowColor)
               ]),
           padding: EdgeInsets.symmetric(vertical: 12.h),

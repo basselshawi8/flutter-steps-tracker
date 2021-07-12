@@ -31,9 +31,9 @@ class MenuSectionWidget extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                     color: CoreStyle.restaurantShadowColor,
-                    offset: Offset(0, 5),
-                    spreadRadius: 5,
-                    blurRadius: 8)
+                    offset: Offset(0, 5.h),
+                    spreadRadius: 5.r,
+                    blurRadius: 8.r)
               ]),
           child: ListView.builder(
             itemBuilder: (context, index) {

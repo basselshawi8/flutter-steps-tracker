@@ -26,7 +26,7 @@ class CustomOutlinedButton extends StatelessWidget {
           onTap: (){
             onPressed();
           },
-          splashColor: CoreStyle.primaryTheme.withOpacity(0.3),
+          splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           child: Center(
             child: Text(

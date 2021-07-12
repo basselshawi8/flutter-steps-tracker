@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:micropolis_test/core/Common/Common.dart';
+import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_widget.dart';
@@ -7,6 +11,7 @@ import 'package:micropolis_test/features/camera/presentation/widgets/incidents_w
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_list_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_widget.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MainWindowScreen extends StatefulWidget {
   @override
@@ -17,9 +22,14 @@ class MainWindowScreen extends StatefulWidget {
 
 class _MainWindowScreenState extends State<MainWindowScreen> {
   var urls = [
-    "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
-    "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4"
+    'wss://echo.websocket.org',
+    'wss://echo.websocket.org'
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +48,8 @@ class _MainWindowScreenState extends State<MainWindowScreen> {
             isMini: true,
             url: urls[1],
             switchCamera: () {
-
               urls = urls.reversed.toList();
               setState(() {});
-
             },
           ),
           MainNavigationWidget(),
@@ -50,6 +58,37 @@ class _MainWindowScreenState extends State<MainWindowScreen> {
           AIWidget(),
           PinnedListWidget(),
           PinnedWidget(),
+          Positioned(
+              right: 60.w,
+              top: 30.h,
+              child: InkWell(
+                onTap: () {},
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Container(
+                    width: 220.w,
+                    height: 40.h,
+                    decoration: BoxDecoration(
+                        color: CoreStyle.operationBlackColor.withOpacity(0.77),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          IMG_ROBOT,
+                          width: 35.w,
+                        ),
+                        SizedBox(
+                          width: 20.w,
+                        ),
+                        Text(
+                          "DPAP Grand",
+                          style: TextStyle(
+                              color: CoreStyle.white, fontSize: 20.sp),
+                        )
+                      ],
+                    )),
+              ))
         ],
       ),
       backgroundColor: Colors.black,

@@ -59,12 +59,7 @@ class _AccelerationWidgetState extends State<AccelerationWidget>
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                           color: CoreStyle.operationBorder2Color, width: 1.w),
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 30.r,
-                            offset: Offset(0, 12.h),
-                            color: CoreStyle.operationShadow3Color)
-                      ]),
+                      ),
                 ),
               ),
               Positioned(

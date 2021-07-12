@@ -25,10 +25,10 @@ class RestaurantListItemWidget extends StatelessWidget {
               color: CoreStyle.white,
               boxShadow: [
                 BoxShadow(
-                    offset: Offset(0, 2),
-                    spreadRadius: 2,
+                    offset: Offset(0, 2.h),
+                    spreadRadius: 2.r,
                     color: CoreStyle.restaurantShadowColor,
-                    blurRadius: 8)
+                    blurRadius: 8.r)
               ],
               borderRadius: BorderRadius.all(Radius.circular(30.h))),
           child: Stack(
