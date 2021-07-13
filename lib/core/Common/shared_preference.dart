@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:shared_preferences_web/shared_preferences_web.dart';
 
 class SpUtil {
   static SpUtil _instance;
@@ -9,10 +10,13 @@ class SpUtil {
   }
 
   static SharedPreferences _spf;
+  static SharedPreferencesPlugin _spfWeb;
 
   SpUtil._();
 
   Future _init() async {
+    _spfWeb = SharedPreferencesPlugin();
+
     _spf = await SharedPreferences.getInstance();
   }
 
@@ -74,6 +78,25 @@ class SpUtil {
   Future<bool> putInt(String key, int value) {
     if (_beforeCheck()) return null;
     return _spf.setInt(key, value);
+  }
+
+  static Future<Offset> getOffset(String key) async {
+    if (_beforeCheck()) {
+      await SpUtil.getInstance();
+    }
+
+    var str = _spf.getString(key);
+
+    return Offset(
+        double.tryParse(str.split(",")[0]), double.tryParse(str.split(",")[1]));
+  }
+
+  static Future<bool> putOffset(String key, Offset value) async {
+    if (_beforeCheck()) {
+      await SpUtil.getInstance();
+    }
+
+    return _spf.setString(key, "${value.dx},${value.dy}");
   }
 
   double getDouble(String key) {

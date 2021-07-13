@@ -22,7 +22,7 @@ class MainWindowScreen extends StatefulWidget {
 
 class _MainWindowScreenState extends State<MainWindowScreen> {
   var urls = [
-    'wss://echo.websocket.org',
+    'ws://127.0.0.1:9502',
     'wss://echo.websocket.org'
   ];
 
@@ -33,7 +33,7 @@ class _MainWindowScreenState extends State<MainWindowScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("build again");
+
     return Scaffold(
       body: Stack(
         children: [

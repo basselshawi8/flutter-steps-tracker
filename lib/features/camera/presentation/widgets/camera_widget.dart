@@ -33,7 +33,6 @@ class _CameraWidgetState extends State<CameraWidget> {
   WebSocketChannel _channel;
 
   String cachedURL;
-  Timer timer;
 
   @override
   void initState() {
@@ -45,15 +44,6 @@ class _CameraWidgetState extends State<CameraWidget> {
     cachedURL = widget.url;
 
     super.initState();
-
-    timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
-      if(widget.isMini == null || widget.isMini == false) {
-        _channel?.sink?.add(imageBase64);
-      }
-      else {
-        _channel?.sink?.add(imageBase642);
-      }
-    });
   }
 
   @override
@@ -77,7 +67,10 @@ class _CameraWidgetState extends State<CameraWidget> {
         child: StreamBuilder(
           stream: _channel.stream,
           builder: (context, snapshot) {
+            print(snapshot.data);
+            print(snapshot.connectionState);
             if (snapshot.hasData) {
+              print(snapshot.data);
               return _getParentContainer(snapshot.data);
             } else {
               return Center(child: CircularProgressIndicator());
@@ -90,7 +83,7 @@ class _CameraWidgetState extends State<CameraWidget> {
   void dispose() {
     super.dispose();
     _channel?.sink?.close();
-    timer?.cancel();
+
   }
 
   Widget _getParentContainer(String imageData) {

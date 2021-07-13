@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -76,7 +77,6 @@ class _ToggleWidgetState extends State<ToggleWidget>
         if (widget.valueUpdated != null) widget.valueUpdated(_val);
       },
       child: Container(
-
         decoration: BoxDecoration(
             color: _backgroundColorAnimation.value,
             borderRadius: BorderRadius.circular(22.r)),
@@ -143,55 +143,81 @@ class AIWidget extends StatefulWidget {
 }
 
 class _AIWidgetState extends State<AIWidget> {
+  Offset offset;
+  Future<Offset> futureOffset;
+
+  @override
+  void initState() {
+    futureOffset = SpUtil.getOffset("AIWidget");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-        bottom: 32.w,
-        left: 32.w,
-        child: Container(
-          width: 440.w,
-          height: 77.h * 1.2,
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          decoration: BoxDecoration(
-              color: CoreStyle.operationBlackColor,
-              border:
-                  Border.all(color: CoreStyle.operationBorderColor, width: 2.h),
-              borderRadius: BorderRadius.circular(30.r),
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 40.r,
-                    offset: Offset(0,  10.h),
-                    color: CoreStyle.operationShadowColor)
-              ]),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 160.w,
-                height: 70.h,
-                child: ToggleWidget(
-                  name: "AI",
-                  valueUpdated: (val) {
-                    print(val);
-                  },
+    return FutureBuilder(
+      future: futureOffset,
+
+      builder: (context, snapshot) {
+        if (snapshot.hasData)
+          offset = offset == null ? (snapshot.data as Offset) : offset;
+        return Positioned(
+            bottom: 32.w + offset.dx,
+            left: 32.w + offset.dy,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  offset =
+                      offset.translate(-details.delta.dy, details.delta.dx);
+                  SpUtil.putOffset("AIWidget", offset);
+                });
+              },
+              child: Container(
+                width: 440.w,
+                height: 77.h * 1.2,
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                decoration: BoxDecoration(
+                    color: CoreStyle.operationBlackColor,
+                    border: Border.all(
+                        color: CoreStyle.operationBorderColor, width: 2.h),
+                    borderRadius: BorderRadius.circular(30.r),
+                    boxShadow: [
+                      BoxShadow(
+                          blurRadius: 40.r,
+                          offset: Offset(0, 10.h),
+                          color: CoreStyle.operationShadowColor)
+                    ]),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 160.w,
+                      height: 70.h,
+                      child: ToggleWidget(
+                        name: "AI",
+                        valueUpdated: (val) {
+                          print(val);
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 30.w,
+                    ),
+                    Container(
+                      width: 160.w,
+                      height: 70.h,
+                      child: ToggleWidget(
+                        name: "RC",
+                        initialValue: true,
+                        valueUpdated: (val) {
+                          print(val);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(
-                width: 30.w,
-              ),
-              Container(
-                width: 160.w,
-                height: 70.h,
-                child: ToggleWidget(
-                  name: "RC",
-                  initialValue: true,
-                  valueUpdated: (val) {
-                    print(val);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ));
+            ));
+      },
+    );
   }
 }
