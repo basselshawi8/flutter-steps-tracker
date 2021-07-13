@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_web/shared_preferences_web.dart';
 
 class SpUtil {
   static SpUtil _instance;
@@ -10,12 +9,10 @@ class SpUtil {
   }
 
   static SharedPreferences _spf;
-  static SharedPreferencesPlugin _spfWeb;
 
   SpUtil._();
 
   Future _init() async {
-    _spfWeb = SharedPreferencesPlugin();
 
     _spf = await SharedPreferences.getInstance();
   }
