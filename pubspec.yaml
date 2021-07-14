@@ -19,7 +19,8 @@ dependencies:
   launch_review: ^2.0.0
   # To get current locations
   geolocator: ^5.3.2+2
-  google_maps_flutter: ^0.5.32
+  google_maps_flutter: ^0.5.28
+  google_maps_flutter_web: ^0.1.0
   # Service locator
   get_it: ^5.0.0
   # State management
@@ -59,6 +60,7 @@ dependencies:
   flutter_sequence_animation: ^3.0.1
   polygon_clipper: ^1.0.2
   web_socket_channel: ^2.1.0
+  image: ^3.0.2
 
 dev_dependencies:
   flutter_test:

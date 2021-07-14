@@ -55,7 +55,7 @@ class _AppState extends State<App> {
               //Provider.of<Profile>(context,listen: false).navigationKey,
               onGenerateRoute: RouteGenerator.generateRoute,
               initialRoute: "/",
-              title: "Restaurants",
+              title: "Operation Room",
               themeMode: ThemeMode.light,
               theme: ThemeData(
                 appBarTheme: AppBarTheme(

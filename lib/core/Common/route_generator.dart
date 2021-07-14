@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:micropolis_test/features/map/presentation/screen/robot_location_map.dart';
 import 'package:micropolis_test/features/restaurants/presentation/screen/menu_screen.dart';
 
 class RouteGenerator {
@@ -12,11 +13,13 @@ class RouteGenerator {
           return CupertinoPageRoute(
               builder: (_) => MenuScreen(
                     restaurant: args["restaurant"],
-
                   ),
               settings: settings);
         }
         return _errorRoute();
+      case RobotLocationMap.routeName:
+        return CupertinoPageRoute(
+            builder: (_) => RobotLocationMap(), settings: settings);
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

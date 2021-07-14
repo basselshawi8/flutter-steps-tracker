@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
+import 'package:image/image.dart' as im;
 
 class CameraWidget extends StatefulWidget {
   final String url;
@@ -67,10 +69,8 @@ class _CameraWidgetState extends State<CameraWidget> {
         child: StreamBuilder(
           stream: _channel.stream,
           builder: (context, snapshot) {
-            print(snapshot.data);
-            print(snapshot.connectionState);
+
             if (snapshot.hasData) {
-              print(snapshot.data);
               return _getParentContainer(snapshot.data);
             } else {
               return Center(child: CircularProgressIndicator());
@@ -86,7 +86,8 @@ class _CameraWidgetState extends State<CameraWidget> {
 
   }
 
-  Widget _getParentContainer(String imageData) {
+  Widget _getParentContainer(Uint8List imageData) {
+
     if (widget.isMini != null && widget.isMini == true) {
       return Column(
         children: [
@@ -111,7 +112,9 @@ class _CameraWidgetState extends State<CameraWidget> {
                     child: FittedBox(
                       fit: BoxFit.cover,
                       child: Image.memory(
-                        base64Decode(imageData),
+
+                        imageData,
+                        gaplessPlayback: true,
                         width: widget.size.width,
                         height: widget.size.height,
                       ),
@@ -169,7 +172,8 @@ class _CameraWidgetState extends State<CameraWidget> {
               child: FittedBox(
                 fit: BoxFit.cover,
                 child: Image.memory(
-                  base64Decode(imageData),
+                  imageData,
+                  gaplessPlayback: true,
                   fit: BoxFit.cover,
                   width: widget.size.width,
                   height: widget.size.height,

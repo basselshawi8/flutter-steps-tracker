@@ -11,9 +11,13 @@ import 'package:micropolis_test/features/camera/presentation/widgets/incidents_w
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_list_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_widget.dart';
+import 'package:micropolis_test/features/map/presentation/screen/robot_location_map.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MainWindowScreen extends StatefulWidget {
+
+  static const routeName = '/mainWindow';
+
   @override
   _MainWindowScreenState createState() {
     return _MainWindowScreenState();
@@ -22,8 +26,8 @@ class MainWindowScreen extends StatefulWidget {
 
 class _MainWindowScreenState extends State<MainWindowScreen> {
   var urls = [
-    'ws://127.0.0.1:9502',
-    'wss://echo.websocket.org'
+    'ws://127.0.0.1:9509',
+    'ws://127.0.0.1:9510'
   ];
 
   @override
@@ -62,7 +66,9 @@ class _MainWindowScreenState extends State<MainWindowScreen> {
               right: 60.w,
               top: 30.h,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pushNamed(RobotLocationMap.routeName);
+                },
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 child: Container(
