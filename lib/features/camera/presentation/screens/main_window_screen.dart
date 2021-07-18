@@ -30,6 +30,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
   AnimationController _animationController;
   Animation _incidentsPanelAnimationMain;
   Animation _incidentsPanelAnimationSub;
+  var _firstState = true;
 
   @override
   void initState() {
@@ -41,11 +42,11 @@ class _MainWindowScreenState extends State<MainWindowScreen>
 
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 350));
-    _incidentsPanelAnimationSub = Tween<double>(begin: 1200.w, end: 1920.w)
+    _incidentsPanelAnimationSub = Tween<double>(begin:1920.w , end:1200.w )
         .animate(
             CurvedAnimation(parent: _animationController, curve: Curves.linearToEaseOut));
 
-    _incidentsPanelAnimationMain = Tween<double>(begin: 1920.w - 1200.w, end: 0)
+    _incidentsPanelAnimationMain = Tween<double>(begin:0 , end: 1920.w - 1200.w)
         .animate(
         CurvedAnimation(parent: _animationController, curve: Curves.fastOutSlowIn));
 
@@ -65,12 +66,15 @@ class _MainWindowScreenState extends State<MainWindowScreen>
         child: Consumer<ActionsChangeNotifier>(
           builder: (context, state, _) {
 
-            if (state.showIncidentsPanel==true) {
-              _animationController.reverse();
+            if (_firstState==false) {
+              if (state.showIncidentsPanel == false) {
+                _animationController.reverse();
+              }
+              else {
+                _animationController.forward();
+              }
             }
-            else {
-              _animationController.forward();
-            }
+            _firstState = false;
             return Stack(
               children: [
                 Positioned(
