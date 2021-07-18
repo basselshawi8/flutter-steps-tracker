@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:provider/provider.dart';
 
 class IncidentsWidget extends StatefulWidget {
   @override
@@ -37,9 +39,14 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: (){
+                onTap: () {
+                  Provider.of<ActionsChangeNotifier>(context, listen: false)
+                      .showIncidentsPanel = !Provider.of<ActionsChangeNotifier>(
+                          context,
+                          listen: false)
+                      .showIncidentsPanel;
                   setState(() {
-                    _selected=0;
+                    _selected = 0;
                   });
                 },
                 child: Container(
@@ -48,7 +55,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(IMG_BULK_CATEGORY,width: 36.w),
+                      Image.asset(IMG_BULK_CATEGORY, width: 36.w),
                     ],
                   ),
                   decoration: BoxDecoration(
@@ -60,9 +67,9 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   setState(() {
-                    _selected=1;
+                    _selected = 1;
                   });
                 },
                 child: Container(
@@ -77,16 +84,24 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(IMG_USER1,width: 27.w,),
-                      Expanded(child: Text("7",style: TextStyle(color: CoreStyle.white,fontSize: 20.sp ),))
+                      Image.asset(
+                        IMG_USER1,
+                        width: 27.w,
+                      ),
+                      Expanded(
+                          child: Text(
+                        "7",
+                        style:
+                            TextStyle(color: CoreStyle.white, fontSize: 20.sp),
+                      ))
                     ],
                   ),
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   setState(() {
-                    _selected=2;
+                    _selected = 2;
                   });
                 },
                 child: Container(
@@ -101,16 +116,24 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(IMG_USER2,width: 36.w,),
-                      Expanded(child: Text("12",style: TextStyle(color: CoreStyle.white,fontSize: 20.sp ),))
+                      Image.asset(
+                        IMG_USER2,
+                        width: 36.w,
+                      ),
+                      Expanded(
+                          child: Text(
+                        "12",
+                        style:
+                            TextStyle(color: CoreStyle.white, fontSize: 20.sp),
+                      ))
                     ],
                   ),
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   setState(() {
-                    _selected=3;
+                    _selected = 3;
                   });
                 },
                 child: Container(
@@ -125,8 +148,16 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(IMG_USER3,width: 36.w,),
-                      Expanded(child: Text("3",style: TextStyle(color: CoreStyle.white,fontSize: 20.sp ),))
+                      Image.asset(
+                        IMG_USER3,
+                        width: 36.w,
+                      ),
+                      Expanded(
+                          child: Text(
+                        "3",
+                        style:
+                            TextStyle(color: CoreStyle.white, fontSize: 20.sp),
+                      ))
                     ],
                   ),
                 ),
