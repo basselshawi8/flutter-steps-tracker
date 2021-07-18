@@ -1,7 +1,7 @@
 import 'package:micropolis_test/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'app.dart';
 import 'core/Common/appConfig.dart';
 import 'core/localization/localization_provider.dart';
@@ -23,8 +23,10 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-    App(
-      appLanguage: _appLanguage,
+    Phoenix(
+      child: App(
+        appLanguage: _appLanguage,
+      ),
     ),
   );
 }

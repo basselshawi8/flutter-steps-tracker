@@ -50,4 +50,8 @@ class AppConfigProvider extends ChangeNotifier {
     RestartWidget.restartApp(context);
   }
 
+  Future<void> restartApp(BuildContext context) async{
+    notifyListeners();
+    RestartWidget.restartApp(context);
+  }
 }

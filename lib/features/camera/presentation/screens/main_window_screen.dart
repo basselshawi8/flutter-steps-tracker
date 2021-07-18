@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/core/localization/localization_provider.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_widget.dart';
@@ -13,9 +15,9 @@ import 'package:micropolis_test/features/camera/presentation/widgets/pinned_list
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_widget.dart';
 import 'package:micropolis_test/features/map/presentation/screen/robot_location_map.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:provider/provider.dart';
 
 class MainWindowScreen extends StatefulWidget {
-
   static const routeName = '/mainWindow';
 
   @override
@@ -25,19 +27,20 @@ class MainWindowScreen extends StatefulWidget {
 }
 
 class _MainWindowScreenState extends State<MainWindowScreen> {
-  var urls = [
-    'ws://127.0.0.1:9509',
-    'ws://127.0.0.1:9510'
-  ];
+  var urls = ['ws://127.0.0.1:9509', 'ws://127.0.0.1:9510'];
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(ResizeNotifier(() {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        if (mounted) Phoenix.rebirth(context);
+      });
+    }));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Stack(
         children: [
@@ -99,5 +102,17 @@ class _MainWindowScreenState extends State<MainWindowScreen> {
       ),
       backgroundColor: Colors.black,
     );
+  }
+}
+
+class ResizeNotifier with WidgetsBindingObserver {
+  final Function callBack;
+
+  ResizeNotifier(this.callBack);
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    callBack();
   }
 }

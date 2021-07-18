@@ -13,9 +13,11 @@ class RestartWidget extends StatefulWidget {
   RestartWidget({this.child});
 
   static restartApp(BuildContext context) {
+
     final _RestartWidgetState state =
     context.findAncestorStateOfType();
-    state.restartApp();
+    print("restart");
+    state?.restartApp();
   }
 
   @override

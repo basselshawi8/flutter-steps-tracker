@@ -40,6 +40,7 @@ dependencies:
   shared_preferences_web: ^2.0.0
   package_info: ^0.4.1
   url_launcher: ^5.7.0
+  flutter_phoenix: ^1.0.0
 
 
   # To know if keyboard is visibility or not

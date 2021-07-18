@@ -11,7 +11,7 @@
       For more details:
       * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
     -->
-    <base href="/">
+    <base href="/operation/">
 
     <meta charset="UTF-8">
     <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -20,10 +20,10 @@
     <!-- iOS meta tags & icons -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="micropolis_test">
+    <meta name="apple-mobile-web-app-title" content="Operation Room">
     <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-    <title>micropolis_test</title>
+    <title>Operation Room</title>
     <link rel="manifest" href="manifest.json">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB1feoykEIK-Qi3DxaT8a5x-0-aIq_3cIE"></script>
     <style>
@@ -60,6 +60,10 @@ margin: auto;
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+h4 {
+
+  color: black;
+}
 
 
     </style>
@@ -73,17 +77,16 @@ margin: auto;
 <br/>
 <br/>
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+
 
 <div class="center">
-Loading Operation Room
-<br/><br/><br/>
-Please Wait...
+    <h4>
+        Loading Operation Room
+    </h4>
+    <br/>
+    <h4>
+        Please Wait...
+    </h4>
 </div>
 
 <br/>
@@ -158,6 +161,7 @@ Please Wait...
       // Service workers not supported. Just drop the <script> tag.
       loadMainDartJs();
     }
+
 
 
 </script>
