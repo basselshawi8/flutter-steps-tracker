@@ -1,12 +1,8 @@
-import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'dart:convert';
-import 'package:image/image.dart' as im;
 
 class CameraWidget extends StatefulWidget {
   final String url;
@@ -43,6 +39,8 @@ class _CameraWidgetState extends State<CameraWidget> {
       Uri.parse(widget.url ?? 'wss://echo.websocket.org'),
     );
 
+    Future.delayed(Duration(seconds: 1)).then((value) => _channel?.sink?.add("hello"));
+
     cachedURL = widget.url;
 
     super.initState();
@@ -70,7 +68,9 @@ class _CameraWidgetState extends State<CameraWidget> {
           stream: _channel.stream,
           builder: (context, snapshot) {
 
-            if (snapshot.hasData) {
+            print(snapshot?.connectionState);
+            print(snapshot?.data);
+            if (snapshot.hasData && snapshot.data is String == false) {
               return _getParentContainer(snapshot.data);
             } else {
               return Center(child: CircularProgressIndicator());

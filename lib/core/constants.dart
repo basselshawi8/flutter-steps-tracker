@@ -82,3 +82,7 @@ const LANG_EN_CODE = 'EN';
 
 const LANG_AR_OUTPUT = 'العربية';
 const LANG_EN_OUTPUT = 'English';
+
+const POSITION_MAIN_DIRECTION_WIDGET = "mainDirectionWidget";
+const POSITION_CAMERA_DIRECTION_WIDGET= "cameraDirectionWidget";
+const POSITION_AI_WIDGET = "AIWidget";

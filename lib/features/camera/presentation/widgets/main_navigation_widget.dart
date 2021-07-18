@@ -5,7 +5,6 @@ import 'package:micropolis_test/core/Common/shared_preference.dart';
 import 'package:micropolis_test/core/constants.dart';
 
 import 'acceleration_widget.dart';
-import 'camera_direction_widget.dart';
 import 'direction_widget.dart';
 
 class MainNavigationWidget extends StatefulWidget {
@@ -24,7 +23,7 @@ class _MainNavigationWidgetState extends State<MainNavigationWidget> {
 
   @override
   void initState() {
-    futureOffset = SpUtil.getOffset("mainDirectionWidget");
+    futureOffset = SpUtil.getOffset(POSITION_MAIN_DIRECTION_WIDGET);
     super.initState();
   }
   @override
@@ -44,7 +43,7 @@ class _MainNavigationWidgetState extends State<MainNavigationWidget> {
               onPanUpdate: (details){
                 setState(() {
                   offset = offset.translate(-details.delta.dy, details.delta.dx);
-                  SpUtil.putOffset("mainDirectionWidget", offset);
+                  SpUtil.putOffset(POSITION_MAIN_DIRECTION_WIDGET, offset);
                 });
               },
               child: Container(

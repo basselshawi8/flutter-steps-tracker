@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/core/constants.dart';
 
 class ToggleWidget extends StatefulWidget {
   final String name;
@@ -149,7 +150,7 @@ class _AIWidgetState extends State<AIWidget> {
 
   @override
   void initState() {
-    futureOffset = SpUtil.getOffset("AIWidget");
+    futureOffset = SpUtil.getOffset(POSITION_AI_WIDGET);
     super.initState();
   }
 
@@ -171,7 +172,7 @@ class _AIWidgetState extends State<AIWidget> {
                 setState(() {
                   offset =
                       offset.translate(-details.delta.dy, details.delta.dx);
-                  SpUtil.putOffset("AIWidget", offset);
+                  SpUtil.putOffset(POSITION_AI_WIDGET, offset);
                 });
               },
               child: Container(

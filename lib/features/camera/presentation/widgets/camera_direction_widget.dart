@@ -21,7 +21,7 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
 
   @override
   void initState() {
-    futureOffset = SpUtil.getOffset("cameraDirectionWidget");
+    futureOffset = SpUtil.getOffset(POSITION_CAMERA_DIRECTION_WIDGET);
     super.initState();
   }
 
@@ -43,7 +43,7 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
               onPanUpdate: (details) {
                 setState(() {
                   offset = offset.translate(details.delta.dy, -details.delta.dx);
-                  SpUtil.putOffset("cameraDirectionWidget", offset);
+                  SpUtil.putOffset(POSITION_CAMERA_DIRECTION_WIDGET, offset);
                 });
               },
               child: Container(

@@ -89,11 +89,13 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         width: 27.w,
                       ),
                       Expanded(
-                          child: Text(
+                          child: FittedBox(
+                            child: Text(
                         "7",
                         style:
-                            TextStyle(color: CoreStyle.white, fontSize: 20.sp),
-                      ))
+                              TextStyle(color: CoreStyle.white, fontSize: 20.sp),
+                      ),
+                          ))
                     ],
                   ),
                 ),
@@ -121,11 +123,13 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         width: 36.w,
                       ),
                       Expanded(
-                          child: Text(
+                          child: FittedBox(
+                            child: Text(
                         "12",
                         style:
-                            TextStyle(color: CoreStyle.white, fontSize: 20.sp),
-                      ))
+                              TextStyle(color: CoreStyle.white, fontSize: 20.sp),
+                      ),
+                          ))
                     ],
                   ),
                 ),
@@ -153,11 +157,13 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         width: 36.w,
                       ),
                       Expanded(
-                          child: Text(
+                          child: FittedBox(
+                            child: Text(
                         "3",
                         style:
-                            TextStyle(color: CoreStyle.white, fontSize: 20.sp),
-                      ))
+                              TextStyle(color: CoreStyle.white, fontSize: 20.sp),
+                      ),
+                          ))
                     ],
                   ),
                 ),
