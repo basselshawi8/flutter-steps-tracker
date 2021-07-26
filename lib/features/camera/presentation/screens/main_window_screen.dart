@@ -8,6 +8,7 @@ import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.d
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/incidents_container_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_list_widget.dart';
@@ -84,6 +85,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                     bottom: 0,
                     child: Container(
                       color: CoreStyle.operationBlackColor,
+                      child: IncidentsContainerWidget(),
                     )),
                 Positioned(
                   left: 0,
