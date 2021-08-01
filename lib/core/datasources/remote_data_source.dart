@@ -14,7 +14,7 @@ import '../http/http_method.dart';
 abstract class RemoteDataSource {
   Future<Either<BaseError, T>>
   request<T extends BaseModel>({
-    @required T Function(List<dynamic>) converter,
+    @required T Function(dynamic) converter,
     @required HttpMethod method,
     @required String url,
     Map<String, dynamic> queryParameters,
@@ -73,7 +73,7 @@ abstract class RemoteDataSource {
 
   Future<Either<BaseError, T>>
   requestUploadFile<T extends BaseModel>({
-    @required T Function(List<dynamic>) converter,
+    @required T Function(dynamic) converter,
     @required String url,
     @required String fileKey,
     @required String filePath,

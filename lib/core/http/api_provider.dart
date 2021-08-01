@@ -36,7 +36,7 @@ class ApiProvider {
   }
 
   final option = BaseOptions(
-    baseUrl: API_BASE,
+    baseUrl: API_OPERATION_BASE,
     connectTimeout: 20000,
   );
   Dio _dio;

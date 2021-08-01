@@ -4,6 +4,7 @@ import 'package:micropolis_test/core/models/BaseModel.dart';
 class ModelsFactory {
   // Singleton handling.
   static ModelsFactory _instance;
+  var isList = true;
 
   static ModelsFactory getInstance() {
     if (_instance != null) return _instance;
@@ -12,21 +13,29 @@ class ModelsFactory {
   }
 
   // Mapping each model name with the actual value using fromJson factory method.
-  Map<String, dynamic Function(List<dynamic>)> _modelsMap = {};
+
+  Map<String, dynamic Function( Map<String,dynamic>)> _modelsMap = {};
+  Map<String, dynamic Function( List<dynamic>)> _modelsList = {};
 
   // Register the model in the map.
   void registerModel(
     String modelName,
-    dynamic Function(List<dynamic>) modelCreator,
+    dynamic Function(dynamic) modelCreator,
   ) {
-    _modelsMap.putIfAbsent(modelName, () => modelCreator);
+    if (isList) {
+      _modelsList.putIfAbsent(modelName, () => modelCreator);
+    }
+    else {
+      _modelsMap.putIfAbsent(modelName, () => modelCreator);
+    }
+
   }
 
   // Generate the desired T model.
   T createModel<T extends BaseModel>(json) {
     final modelName = T.toString();
 //    assert(_modelsMap.containsKey(modelName));
-    final model = _modelsMap[modelName](json) as T;
+    final model = isList == false ? _modelsMap[modelName](json) as T : _modelsList[modelName](json) as T;
     return model;
   }
 

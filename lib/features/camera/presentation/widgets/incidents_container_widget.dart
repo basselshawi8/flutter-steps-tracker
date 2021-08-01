@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
+import 'package:micropolis_test/features/camera/presentation/bloc/bloc.dart';
 
 class IncidentsContainerWidget extends StatefulWidget {
   @override
@@ -13,64 +15,75 @@ class IncidentsContainerWidget extends StatefulWidget {
 class _IncidentsContainerWidgetState extends State<IncidentsContainerWidget> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 200.h,
-        ),
-        Container(
-          height: 200.w,
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return IncidentsContainerItemWidget();
-            },
-            itemCount: 20,
-            scrollDirection: Axis.horizontal,
+    return BlocListener<IncidentsBloc, IncidentState>(
+      listener: (context, state) {
+        if (state is GetIncidentSuccessState) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Center(
+              child: Text(state.incident.id.oid),
+            ),
+          ));
+        }
+      },
+      child: Column(
+        children: [
+          SizedBox(
+            height: 200.h,
           ),
-        ),
-        SizedBox(
-          height: 20.h,
-        ),
-        Container(
-          height: 200.w,
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return IncidentsContainerItemWidget();
-            },
-            itemCount: 20,
-            scrollDirection: Axis.horizontal,
+          Container(
+            height: 200.w,
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return IncidentsContainerItemWidget();
+              },
+              itemCount: 20,
+              scrollDirection: Axis.horizontal,
+            ),
           ),
-        ),
-        SizedBox(
-          height: 20.h,
-        ),
-        Container(
-          height: 200.w,
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return IncidentsContainerItemWidget();
-            },
-            itemCount: 20,
-            scrollDirection: Axis.horizontal,
+          SizedBox(
+            height: 20.h,
           ),
-        ),
-        SizedBox(
-          height: 20.h,
-        ),
-        Container(
-          height: 200.w,
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return IncidentsContainerItemWidget();
-            },
-            itemCount: 20,
-            scrollDirection: Axis.horizontal,
+          Container(
+            height: 200.w,
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return IncidentsContainerItemWidget();
+              },
+              itemCount: 20,
+              scrollDirection: Axis.horizontal,
+            ),
           ),
-        ),
-        SizedBox(
-          height: 20.h,
-        )
-      ],
+          SizedBox(
+            height: 20.h,
+          ),
+          Container(
+            height: 200.w,
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return IncidentsContainerItemWidget();
+              },
+              itemCount: 20,
+              scrollDirection: Axis.horizontal,
+            ),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          Container(
+            height: 200.w,
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return IncidentsContainerItemWidget();
+              },
+              itemCount: 20,
+              scrollDirection: Axis.horizontal,
+            ),
+          ),
+          SizedBox(
+            height: 20.h,
+          )
+        ],
+      ),
     );
   }
 }

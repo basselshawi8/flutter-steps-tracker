@@ -39,7 +39,6 @@ class _CameraWidgetState extends State<CameraWidget> {
       Uri.parse(widget.url ?? 'wss://echo.websocket.org'),
     );
 
-    Future.delayed(Duration(seconds: 1)).then((value) => _channel?.sink?.add("hello"));
 
     cachedURL = widget.url;
 
@@ -68,8 +67,7 @@ class _CameraWidgetState extends State<CameraWidget> {
           stream: _channel.stream,
           builder: (context, snapshot) {
 
-            print(snapshot?.connectionState);
-            print(snapshot?.data);
+
             if (snapshot.hasData && snapshot.data is String == false) {
               return _getParentContainer(snapshot.data);
             } else {
