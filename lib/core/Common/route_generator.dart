@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:micropolis_test/features/incident/presentation/screens/incidents_screen.dart';
 import 'package:micropolis_test/features/map/presentation/screen/robot_location_map.dart';
 import 'package:micropolis_test/features/restaurants/presentation/screen/menu_screen.dart';
 
@@ -20,6 +21,13 @@ class RouteGenerator {
       case RobotLocationMap.routeName:
         return CupertinoPageRoute(
             builder: (_) => RobotLocationMap(), settings: settings);
+      case IncidentsScreen.routeName:
+        return CupertinoPageRoute(
+            builder: (_) => IncidentsScreen(
+                  location:
+                      args is Map<String, dynamic> ? args["location"] : null,
+                ),
+            settings: settings);
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

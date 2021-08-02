@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class RobotLocationMap extends StatefulWidget {
 
@@ -18,6 +19,10 @@ class _RobotLocationMapState extends State<RobotLocationMap> {
 
   final Map<String, Marker> _markers = {};
   Future<void> _onMapCreated(GoogleMapController controller) async {
+
+    var _darkMapStyle  = await rootBundle.loadString(MAP_DARK_STYLE);
+    controller.setMapStyle(_darkMapStyle);
+
     final locations = [LatLng(51.5074, 0.1278),LatLng(48.8566, 2.3522)];
     var icon = await BitmapDescriptor.fromAssetImage(ImageConfiguration.empty, IMG_ROBOT_MARKER);
 
@@ -52,8 +57,8 @@ class _RobotLocationMapState extends State<RobotLocationMap> {
         onMapCreated: _onMapCreated,
 
         initialCameraPosition: CameraPosition(
-          target: const LatLng(0, 0),
-          zoom: 2,
+          target: const LatLng(40.7831, -73.9712),
+          zoom: 12,
         ),
         markers: _markers.values.toSet(),
       )

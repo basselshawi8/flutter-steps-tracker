@@ -71,6 +71,11 @@ const IMG_USER3 = 'assets/images/png/user3.png';
 const IMG_SCAN = 'assets/images/png/scan.png';
 const IMG_ROBOT = 'assets/images/png/robot.png';
 const IMG_ROBOT_MARKER = 'assets/images/png/robotMarker.png';
+const IMG_PERSON = 'assets/images/png/person.png';
+
+//map styles
+
+const MAP_DARK_STYLE = 'assets/map_styles/mapStyle.json';
 
 // Languages
 const LANG_AR = 'ar';

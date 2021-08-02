@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:micropolis_test/features/incident/presentation/screens/incidents_screen.dart';
 import 'package:provider/provider.dart';
 
 class IncidentsWidget extends StatefulWidget {
@@ -70,6 +72,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                 onTap: () {
                   setState(() {
                     _selected = 1;
+                    Navigator.of(context).pushNamed(IncidentsScreen.routeName,
+                        arguments: {"location": LatLng(40.7831, -73.9712)});
                   });
                 },
                 child: Container(
@@ -90,12 +94,12 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                       ),
                       Expanded(
                           child: FittedBox(
-                            child: Text(
-                        "7",
-                        style:
-                              TextStyle(color: CoreStyle.white, fontSize: 20.sp),
-                      ),
-                          ))
+                        child: Text(
+                          "7",
+                          style: TextStyle(
+                              color: CoreStyle.white, fontSize: 20.sp),
+                        ),
+                      ))
                     ],
                   ),
                 ),
@@ -124,12 +128,12 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                       ),
                       Expanded(
                           child: FittedBox(
-                            child: Text(
-                        "12",
-                        style:
-                              TextStyle(color: CoreStyle.white, fontSize: 20.sp),
-                      ),
-                          ))
+                        child: Text(
+                          "12",
+                          style: TextStyle(
+                              color: CoreStyle.white, fontSize: 20.sp),
+                        ),
+                      ))
                     ],
                   ),
                 ),
@@ -158,12 +162,12 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                       ),
                       Expanded(
                           child: FittedBox(
-                            child: Text(
-                        "3",
-                        style:
-                              TextStyle(color: CoreStyle.white, fontSize: 20.sp),
-                      ),
-                          ))
+                        child: Text(
+                          "3",
+                          style: TextStyle(
+                              color: CoreStyle.white, fontSize: 20.sp),
+                        ),
+                      ))
                     ],
                   ),
                 ),
