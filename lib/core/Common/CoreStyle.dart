@@ -34,6 +34,7 @@ abstract class CoreStyle {
   static const Color operationDashColor = Color(0xFF313131);
   static const Color operationLightTextColor = Color(0xFFEAEAEA);
   static const Color operationPinBlackColor = Color(0xFF121212);
+  static const Color operationDarkGreen = Color(0xFF38845D);
 
   static const Color operationGreyContent = Color(0xFF4A4A4A);
 
