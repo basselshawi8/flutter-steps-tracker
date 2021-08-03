@@ -5,13 +5,16 @@ import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:micropolis_test/features/incident/presentation/widgets/incident_subject_widget.dart';
+import 'package:micropolis_test/features/incident/presentation/widgets/incidents_widget.dart';
 
 class IncidentsScreen extends StatefulWidget {
   static const routeName = '/incidentsWindow';
 
   final LatLng location;
+  final String type;
 
-  const IncidentsScreen({Key key, this.location}) : super(key: key);
+  const IncidentsScreen({Key key, this.location,this.type}) : super(key: key);
 
   @override
   _IncidentsScreenState createState() {
@@ -28,6 +31,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
   void initState() {
     localLocation = widget.location ?? LatLng(0, 0);
 
+    print(widget.type);
     WidgetsBinding.instance.addObserver(ResizeNotifier(() {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         if (mounted) Phoenix.rebirth(context);
@@ -74,6 +78,10 @@ class _IncidentsScreenState extends State<IncidentsScreen>
           child: Stack(
             children: [
               Positioned.fill(
+                top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 800.w,
                   child: GoogleMap(
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
@@ -105,7 +113,9 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  ))
+                  )),
+              IncidentsListWidget(type: widget.type,),
+              IncidentSubjectWidget()
             ],
           ),
         ),

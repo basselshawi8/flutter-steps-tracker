@@ -8,7 +8,8 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
-    switch (settings.name) {
+    var pathName = settings.name.split("?").first;
+    switch (pathName) {
       case MenuScreen.routeName:
         if (args is Map) {
           return CupertinoPageRoute(
@@ -26,6 +27,9 @@ class RouteGenerator {
             builder: (_) => IncidentsScreen(
                   location:
                       args is Map<String, dynamic> ? args["location"] : null,
+                  type: settings.name.split("?type=").length > 1
+                      ? settings.name.split("?type=")[1]
+                      : null,
                 ),
             settings: settings);
 

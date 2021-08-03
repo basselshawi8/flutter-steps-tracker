@@ -70,11 +70,11 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
               ),
               GestureDetector(
                 onTap: () {
-                  setState(() {
+
                     _selected = 1;
-                    Navigator.of(context).pushNamed(IncidentsScreen.routeName,
+                    Navigator.of(context).pushNamed("${IncidentsScreen.routeName}?type=gamma",
                         arguments: {"location": LatLng(40.7831, -73.9712)});
-                  });
+
                 },
                 child: Container(
                   width: 70.h,
@@ -108,6 +108,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                 onTap: () {
                   setState(() {
                     _selected = 2;
+                    Navigator.of(context).pushNamed("${IncidentsScreen.routeName}?type=delta",
+                        arguments: {"location": LatLng(40.7831, -73.9712)});
                   });
                 },
                 child: Container(
@@ -142,6 +144,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                 onTap: () {
                   setState(() {
                     _selected = 3;
+                    Navigator.of(context).pushNamed("${IncidentsScreen.routeName}?type=beta",
+                        arguments: {"location": LatLng(40.7831, -73.9712)});
                   });
                 },
                 child: Container(

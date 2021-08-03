@@ -72,6 +72,10 @@ const IMG_SCAN = 'assets/images/png/scan.png';
 const IMG_ROBOT = 'assets/images/png/robot.png';
 const IMG_ROBOT_MARKER = 'assets/images/png/robotMarker.png';
 const IMG_PERSON = 'assets/images/png/person.png';
+const IMG_GAMMA = 'assets/images/png/gamma.png';
+const IMG_DELTA = 'assets/images/png/delta.png';
+const IMG_BETA = 'assets/images/png/beta.png';
+const IMG_PIN = 'assets/images/png/pin.png';
 
 //map styles
 
