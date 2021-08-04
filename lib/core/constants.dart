@@ -77,6 +77,11 @@ const IMG_DELTA = 'assets/images/png/delta.png';
 const IMG_BETA = 'assets/images/png/beta.png';
 const IMG_PIN = 'assets/images/png/pin.png';
 
+const IMG_DOG = 'assets/images/png/dog.png';
+const IMG_DRONE = 'assets/images/png/drone.png';
+const IMG_LIVE = 'assets/images/png/live.png';
+const IMG_POLICE_CAR = 'assets/images/png/policeCar.png';
+
 //map styles
 
 const MAP_DARK_STYLE = 'assets/map_styles/mapStyle.json';

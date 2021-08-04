@@ -31,10 +31,13 @@ abstract class CoreStyle {
   static const Color operationIncidentItemListBlackColor = Color(0xFF212121);
   static const Color operationRedColor = Color(0xFFFF2424);
   static const Color operationRoseColor = Color(0xFFFFA5A5);
+  static const Color operationRose2Color = Color(0xFFDE5E5E);
+
   static const Color operationDashColor = Color(0xFF313131);
   static const Color operationLightTextColor = Color(0xFFEAEAEA);
   static const Color operationPinBlackColor = Color(0xFF121212);
   static const Color operationDarkGreen = Color(0xFF38845D);
+  static const Color operationIncidentActionColor = Color(0xFF2E2E2E);
 
   static const Color operationGreyContent = Color(0xFF4A4A4A);
 

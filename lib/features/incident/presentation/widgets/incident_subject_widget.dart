@@ -18,6 +18,10 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
   var incidentType = "Facial Recognition";
   var incidentAction = "Kidnapping";
   var carID = "DPNP Mono 208";
+  var idType = "Passport";
+  var idNo = "44322DFG113";
+  var nationality = "Russian";
+  var location = "Dubai";
   var suspectLevel = "E";
   var criminalResult = "Wanted";
 
@@ -55,7 +59,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                 height: 10.h,
               ),
               Container(
-                height: 215.h,
+
                 width: double.maxFinite,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.r),
@@ -159,7 +163,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                               fontSize: 14.sp,
                             )),
                         Text(
-                          carID,
+                          idType,
                           style: TextStyle(
                               color: CoreStyle.operationLightTextColor,
                               fontWeight: FontWeight.w300,
@@ -176,7 +180,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                               fontSize: 14.sp,
                             )),
                         Text(
-                          carID,
+                          idNo,
                           style: TextStyle(
                               color: CoreStyle.operationLightTextColor,
                               fontWeight: FontWeight.w300,
@@ -193,7 +197,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                               fontSize: 14.sp,
                             )),
                         Text(
-                          carID,
+                          nationality,
                           style: TextStyle(
                               color: CoreStyle.operationLightTextColor,
                               fontWeight: FontWeight.w300,
@@ -210,7 +214,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                               fontSize: 14.sp,
                             )),
                         Text(
-                          carID,
+                          location,
                           style: TextStyle(
                               color: CoreStyle.operationLightTextColor,
                               fontWeight: FontWeight.w300,
@@ -305,87 +309,99 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                   child: SizedBox(
                 height: 10.h,
               )),
-              Container(
-                height: 42.h,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: CoreStyle.operationDarkGreen,
-                    borderRadius: BorderRadius.circular(6.r)),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Image.asset(
-                        IMG_PIN,
-                        width: 20.w,
-                        height: 20.h,
-                      ),
-                      Text(
-                        "Pin To Top",
-                        style: TextStyle(
-                            color: CoreStyle.operationLightTextColor,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w200),
-                      ),
-                      Container(
-                        width: 10,
-                        height: 10,
-                      )
-                    ]),
+              InkWell(
+                onTap: (){},
+                child: Container(
+                  height: 42.h,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                      color: CoreStyle.operationDarkGreen,
+                      borderRadius: BorderRadius.circular(6.r)),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Image.asset(
+                          IMG_PIN,
+                          width: 20.w,
+                          height: 20.h,
+                        ),
+                        Text(
+                          "Pin To Top",
+                          style: TextStyle(
+                              color: CoreStyle.operationLightTextColor,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w200),
+                        ),
+                        Container(
+                          width: 10,
+                          height: 10,
+                        )
+                      ]),
+                ),
               ),
               SizedBox(
                 height: 6.h,
               ),
-              Container(
-                height: 42.h,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: CoreStyle.operationDarkGreen,
-                    borderRadius: BorderRadius.circular(6.r)),
-                child: Center(
-                  child: Text(
-                    "Suspect Data",
-                    style: TextStyle(
-                        color: CoreStyle.operationLightTextColor,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w200),
+              InkWell(
+                onTap: (){},
+                child: Container(
+                  height: 42.h,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                      color: CoreStyle.operationDarkGreen,
+                      borderRadius: BorderRadius.circular(6.r)),
+                  child: Center(
+                    child: Text(
+                      "Suspect Data",
+                      style: TextStyle(
+                          color: CoreStyle.operationLightTextColor,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w200),
+                    ),
                   ),
                 ),
               ),
               SizedBox(
                 height: 6.h,
               ),
-              Container(
-                height: 42.h,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: CoreStyle.operationDarkGreen,
-                    borderRadius: BorderRadius.circular(6.r)),
-                child: Center(
-                  child: Text(
-                    "Criminal Logic Report",
-                    style: TextStyle(
-                        color: CoreStyle.operationLightTextColor,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w200),
+              InkWell(
+                onTap: (){},
+                child: Container(
+                  height: 42.h,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                      color: CoreStyle.operationDarkGreen,
+                      borderRadius: BorderRadius.circular(6.r)),
+                  child: Center(
+                    child: Text(
+                      "Criminal Logic Report",
+                      style: TextStyle(
+                          color: CoreStyle.operationLightTextColor,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w200),
+                    ),
                   ),
                 ),
               ),
               SizedBox(
                 height: 6.h,
               ),
-              Container(
-                height: 42.h,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: CoreStyle.operationDarkGreen,
-                    borderRadius: BorderRadius.circular(6.r)),
-                child: Center(
-                  child: Text(
-                    "Upgrade",
-                    style: TextStyle(
-                        color: CoreStyle.operationLightTextColor,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w200),
+              InkWell(
+                onTap: (){},
+                child: Container(
+                  height: 42.h,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                      color: CoreStyle.operationDarkGreen,
+                      borderRadius: BorderRadius.circular(6.r)),
+                  child: Center(
+                    child: Text(
+                      "Upgrade",
+                      style: TextStyle(
+                          color: CoreStyle.operationLightTextColor,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w200),
+                    ),
                   ),
                 ),
               ),

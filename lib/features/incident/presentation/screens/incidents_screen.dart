@@ -5,6 +5,7 @@ import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:micropolis_test/features/incident/presentation/widgets/incident_action_widget.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/incident_subject_widget.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/incidents_widget.dart';
 
@@ -29,14 +30,13 @@ class _IncidentsScreenState extends State<IncidentsScreen>
 
   @override
   void initState() {
-    localLocation = widget.location ?? LatLng(0, 0);
+    localLocation = widget.location ?? LatLng(40.7831, -73.9712);
 
-    print(widget.type);
-    WidgetsBinding.instance.addObserver(ResizeNotifier(() {
+    /*WidgetsBinding.instance.addObserver(ResizeNotifier(() {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         if (mounted) Phoenix.rebirth(context);
       });
-    }));
+    }));*/
 
     super.initState();
   }
@@ -115,7 +115,8 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   )),
               IncidentsListWidget(type: widget.type,),
-              IncidentSubjectWidget()
+              IncidentSubjectWidget(),
+              IncidentActionsWidget()
             ],
           ),
         ),

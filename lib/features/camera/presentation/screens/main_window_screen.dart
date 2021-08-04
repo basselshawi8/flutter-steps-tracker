@@ -48,11 +48,12 @@ class _MainWindowScreenState extends State<MainWindowScreen>
     );
 
 
-    WidgetsBinding.instance.addObserver(ResizeNotifier(() {
+    /*WidgetsBinding.instance.addObserver(ResizeNotifier(() {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
         if (mounted) Phoenix.rebirth(context);
       });
-    }));
+    }));*/
 
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 350));

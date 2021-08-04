@@ -89,8 +89,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset(
-                        IMG_USER1,
-                        width: 27.w,
+                        IMG_GAMMA,
+                        width: 30.w,
                       ),
                       Expanded(
                           child: FittedBox(
@@ -125,8 +125,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset(
-                        IMG_USER2,
-                        width: 36.w,
+                        IMG_DELTA,
+                        width: 30.w,
                       ),
                       Expanded(
                           child: FittedBox(
@@ -161,8 +161,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset(
-                        IMG_USER3,
-                        width: 36.w,
+                        IMG_BETA,
+                        width: 30.w,
                       ),
                       Expanded(
                           child: FittedBox(

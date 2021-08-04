@@ -264,7 +264,7 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
                           SizedBox(
                             width: 35.w,
                           ),
-                          GestureDetector(
+                          InkWell(
                             onTap: () {
                               setState(() {
                                 _isPinned = !_isPinned;
