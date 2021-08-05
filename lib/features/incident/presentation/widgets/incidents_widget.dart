@@ -1,10 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
+import 'package:micropolis_test/features/incident/data/params/incidents_param.dart';
+import 'package:micropolis_test/features/incident/presentation/bloc/incident_bloc.dart';
+import 'package:micropolis_test/features/incident/presentation/bloc/incident_event.dart';
+import 'package:micropolis_test/features/incident/presentation/bloc/incident_state.dart';
+import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/dashed_circle.dart';
+import 'package:provider/provider.dart';
 
 class IncidentsListWidget extends StatefulWidget {
   final String type;
@@ -20,6 +28,21 @@ class IncidentsListWidget extends StatefulWidget {
 
 class _IncidentsListWidgetState extends State<IncidentsListWidget> {
   int _selectedItem = 0;
+
+  var selectedFirst = false;
+  var _incidentsBloc = IncidentsListBloc();
+
+  @override
+  void initState() {
+    _incidentsBloc.add(GetIncidents(IncidentsParam()));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _incidentsBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,29 +96,94 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
               SizedBox(
                 height: 20.h,
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedItem = index;
-                        });
-                      },
-                      child: IncidentItemWidget(
-                        suspectPercentage: min((index + 1) * 10, 100),
-                        incidentName: "Man Slaughter",
-                        incidentID: "334234DD224",
-                        incidentLetter: "E",
-                        incidentAction: "Wanted",
-                        isPinned: false,
-                        isSelected: index == _selectedItem ? true : false,
+              BlocBuilder<IncidentsListBloc, IncidentsState>(
+                bloc: _incidentsBloc,
+                builder: (context, state) {
+                  if (state is GetIncidentsSuccessState) {
+                    var typeToQuery = widget.type == "gamma"
+                        ? BehavioralClass.GAMMA
+                        : widget.type == "delta"
+                            ? BehavioralClass.DELTA
+                            : widget.type == "beta"
+                                ? BehavioralClass.BETA
+                                : BehavioralClass.ALPHA;
+                    var incidents = state.incidents.data
+                        .where(
+                            (element) => element.classification == typeToQuery)
+                        .toList();
+
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      if (incidents.length > 0 && selectedFirst == false) {
+                        selectedFirst = true;
+                        Provider.of<IncidentsChangeNotifier>(context,
+                                listen: false)
+                            .imageCap = incidents[0].imageCap;
+                        Provider.of<IncidentsChangeNotifier>(context,
+                                listen: false)
+                            .imageMatch = incidents[0].imageMatch;
+
+                        Provider.of<IncidentsChangeNotifier>(context,
+                                listen: false)
+                            .currentIncident = incidents[0];
+                      }
+                    });
+                    return Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedItem = index;
+                              });
+
+                              Provider.of<IncidentsChangeNotifier>(context,
+                                      listen: false)
+                                  .imageCap = incidents[index].imageCap;
+                              Provider.of<IncidentsChangeNotifier>(context,
+                                      listen: false)
+                                  .imageMatch = incidents[index].imageMatch;
+
+                              Provider.of<IncidentsChangeNotifier>(context,
+                                      listen: false)
+                                  .currentIncident = incidents[index];
+                            },
+                            child: IncidentItemWidget(
+                              suspectPercentage: min((index + 1) * 10, 100),
+                              incidentName: incidents[index].incidentDesc,
+                              incidentID: incidents[index].id,
+                              incidentLetter: incidents[index].incidentType,
+                              incidentAction: incidents[index].vehicleId,
+                              isPinned: Provider.of<IncidentsChangeNotifier>(
+                                              context,
+                                              listen: false)
+                                          .incidents
+                                          .firstWhere(
+                                              (element) =>
+                                                  element.id ==
+                                                  incidents[index].id,
+                                              orElse: () => null) !=
+                                      null
+                                  ? true
+                                  : false,
+                              isSelected: index == _selectedItem ? true : false,
+                              pinnedPressed: () {
+                                Provider.of<IncidentsChangeNotifier>(context,
+                                        listen: false)
+                                    .addIncident(incidents[index]);
+                              },
+                            ),
+                          );
+                        },
+                        itemCount: incidents.length,
+                        scrollDirection: Axis.vertical,
                       ),
                     );
-                  },
-                  itemCount: 20,
-                  scrollDirection: Axis.vertical,
-                ),
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
               )
             ],
           ),
@@ -111,6 +199,7 @@ class IncidentItemWidget extends StatefulWidget {
   final String incidentAction;
   final bool isPinned;
   final bool isSelected;
+  final Function pinnedPressed;
 
   const IncidentItemWidget(
       {Key key,
@@ -120,6 +209,7 @@ class IncidentItemWidget extends StatefulWidget {
       this.incidentLetter,
       this.isPinned,
       this.isSelected,
+      this.pinnedPressed,
       this.incidentAction})
       : super(key: key);
 
@@ -143,7 +233,7 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if(widget.isSelected)
+        if (widget.isSelected)
           Container(
             width: 19.w,
             height: 17.h,
@@ -158,7 +248,7 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
             padding: EdgeInsets.only(
                 left: widget.isSelected == false ? 16.w : 0.w, right: 16.w),
             child: Container(
-              height: 100.h,
+              height: 120.h,
               margin: EdgeInsets.symmetric(
                 vertical: 4.h,
               ),
@@ -209,14 +299,16 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
                       Text(
                         widget.incidentName,
                         style: TextStyle(
-                            color: CoreStyle.operationLightTextColor.withOpacity(0.6),
+                            color: CoreStyle.operationLightTextColor
+                                .withOpacity(0.6),
                             fontWeight: FontWeight.w200,
                             fontSize: 15.sp),
                       ),
                       Text(
                         "ID: ${widget.incidentID}",
                         style: TextStyle(
-                            color: CoreStyle.operationLightTextColor.withOpacity(0.6),
+                            color: CoreStyle.operationLightTextColor
+                                .withOpacity(0.6),
                             fontWeight: FontWeight.w200,
                             fontSize: 12.sp),
                       ),
@@ -231,7 +323,8 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
                             height: 25.h,
                             decoration: BoxDecoration(
                                 color: CoreStyle.operationDashColor,
-                                borderRadius: BorderRadius.all(Radius.circular(4.r))),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4.r))),
                             child: Center(
                               child: Text(
                                 widget.incidentLetter,
@@ -250,7 +343,8 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
                             height: 25.h,
                             decoration: BoxDecoration(
                                 color: CoreStyle.operationDashColor,
-                                borderRadius: BorderRadius.all(Radius.circular(4.r))),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4.r))),
                             child: Center(
                               child: Text(
                                 widget.incidentAction,
@@ -266,6 +360,7 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
                           ),
                           InkWell(
                             onTap: () {
+                              widget.pinnedPressed();
                               setState(() {
                                 _isPinned = !_isPinned;
                               });

@@ -1,26 +1,33 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:micropolis_test/features/camera/domain/repository/iIncidents_repository.dart';
-import 'package:micropolis_test/features/camera/domain/usecase/get_incident_usecase.dart';
+import 'package:micropolis_test/core/errors/base_error.dart';
+import 'package:micropolis_test/core/results/result.dart';
+import 'package:micropolis_test/features/incident/data/datasource/incidents_remotedatasource.dart';
+import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 
 import './bloc.dart';
-import '../../../../service_locator.dart';
 
-class IncidentsBloc extends Bloc<IncidentsEvent, IncidentState> {
-  IncidentsBloc() : super(InitialIncidentState());
+class IncidentsListBloc extends Bloc<IncidentsEvent, IncidentsState> {
+  IncidentsListBloc() : super(InitialIncidentsState());
 
   @override
-  Stream<IncidentState> mapEventToState(IncidentsEvent event) async* {
-    if (event is GetIncident) {
-      yield GetIncidentWaitingState();
-      final result = await GetIncidentUseCase(locator<IIncidentsRepository>())
-          .call(event.param);
-      if (result.hasDataOnly) {
-        yield GetIncidentSuccessState(result.data);
-      } else if (result.hasErrorOnly) {
+  Stream<IncidentsState> mapEventToState(IncidentsEvent event) async* {
+    if (event is GetIncidents) {
+      yield GetIncidentsWaitingState();
+
+      final remote =
+          await IncidentsRemoteDataSource().getIncidents(event.param);
+      if (remote.isRight()) {
+        var result =
+            Result(data: (remote as Right<BaseError, IncidentsModel>).value);
+        yield GetIncidentsSuccessState(result.data);
+      } else {
+        var error =
+            Result(error: (remote as Left<BaseError, IncidentsModel>).value);
         yield GetIncidentFailureState(
-            error: result.error,
+            error: error.error,
             callback: () {
               this.add(event);
             });

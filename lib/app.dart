@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:provider/provider.dart';
 import 'core/Common/Common.dart';
 import 'core/Common/route_generator.dart';
@@ -12,6 +13,7 @@ import 'core/localization/flutter_localization.dart';
 import 'features/camera/presentation/bloc/incident_bloc.dart';
 import 'features/camera/presentation/notifiers/actions_change_notifier.dart';
 import 'features/camera/presentation/screens/main_window_screen.dart';
+import 'features/incident/presentation/bloc/incident_bloc.dart';
 import 'features/restaurants/presentation/bloc/restaurants_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'navigation_service.dart';
@@ -42,14 +44,21 @@ class _AppState extends State<App> {
         ChangeNotifierProvider.value(
           value: ActionsChangeNotifier(),
         ),
+        ChangeNotifierProvider.value(
+          value: IncidentsChangeNotifier(),
+        ),
         BlocProvider(
           create: (_) => RestaurantsBloc(),
           lazy: true,
         ),
         BlocProvider(
-          create: (_)=>IncidentsBloc(),
+          create: (_) => IncidentsBloc(),
           lazy: true,
         ),
+        BlocProvider(
+          create: (_) => IncidentsListBloc(),
+          lazy: true,
+        )
       ],
       child: Consumer<AppConfigProvider>(builder: (_, provider, __) {
         return ScreenUtilInit(

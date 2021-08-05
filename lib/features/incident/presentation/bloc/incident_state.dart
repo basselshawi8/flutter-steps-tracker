@@ -1,41 +1,39 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:micropolis_test/features/camera/domain/entity/incident_entity.dart';
-import 'package:micropolis_test/features/restaurants/domain/entity/menu_entity.dart';
-import 'package:micropolis_test/features/restaurants/domain/entity/restaurant_entity.dart';
+import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/core/errors/base_error.dart';
 
 @immutable
-abstract class IncidentState extends Equatable {
-  const IncidentState();
+abstract class IncidentsState extends Equatable {
+  const IncidentsState();
 }
 
-class InitialIncidentState extends IncidentState {
-  const InitialIncidentState();
+class InitialIncidentsState extends IncidentsState {
+  const InitialIncidentsState();
 
   @override
   List<Object> get props => [];
 }
 
 /// GetAddress
-class GetIncidentWaitingState extends IncidentState {
-  const GetIncidentWaitingState();
+class GetIncidentsWaitingState extends IncidentsState {
+  const GetIncidentsWaitingState();
 
   @override
   List<Object> get props => [];
 }
 
-class GetIncidentSuccessState extends IncidentState {
-  final IncidentEntity incident;
+class GetIncidentsSuccessState extends IncidentsState {
+  final IncidentsModel incidents;
 
-  const GetIncidentSuccessState(this.incident);
+  const GetIncidentsSuccessState(this.incidents);
 
   @override
-  List<Object> get props => [incident];
+  List<Object> get props => [incidents];
 }
 
-class GetIncidentFailureState extends IncidentState {
+class GetIncidentFailureState extends IncidentsState {
   final BaseError error;
   final VoidCallback callback;
 

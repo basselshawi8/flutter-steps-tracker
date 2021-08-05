@@ -1,13 +1,18 @@
+import 'dart:typed_data';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:micropolis_test/features/incident/presentation/widgets/incident_action_widget.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/incident_subject_widget.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/incidents_widget.dart';
+
+
 
 class IncidentsScreen extends StatefulWidget {
   static const routeName = '/incidentsWindow';
@@ -94,11 +99,28 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                   top: 25.h,
                   left: 30.w,
                   child: ClipRRect(
-                    child: Image.asset(
-                      IMG_PERSON,
-                      width: 250.w,
-                      height: 250.w,
-                      fit: BoxFit.cover,
+                    child: Consumer<IncidentsChangeNotifier>(
+                      builder: (context,state,_){
+
+                        if (state.imageCap == null) {
+                          return Image.asset(
+                            IMG_PERSON,
+                            width: 250.w,
+                            height: 250.w,
+                            fit: BoxFit.cover,
+                          );
+                        }
+                        else {
+                          Uint8List bytes = base64Decode(state.imageCap.split("data:image/png;base64,")[1]);
+                          return Image.memory(
+                            bytes,
+                            width: 250.w,
+                            height: 250.w,
+                            fit: BoxFit.cover,
+                          );
+                        }
+                      },
+
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   )),
@@ -106,11 +128,28 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                   top: 25.h,
                   left: 300.w,
                   child: ClipRRect(
-                    child: Image.asset(
-                      IMG_PERSON,
-                      width: 120.w,
-                      height: 120.w,
-                      fit: BoxFit.cover,
+                    child: Consumer<IncidentsChangeNotifier>(
+                      builder: (context,state,_){
+
+                        if (state.imageMatch == null) {
+                          return Image.asset(
+                            IMG_PERSON,
+                            width: 120.w,
+                            height: 120.w,
+                            fit: BoxFit.cover,
+                          );
+                        }
+                        else {
+                          Uint8List bytes = base64Decode(state.imageMatch.split("data:image/png;base64,")[1]);
+                          return Image.memory(
+                            bytes,
+                            width: 120.w,
+                            height: 120.w,
+                            fit: BoxFit.cover,
+                          );
+                        }
+                      },
+
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   )),

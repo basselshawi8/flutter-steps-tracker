@@ -15,11 +15,12 @@ class _IncidentActionsWidgetState extends State<IncidentActionsWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 950.h,
+
       bottom: 40.h,
       left: 120.w,
       right: 920.w,
       child: Container(
+        height: 85.h,
         padding: EdgeInsets.symmetric(horizontal: 24.w),
         decoration: BoxDecoration(
             color: CoreStyle.operationIncidentActionColor,

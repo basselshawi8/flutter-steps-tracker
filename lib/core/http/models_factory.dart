@@ -4,7 +4,7 @@ import 'package:micropolis_test/core/models/BaseModel.dart';
 class ModelsFactory {
   // Singleton handling.
   static ModelsFactory _instance;
-  var isList = true;
+  var isList = false;
 
   static ModelsFactory getInstance() {
     if (_instance != null) return _instance;
