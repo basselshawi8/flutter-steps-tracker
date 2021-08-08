@@ -19,8 +19,8 @@ dependencies:
   launch_review: ^2.0.0
   # To get current locations
   geolocator: ^5.3.2+2
-  google_maps_flutter: ^0.5.28
-  google_maps_flutter_web: ^0.1.0
+  google_maps_flutter: ^2.0.6
+  google_maps_flutter_web: ^0.3.0+3
   # Service locator
   get_it: ^5.0.0
   # State management
@@ -29,17 +29,17 @@ dependencies:
   # RX programing
   rxdart: ^0.24.1
   # For API call
-  dio: ^3.0.10
+  dio: ^4.0.0
   dartz: ^0.9.1
-  google_fonts: ^1.1.0
+  google_fonts: ^2.1.0
   pull_to_refresh: ^1.6.2
   fluttertoast: ^7.0.2
   permission: ^0.1.7
-  location: ^3.0.2
+  location: ^4.3.0
   shared_preferences: ^2.0.6
   shared_preferences_web: ^2.0.0
   package_info: ^0.4.1
-  url_launcher: ^5.7.0
+  url_launcher: ^6.0.9
   flutter_phoenix: ^1.0.0
 
 

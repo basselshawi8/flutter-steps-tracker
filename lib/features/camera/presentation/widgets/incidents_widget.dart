@@ -27,7 +27,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
   @override
   void initState() {
     BlocProvider.of<IncidentsListBloc>(context)
-        .add(GetIncidents(IncidentsParam(query: "classification")));
+        .add(GetIncidents(IncidentsParam(query: "classification",limit: -1)));
     super.initState();
   }
 
@@ -105,26 +105,32 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         IMG_GAMMA,
                         width: 30.w,
                       ),
-                      Expanded(child: FittedBox(
-                        child: BlocBuilder<IncidentsListBloc, IncidentsState>(
-                          buildWhen: (prev,current){
-                            return prev!=current;
-                          },
-                          builder: (context, state) {
-                            if (state is GetIncidentsSuccessState) {
-                              return Text(
-                                "${state.incidents.data.where((element) => element.classification == BehavioralClass.GAMMA).length}",
-                                style: TextStyle(
-                                    color: CoreStyle.white, fontSize: 20.sp),
-                              );
-                            } else {
-                              return Center(
+                      BlocBuilder<IncidentsListBloc, IncidentsState>(
+                        buildWhen: (prev,current){
+                          return prev!=current;
+                        },
+                        builder: (context, state) {
+                          if (state is GetIncidentsSuccessState) {
+                            return Expanded(
+                              child: FittedBox(
+                                child: Text(
+                                  "${state.incidents.data.where((element) => element.classification == BehavioralClass.GAMMA).length}",
+                                  style: TextStyle(
+                                      color: CoreStyle.white, fontSize: 20.sp),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              width: 25.w,
+                              height: 25.w,
+                              child: Center(
                                 child: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        ),
-                      ))
+                              ),
+                            );
+                          }
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -154,26 +160,32 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         IMG_DELTA,
                         width: 30.w,
                       ),
-                      Expanded(child: FittedBox(
-                        child: BlocBuilder<IncidentsListBloc, IncidentsState>(
-                          buildWhen: (prev,current){
-                            return prev!=current;
-                          },
-                          builder: (context, state) {
-                            if (state is GetIncidentsSuccessState) {
-                              return Text(
-                                "${state.incidents.data.where((element) => element.classification == BehavioralClass.DELTA).length}",
-                                style: TextStyle(
-                                    color: CoreStyle.white, fontSize: 20.sp),
-                              );
-                            } else {
-                              return Center(
+                      BlocBuilder<IncidentsListBloc, IncidentsState>(
+                        buildWhen: (prev,current){
+                          return prev!=current;
+                        },
+                        builder: (context, state) {
+                          if (state is GetIncidentsSuccessState) {
+                            return Expanded(
+                              child: FittedBox(
+                                child: Text(
+                                  "${state.incidents.data.where((element) => element.classification == BehavioralClass.DELTA).length}",
+                                  style: TextStyle(
+                                      color: CoreStyle.white, fontSize: 20.sp),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              width: 25.w,
+                              height: 25.w,
+                              child: Center(
                                 child: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        ),
-                      ))
+                              ),
+                            );
+                          }
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -203,26 +215,32 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         IMG_BETA,
                         width: 30.w,
                       ),
-                      Expanded(child: FittedBox(
-                        child: BlocBuilder<IncidentsListBloc, IncidentsState>(
-                          buildWhen: (prev,current){
-                            return prev!=current;
-                          },
-                          builder: (context, state) {
-                            if (state is GetIncidentsSuccessState) {
-                              return Text(
-                                "${state.incidents.data.where((element) => element.classification == BehavioralClass.BETA).length}",
-                                style: TextStyle(
-                                    color: CoreStyle.white, fontSize: 20.sp),
-                              );
-                            } else {
-                              return Center(
+                      BlocBuilder<IncidentsListBloc, IncidentsState>(
+                        buildWhen: (prev,current){
+                          return prev!=current;
+                        },
+                        builder: (context, state) {
+                          if (state is GetIncidentsSuccessState) {
+                            return Expanded(
+                              child: FittedBox(
+                                child: Text(
+                                  "${state.incidents.data.where((element) => element.classification == BehavioralClass.BETA).length}",
+                                  style: TextStyle(
+                                      color: CoreStyle.white, fontSize: 20.sp),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              width: 25.w,
+                              height: 25.w,
+                              child: Center(
                                 child: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        ),
-                      ))
+                              ),
+                            );
+                          }
+                        },
+                      )
                     ],
                   ),
                 ),

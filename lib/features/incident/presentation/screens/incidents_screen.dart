@@ -12,15 +12,13 @@ import 'package:micropolis_test/features/incident/presentation/widgets/incident_
 import 'package:micropolis_test/features/incident/presentation/widgets/incident_subject_widget.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/incidents_widget.dart';
 
-
-
 class IncidentsScreen extends StatefulWidget {
   static const routeName = '/incidentsWindow';
 
   final LatLng location;
   final String type;
 
-  const IncidentsScreen({Key key, this.location,this.type}) : super(key: key);
+  const IncidentsScreen({Key key, this.location, this.type}) : super(key: key);
 
   @override
   _IncidentsScreenState createState() {
@@ -83,25 +81,24 @@ class _IncidentsScreenState extends State<IncidentsScreen>
           child: Stack(
             children: [
               Positioned.fill(
-                top: 0,
+                  top: 0,
                   left: 0,
                   bottom: 0,
                   right: 800.w,
                   child: GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
-                  target: localLocation,
-                  zoom: 12,
-                ),
-                markers: _markers.values.toSet(),
-              )),
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: localLocation,
+                      zoom: 12,
+                    ),
+                    markers: _markers.values.toSet(),
+                  )),
               Positioned(
                   top: 25.h,
                   left: 30.w,
                   child: ClipRRect(
                     child: Consumer<IncidentsChangeNotifier>(
-                      builder: (context,state,_){
-
+                      builder: (context, state, _) {
                         if (state.imageCap == null) {
                           return Image.asset(
                             IMG_PERSON,
@@ -109,9 +106,10 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                             height: 250.w,
                             fit: BoxFit.cover,
                           );
-                        }
-                        else {
-                          Uint8List bytes = base64Decode(state.imageCap.split("data:image/png;base64,")[1]);
+                        } else {
+                          Uint8List bytes = base64Decode(state.currentIncident == null ? state.imageCap
+                              .split("data:image/png;base64,")[1] : state.currentIncident.imageCap
+                              .split("data:image/png;base64,")[1]);
                           return Image.memory(
                             bytes,
                             width: 250.w,
@@ -120,7 +118,6 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                           );
                         }
                       },
-
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   )),
@@ -129,8 +126,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                   left: 300.w,
                   child: ClipRRect(
                     child: Consumer<IncidentsChangeNotifier>(
-                      builder: (context,state,_){
-
+                      builder: (context, state, _) {
                         if (state.imageMatch == null) {
                           return Image.asset(
                             IMG_PERSON,
@@ -138,9 +134,13 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                             height: 120.w,
                             fit: BoxFit.cover,
                           );
-                        }
-                        else {
-                          Uint8List bytes = base64Decode(state.imageMatch.split("data:image/png;base64,")[1]);
+                        } else {
+                          Uint8List bytes = base64Decode(
+                              state.currentIncident == null
+                                  ? state.imageMatch
+                                      .split("data:image/png;base64,")[1]
+                                  : state.currentIncident.imageMatch
+                                      .split("data:image/png;base64,")[1]);
                           return Image.memory(
                             bytes,
                             width: 120.w,
@@ -149,11 +149,12 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                           );
                         }
                       },
-
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   )),
-              IncidentsListWidget(type: widget.type,),
+              IncidentsListWidget(
+                type: widget.type,
+              ),
               IncidentSubjectWidget(),
               IncidentActionsWidget()
             ],

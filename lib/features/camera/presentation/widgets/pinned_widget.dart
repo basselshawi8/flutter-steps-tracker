@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:provider/provider.dart';
 
 class PinnedWidget extends StatefulWidget {
@@ -54,14 +55,11 @@ class _PinnedWidgetState extends State<PinnedWidget>
         onTap: () {
           if (_controller.value == 0) {
             _controller.forward();
-            Provider
-                .of<ActionsChangeNotifier>(context,listen: false)
+            Provider.of<ActionsChangeNotifier>(context, listen: false)
                 .showPinnedActions = true;
-          }
-          else {
+          } else {
             _controller.reverse();
-            Provider
-                .of<ActionsChangeNotifier>(context,listen: false)
+            Provider.of<ActionsChangeNotifier>(context, listen: false)
                 .showPinnedActions = false;
           }
         },
@@ -121,13 +119,19 @@ class _PinnedWidgetState extends State<PinnedWidget>
                 width: 30.w,
                 height: double.maxFinite,
                 child: Center(
-                  child: Text(
-                    "4",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: _counterAnimation.value,
-                        fontWeight: FontWeight.w500,
-                        color: CoreStyle.white),
+                  child: Consumer<IncidentsChangeNotifier>(
+                    builder: (context, state, _) {
+                      return Text(
+                        state.incidents == null || state.incidents.length == 0
+                            ? "4"
+                            : state.incidents.length.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: _counterAnimation.value,
+                            fontWeight: FontWeight.w500,
+                            color: CoreStyle.white),
+                      );
+                    },
                   ),
                 ),
               )

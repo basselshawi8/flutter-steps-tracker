@@ -9,7 +9,7 @@ PODS:
     - Flutter
   - google_maps_flutter (0.0.1):
     - Flutter
-    - GoogleMaps (< 3.10)
+    - GoogleMaps
   - GoogleMaps (3.9.0):
     - GoogleMaps/Maps (= 3.9.0)
   - GoogleMaps/Base (3.9.0)
@@ -91,7 +91,7 @@ SPEC CHECKSUMS:
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   geolocator: f7622e0e7e2a24718285b73916d60c4a54b9f5b6
-  google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
+  google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
   launch_review: 75d5a956ba8eaa493e9c9d4bf4c05e505e8d5ed0
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740

@@ -143,6 +143,7 @@ class ApiProvider {
 
     // Handling errors
     on DioError catch (e) {
+      print(e.message);
       return Left(_handleDioError(e));
     }
 
@@ -232,9 +233,10 @@ class ApiProvider {
   }
 
   static BaseError _handleDioError(DioError error) {
-    if (error.type == DioErrorType.DEFAULT || error.type == DioErrorType.RESPONSE) {
+
+    if (error.type == DioErrorType.other || error.type == DioErrorType.response) {
       if (error.error is SocketException) return SocketError();
-      else if (error.type == DioErrorType.RESPONSE) {
+      else if (error.type == DioErrorType.response) {
         switch (error.response.statusCode) {
           case 400:
             if (error.response?.data == null)
@@ -271,10 +273,10 @@ class ApiProvider {
         }
       }
     }
-    else if (error.type == DioErrorType.CONNECT_TIMEOUT || error.type == DioErrorType.SEND_TIMEOUT || error.type == DioErrorType.RECEIVE_TIMEOUT) {
+    else if (error.type == DioErrorType.connectTimeout || error.type == DioErrorType.sendTimeout || error.type == DioErrorType.receiveTimeout) {
       return TimeoutError();
     }
-    else if (error.type == DioErrorType.CANCEL) {
+    else if (error.type == DioErrorType.cancel) {
       return CancelError();
     }
       return UnknownError();

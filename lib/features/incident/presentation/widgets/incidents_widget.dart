@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/features/incident/data/params/incidents_param.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_bloc.dart';
@@ -34,7 +35,8 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
 
   @override
   void initState() {
-    _incidentsBloc.add(GetIncidents(IncidentsParam()));
+    _incidentsBloc.add(GetIncidents(
+        IncidentsParam(lookup: "classification:${widget.type}", limit: -1)));
     super.initState();
   }
 
@@ -112,8 +114,25 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                             (element) => element.classification == typeToQuery)
                         .toList();
 
+                    if (Provider.of<IncidentsChangeNotifier>(context,
+                        listen: false)
+                        .currentIncident != null) {
+                      _selectedItem = incidents.indexWhere((element) =>
+                      element.id ==
+                          Provider
+                              .of<IncidentsChangeNotifier>(context,
+                              listen: false)
+                              .currentIncident
+                              .id);
+                    }
+
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      if (incidents.length > 0 && selectedFirst == false) {
+                      if (incidents.length > 0 &&
+                          selectedFirst == false &&
+                          Provider.of<IncidentsChangeNotifier>(context,
+                                      listen: false)
+                                  .currentIncident ==
+                              null) {
                         selectedFirst = true;
                         Provider.of<IncidentsChangeNotifier>(context,
                                 listen: false)
@@ -125,57 +144,76 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                         Provider.of<IncidentsChangeNotifier>(context,
                                 listen: false)
                             .currentIncident = incidents[0];
+
+
                       }
                     });
+
                     return Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _selectedItem = index;
-                              });
+                      child: Consumer<IncidentsChangeNotifier>(
+                        builder: (context, state, _) {
+                          return ListView.builder(
+                            itemBuilder: (context, index) {
+                              var isPinned =
+                                  Provider.of<IncidentsChangeNotifier>(context,
+                                                  listen: false)
+                                              .incidents
+                                              .firstWhere(
+                                                  (element) =>
+                                                      element.id ==
+                                                      incidents[index].id,
+                                                  orElse: () => null) !=
+                                          null
+                                      ? true
+                                      : false;
 
-                              Provider.of<IncidentsChangeNotifier>(context,
-                                      listen: false)
-                                  .imageCap = incidents[index].imageCap;
-                              Provider.of<IncidentsChangeNotifier>(context,
-                                      listen: false)
-                                  .imageMatch = incidents[index].imageMatch;
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedItem = index;
+                                  });
 
-                              Provider.of<IncidentsChangeNotifier>(context,
-                                      listen: false)
-                                  .currentIncident = incidents[index];
-                            },
-                            child: IncidentItemWidget(
-                              suspectPercentage: min((index + 1) * 10, 100),
-                              incidentName: incidents[index].incidentDesc,
-                              incidentID: incidents[index].id,
-                              incidentLetter: incidents[index].incidentType,
-                              incidentAction: incidents[index].vehicleId,
-                              isPinned: Provider.of<IncidentsChangeNotifier>(
+                                  Provider.of<IncidentsChangeNotifier>(context,
+                                          listen: false)
+                                      .imageCap = incidents[index].imageCap;
+                                  Provider.of<IncidentsChangeNotifier>(context,
+                                          listen: false)
+                                      .imageMatch = incidents[index].imageMatch;
+
+                                  Provider.of<IncidentsChangeNotifier>(context,
+                                          listen: false)
+                                      .currentIncident = incidents[index];
+                                },
+                                child: IncidentItemWidget(
+                                  suspectPercentage: min((index + 1) * 10, 100),
+                                  incidentName: incidents[index].incidentDesc,
+                                  incidentID: incidents[index].id,
+                                  incidentLetter: incidents[index].incidentType,
+                                  incidentAction: incidents[index].vehicleId,
+                                  isPinned: isPinned,
+                                  isSelected:
+                                      index == _selectedItem ? true : false,
+                                  pinnedPressed: () {
+                                    if (isPinned) {
+                                      Provider.of<IncidentsChangeNotifier>(
                                               context,
                                               listen: false)
-                                          .incidents
-                                          .firstWhere(
-                                              (element) =>
-                                                  element.id ==
-                                                  incidents[index].id,
-                                              orElse: () => null) !=
-                                      null
-                                  ? true
-                                  : false,
-                              isSelected: index == _selectedItem ? true : false,
-                              pinnedPressed: () {
-                                Provider.of<IncidentsChangeNotifier>(context,
-                                        listen: false)
-                                    .addIncident(incidents[index]);
-                              },
-                            ),
+                                          .deleteIncident(incidents[index]);
+                                    } else {
+                                      Provider.of<IncidentsChangeNotifier>(
+                                              context,
+                                              listen: false)
+                                          .addIncident(incidents[index]);
+                                    }
+                                    setState(() {});
+                                  },
+                                ),
+                              );
+                            },
+                            itemCount: incidents.length,
+                            scrollDirection: Axis.vertical,
                           );
                         },
-                        itemCount: incidents.length,
-                        scrollDirection: Axis.vertical,
                       ),
                     );
                   } else {
@@ -227,6 +265,12 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
   void initState() {
     _isPinned = widget.isPinned;
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant IncidentItemWidget oldWidget) {
+    _isPinned = widget.isPinned;
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -361,9 +405,6 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
                           InkWell(
                             onTap: () {
                               widget.pinnedPressed();
-                              setState(() {
-                                _isPinned = !_isPinned;
-                              });
                             },
                             child: Container(
                                 width: 30.w,
