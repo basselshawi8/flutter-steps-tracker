@@ -42,7 +42,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
   void initState() {
     _incidentsBloc.add(GetIncidents(IncidentsParam(
         lookup: "classification:${widget.type}",
-        limit: 100,
+        limit: 20,
         page: _currentPage)));
 
     _controller.addListener(() {
@@ -54,7 +54,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
             _currentPage += 1;
             _incidentsBloc.add(GetIncidents(IncidentsParam(
                 lookup: "classification:${widget.type}",
-                limit: 100,
+                limit: 20,
                 page: _currentPage)));
           }
         }
@@ -123,6 +123,9 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
               ),
               BlocBuilder<IncidentsListBloc, IncidentsState>(
                 bloc: _incidentsBloc,
+                buildWhen: (prev,current){
+                  return prev != current;
+                },
                 builder: (context, state) {
                   if (state is GetIncidentsSuccessState) {
                     if (state.incidents.data.length == 0) {
@@ -140,6 +143,11 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                             (element) => element.classification == typeToQuery)
                         .toList();
 
+                    for (var inc in incidents) {
+                      if (_incidents.firstWhere((element) => element.id == inc.id,orElse: ()=>null)== null) {
+                        _incidents.add(inc);
+                      }
+                    }
                     _incidents.addAll(incidents);
 
                     if (Provider.of<IncidentsChangeNotifier>(context,
