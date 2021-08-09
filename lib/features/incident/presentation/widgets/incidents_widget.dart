@@ -33,10 +33,33 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
   var selectedFirst = false;
   var _incidentsBloc = IncidentsListBloc();
 
+  var _currentPage = 0;
+  var _stopFetchingData = false;
+  var _controller = ScrollController();
+  List<IncidentsDatum> _incidents = [];
+
   @override
   void initState() {
-    _incidentsBloc.add(GetIncidents(
-        IncidentsParam(lookup: "classification:${widget.type}", limit: -1)));
+    _incidentsBloc.add(GetIncidents(IncidentsParam(
+        lookup: "classification:${widget.type}",
+        limit: 100,
+        page: _currentPage)));
+
+    _controller.addListener(() {
+      if (_controller.position.atEdge) {
+        if (_controller.position.pixels == 0) {
+          // You're at the top.
+        } else {
+          if (_stopFetchingData == false) {
+            _currentPage += 1;
+            _incidentsBloc.add(GetIncidents(IncidentsParam(
+                lookup: "classification:${widget.type}",
+                limit: 100,
+                page: _currentPage)));
+          }
+        }
+      }
+    });
     super.initState();
   }
 
@@ -102,6 +125,9 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                 bloc: _incidentsBloc,
                 builder: (context, state) {
                   if (state is GetIncidentsSuccessState) {
+                    if (state.incidents.data.length == 0) {
+                      _stopFetchingData = true;
+                    }
                     var typeToQuery = widget.type == "gamma"
                         ? BehavioralClass.GAMMA
                         : widget.type == "delta"
@@ -114,20 +140,22 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                             (element) => element.classification == typeToQuery)
                         .toList();
 
+                    _incidents.addAll(incidents);
+
                     if (Provider.of<IncidentsChangeNotifier>(context,
-                        listen: false)
-                        .currentIncident != null) {
-                      _selectedItem = incidents.indexWhere((element) =>
-                      element.id ==
-                          Provider
-                              .of<IncidentsChangeNotifier>(context,
-                              listen: false)
+                                listen: false)
+                            .currentIncident !=
+                        null) {
+                      _selectedItem = _incidents.indexWhere((element) =>
+                          element.id ==
+                          Provider.of<IncidentsChangeNotifier>(context,
+                                  listen: false)
                               .currentIncident
                               .id);
                     }
 
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      if (incidents.length > 0 &&
+                      if (_incidents.length > 0 &&
                           selectedFirst == false &&
                           Provider.of<IncidentsChangeNotifier>(context,
                                       listen: false)
@@ -136,96 +164,100 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                         selectedFirst = true;
                         Provider.of<IncidentsChangeNotifier>(context,
                                 listen: false)
-                            .imageCap = incidents[0].imageCap;
+                            .imageCap = _incidents[0].imageCap;
                         Provider.of<IncidentsChangeNotifier>(context,
                                 listen: false)
-                            .imageMatch = incidents[0].imageMatch;
+                            .imageMatch = _incidents[0].imageMatch;
 
                         Provider.of<IncidentsChangeNotifier>(context,
                                 listen: false)
-                            .currentIncident = incidents[0];
-
-
+                            .currentIncident = _incidents[0];
                       }
                     });
 
-                    return Expanded(
-                      child: Consumer<IncidentsChangeNotifier>(
-                        builder: (context, state, _) {
-                          return ListView.builder(
-                            itemBuilder: (context, index) {
-                              var isPinned =
-                                  Provider.of<IncidentsChangeNotifier>(context,
-                                                  listen: false)
-                                              .incidents
-                                              .firstWhere(
-                                                  (element) =>
-                                                      element.id ==
-                                                      incidents[index].id,
-                                                  orElse: () => null) !=
-                                          null
-                                      ? true
-                                      : false;
-
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedItem = index;
-                                  });
-
-                                  Provider.of<IncidentsChangeNotifier>(context,
-                                          listen: false)
-                                      .imageCap = incidents[index].imageCap;
-                                  Provider.of<IncidentsChangeNotifier>(context,
-                                          listen: false)
-                                      .imageMatch = incidents[index].imageMatch;
-
-                                  Provider.of<IncidentsChangeNotifier>(context,
-                                          listen: false)
-                                      .currentIncident = incidents[index];
-                                },
-                                child: IncidentItemWidget(
-                                  suspectPercentage: min((index + 1) * 10, 100),
-                                  incidentName: incidents[index].incidentDesc,
-                                  incidentID: incidents[index].id,
-                                  incidentLetter: incidents[index].incidentType,
-                                  incidentAction: incidents[index].vehicleId,
-                                  isPinned: isPinned,
-                                  isSelected:
-                                      index == _selectedItem ? true : false,
-                                  pinnedPressed: () {
-                                    if (isPinned) {
-                                      Provider.of<IncidentsChangeNotifier>(
-                                              context,
-                                              listen: false)
-                                          .deleteIncident(incidents[index]);
-                                    } else {
-                                      Provider.of<IncidentsChangeNotifier>(
-                                              context,
-                                              listen: false)
-                                          .addIncident(incidents[index]);
-                                    }
-                                    setState(() {});
-                                  },
-                                ),
-                              );
-                            },
-                            itemCount: incidents.length,
-                            scrollDirection: Axis.vertical,
-                          );
-                        },
-                      ),
-                    );
+                    return _buildIncidentsContent(false);
                   } else {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return _incidents.length > 0
+                        ? _buildIncidentsContent(true)
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          );
                   }
                 },
               )
             ],
           ),
         ));
+  }
+
+  _buildIncidentsContent(bool loading) {
+    return Expanded(
+      child: Consumer<IncidentsChangeNotifier>(
+        builder: (context, state, _) {
+          return ListView.builder(
+            controller: _controller,
+            itemBuilder: (context, index) {
+              if (index == _incidents.length) {
+                return Container(
+                    width: double.maxFinite,
+                    height: 80.h,
+                    child: Center(child: CircularProgressIndicator()));
+              }
+              var isPinned = Provider.of<IncidentsChangeNotifier>(context,
+                              listen: false)
+                          .incidents
+                          .firstWhere(
+                              (element) => element.id == _incidents[index].id,
+                              orElse: () => null) !=
+                      null
+                  ? true
+                  : false;
+
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedItem = index;
+                  });
+
+                  Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                      .imageCap = _incidents[index].imageCap;
+                  Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                      .imageMatch = _incidents[index].imageMatch;
+
+                  Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                      .currentIncident = _incidents[index];
+                },
+                child: IncidentItemWidget(
+                  suspectPercentage: min((index + 1) * 10, 100),
+                  incidentName: _incidents[index].incidentDesc,
+                  incidentID: _incidents[index].id,
+                  incidentLetter: _incidents[index].incidentType,
+                  incidentAction: _incidents[index].vehicleId,
+                  isPinned: isPinned,
+                  isSelected: index == _selectedItem ? true : false,
+                  pinnedPressed: () {
+                    if (isPinned) {
+                      Provider.of<IncidentsChangeNotifier>(context,
+                              listen: false)
+                          .deleteIncident(_incidents[index]);
+                    } else {
+                      Provider.of<IncidentsChangeNotifier>(context,
+                              listen: false)
+                          .addIncident(_incidents[index]);
+                    }
+                    setState(() {});
+                  },
+                ),
+              );
+            },
+            itemCount: _stopFetchingData == false
+                ? _incidents.length + 1
+                : _incidents.length,
+            scrollDirection: Axis.vertical,
+          );
+        },
+      ),
+    );
   }
 }
 

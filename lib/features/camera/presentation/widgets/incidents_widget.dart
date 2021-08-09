@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
-import 'package:micropolis_test/features/camera/presentation/bloc/bloc.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/features/incident/data/params/incidents_param.dart';

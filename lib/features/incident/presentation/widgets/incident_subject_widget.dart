@@ -36,6 +36,9 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
         child: Consumer<IncidentsChangeNotifier>(
           builder: (context, state, _) {
             if (state.currentIncident != null) {
+              incidentType = state.currentIncident.incidentType == "F"
+                  ? "Facial Recognition"
+                  : "Behavioral Analysis";
               name = state.currentIncident.incidentDesc;
               carID = state.currentIncident.vehicleId;
               suspectLevel = state.currentIncident.incidentType;
@@ -328,17 +331,18 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                       )),
                       Consumer<IncidentsChangeNotifier>(
                         builder: (context, state, _) {
-                          var pinned =
-                              Provider.of<IncidentsChangeNotifier>(context,listen: false)
-                                  .incidents
-                                  .firstWhere(
-                                      (element) =>
-                                          element.id ==
-                                          Provider.of<IncidentsChangeNotifier>(
-                                                  context)
-                                              .currentIncident
-                                              .id,
-                                      orElse: () => null);
+                          var pinned = Provider.of<IncidentsChangeNotifier>(
+                                  context,
+                                  listen: false)
+                              .incidents
+                              .firstWhere(
+                                  (element) =>
+                                      element.id ==
+                                      Provider.of<IncidentsChangeNotifier>(
+                                              context)
+                                          .currentIncident
+                                          .id,
+                                  orElse: () => null);
                           return InkWell(
                             onTap: () {
                               setState(() {
@@ -347,14 +351,16 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                           listen: false)
                                       .addIncident(
                                           Provider.of<IncidentsChangeNotifier>(
-                                                  context,listen: false)
+                                                  context,
+                                                  listen: false)
                                               .currentIncident);
                                 } else {
                                   Provider.of<IncidentsChangeNotifier>(context,
                                           listen: false)
                                       .deleteIncident(
                                           Provider.of<IncidentsChangeNotifier>(
-                                                  context,listen: false)
+                                                  context,
+                                                  listen: false)
                                               .currentIncident);
                                 }
                               });
