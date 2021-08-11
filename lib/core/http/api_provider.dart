@@ -46,13 +46,20 @@ class ApiProvider {
     @required String url,
     Map<String, dynamic> data,
     Map<String, dynamic> headers,
+    String baseURL,
     Map<String, dynamic> queryParameters,
     CancelToken cancelToken,
   }) async {
     assert(method != null);
     assert(url != null);
-    _dio = Dio(option);
-
+    if (baseURL != null) {
+      _dio = Dio(BaseOptions(
+        baseUrl: baseURL,
+        connectTimeout: 20000,
+      ));
+    } else {
+      _dio = Dio(option);
+    }
     if (_dio.httpClientAdapter is DefaultHttpClientAdapter) {
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -233,9 +240,10 @@ class ApiProvider {
   }
 
   static BaseError _handleDioError(DioError error) {
-
-    if (error.type == DioErrorType.other || error.type == DioErrorType.response) {
-      if (error.error is SocketException) return SocketError();
+    if (error.type == DioErrorType.other ||
+        error.type == DioErrorType.response) {
+      if (error.error is SocketException)
+        return SocketError();
       else if (error.type == DioErrorType.response) {
         switch (error.response.statusCode) {
           case 400:
@@ -260,10 +268,9 @@ class ApiProvider {
           case 409:
             return ConflictError();
           case 500:
-            if (error.response?.data["message"] == null){
+            if (error.response?.data["message"] == null) {
               return InternalServerError();
-            }
-            else if (error.response?.data["data"] == null){
+            } else if (error.response?.data["data"] == null) {
               return CustomError(message: error.response.data["message"]);
             }
 
@@ -272,13 +279,13 @@ class ApiProvider {
             return HttpError();
         }
       }
-    }
-    else if (error.type == DioErrorType.connectTimeout || error.type == DioErrorType.sendTimeout || error.type == DioErrorType.receiveTimeout) {
+    } else if (error.type == DioErrorType.connectTimeout ||
+        error.type == DioErrorType.sendTimeout ||
+        error.type == DioErrorType.receiveTimeout) {
       return TimeoutError();
-    }
-    else if (error.type == DioErrorType.cancel) {
+    } else if (error.type == DioErrorType.cancel) {
       return CancelError();
     }
-      return UnknownError();
+    return UnknownError();
   }
 }

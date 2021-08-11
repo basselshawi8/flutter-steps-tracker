@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/core/params/no_params.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/features/incident/data/params/incidents_param.dart';
@@ -23,11 +25,19 @@ class IncidentsWidget extends StatefulWidget {
 class _IncidentsWidgetState extends State<IncidentsWidget> {
   var _selected = 0;
 
+  var _cancelToken = CancelToken();
+
   @override
   void initState() {
     BlocProvider.of<IncidentsListBloc>(context)
-        .add(GetIncidents(IncidentsParam(query: "classification",limit: -1)));
+        .add(GetIncidentClassification(NoParams(cancelToken: _cancelToken)));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _cancelToken.cancel();
+    super.dispose();
   }
 
   @override
@@ -105,15 +115,15 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         width: 30.w,
                       ),
                       BlocBuilder<IncidentsListBloc, IncidentsState>(
-                        buildWhen: (prev,current){
-                          return prev!=current;
+                        buildWhen: (prev, current) {
+                          return prev != current;
                         },
                         builder: (context, state) {
-                          if (state is GetIncidentsSuccessState) {
+                          if (state is GetIncidentsClassificationSuccessState) {
                             return Expanded(
                               child: FittedBox(
                                 child: Text(
-                                  "${state.incidents.data.where((element) => element.classification == BehavioralClass.GAMMA).length}",
+                                  "${state.classifications.data.where((element) => element.id.classification == "gamma")?.first?.count ?? 0}",
                                   style: TextStyle(
                                       color: CoreStyle.white, fontSize: 20.sp),
                                 ),
@@ -160,15 +170,15 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         width: 30.w,
                       ),
                       BlocBuilder<IncidentsListBloc, IncidentsState>(
-                        buildWhen: (prev,current){
-                          return prev!=current;
+                        buildWhen: (prev, current) {
+                          return prev != current;
                         },
                         builder: (context, state) {
-                          if (state is GetIncidentsSuccessState) {
+                          if (state is GetIncidentsClassificationSuccessState) {
                             return Expanded(
                               child: FittedBox(
                                 child: Text(
-                                  "${state.incidents.data.where((element) => element.classification == BehavioralClass.DELTA).length}",
+                                  "${state.classifications.data.where((element) => element.id.classification == "delta")?.first?.count ?? 0}",
                                   style: TextStyle(
                                       color: CoreStyle.white, fontSize: 20.sp),
                                 ),
@@ -215,15 +225,15 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                         width: 30.w,
                       ),
                       BlocBuilder<IncidentsListBloc, IncidentsState>(
-                        buildWhen: (prev,current){
-                          return prev!=current;
+                        buildWhen: (prev, current) {
+                          return prev != current;
                         },
                         builder: (context, state) {
-                          if (state is GetIncidentsSuccessState) {
+                          if (state is GetIncidentsClassificationSuccessState) {
                             return Expanded(
                               child: FittedBox(
                                 child: Text(
-                                  "${state.incidents.data.where((element) => element.classification == BehavioralClass.BETA).length}",
+                                  "${state.classifications.data.where((element) => element.id.classification == "beta")?.first?.count ?? 0}",
                                   style: TextStyle(
                                       color: CoreStyle.white, fontSize: 20.sp),
                                 ),

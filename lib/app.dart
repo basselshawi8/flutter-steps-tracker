@@ -155,5 +155,7 @@ class _AppState extends State<App> {
   void dispose() {
     super.dispose();
     BlocProvider.of<RestaurantsBloc>(context).close();
+    BlocProvider.of<IncidentsBloc>(context).close();
+    BlocProvider.of<IncidentsListBloc>(context).close();
   }
 }

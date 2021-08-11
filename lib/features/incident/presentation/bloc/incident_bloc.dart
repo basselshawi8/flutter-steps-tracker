@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:micropolis_test/core/errors/base_error.dart';
 import 'package:micropolis_test/core/results/result.dart';
 import 'package:micropolis_test/features/incident/data/datasource/incidents_remotedatasource.dart';
+import 'package:micropolis_test/features/incident/data/model/incidents_classification_model.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
+import 'package:micropolis_test/features/incident/data/model/subject_model.dart';
 
 import './bloc.dart';
 
@@ -26,6 +28,39 @@ class IncidentsListBloc extends Bloc<IncidentsEvent, IncidentsState> {
       } else {
         var error =
             Result(error: (remote as Left<BaseError, IncidentsModel>).value);
+        yield GetIncidentFailureState(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is GetIncidentClassification) {
+      final remote = await IncidentsRemoteDataSource()
+          .getIncidentsClassification(event.param);
+      if (remote.isRight()) {
+        var result = Result(
+            data: (remote as Right<BaseError, IncidentsClassificationModel>)
+                .value);
+        yield GetIncidentsClassificationSuccessState(result.data);
+      } else {
+        var error = Result(
+            error: (remote as Left<BaseError, IncidentsClassificationModel>)
+                .value);
+        yield GetIncidentFailureState(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is GetSubjects) {
+      final remote = await IncidentsRemoteDataSource().getSubjects(event.param);
+      if (remote.isRight()) {
+        var result =
+            Result(data: (remote as Right<BaseError, SubjectsModel>).value);
+        yield GetSubjectsSuccessState(result.data);
+      } else {
+        var error =
+            Result(error: (remote as Left<BaseError, SubjectsModel>).value);
         yield GetIncidentFailureState(
             error: error.error,
             callback: () {

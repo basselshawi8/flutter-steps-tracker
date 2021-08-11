@@ -12,8 +12,7 @@ import '../http/api_provider.dart';
 import '../http/http_method.dart';
 
 abstract class RemoteDataSource {
-  Future<Either<BaseError, T>>
-  request<T extends BaseModel>({
+  Future<Either<BaseError, T>> request<T extends BaseModel>({
     @required T Function(dynamic) converter,
     @required HttpMethod method,
     @required String url,
@@ -21,6 +20,7 @@ abstract class RemoteDataSource {
     Map<String, dynamic> data,
     bool withAuthentication = false,
     bool withCurrency = false,
+    String baseURL,
     CancelToken cancelToken,
   }) async {
     assert(converter != null);
@@ -42,9 +42,7 @@ abstract class RemoteDataSource {
     print(headers);
     // Get auth token (if withAuthentication)
     if (withAuthentication) {
-
-        headers.putIfAbsent(HEADER_AUTH, () => 'token goes here');
-
+      headers.putIfAbsent(HEADER_AUTH, () => 'token goes here');
     }
 
     // Send the request.
@@ -52,6 +50,7 @@ abstract class RemoteDataSource {
       method: method,
       url: url,
       headers: headers,
+      baseURL: baseURL,
       queryParameters: queryParameters ?? {},
       data: data,
       cancelToken: cancelToken,
@@ -71,8 +70,7 @@ abstract class RemoteDataSource {
       return null;
   }
 
-  Future<Either<BaseError, T>>
-  requestUploadFile<T extends BaseModel>({
+  Future<Either<BaseError, T>> requestUploadFile<T extends BaseModel>({
     @required T Function(dynamic) converter,
     @required String url,
     @required String fileKey,
@@ -95,24 +93,23 @@ abstract class RemoteDataSource {
     final Map<String, String> headers = {};
 
     // Get the language.
-    String lang  = await appConfig.currentLanguage();
+    String lang = await appConfig.currentLanguage();
     headers.putIfAbsent(HEADER_LANGUAGE, () => lang);
 
-    print('-------------------------------:upload remote:-------------------------------');
+    print(
+        '-------------------------------:upload remote:-------------------------------');
     debugPrint(headers.toString());
     debugPrint(filePath);
     debugPrint(fileKey);
 
     // Get auth token (if withAuthentication)
     if (withAuthentication) {
-
-        headers.putIfAbsent(HEADER_AUTH, () => 'token goes here');
-
+      headers.putIfAbsent(HEADER_AUTH, () => 'token goes here');
     }
     print(headers);
 
     // Send the request.
-    var response ;
+    var response;
     try {
       response = await ApiProvider.getInstance().upload<T>(
         url: url,

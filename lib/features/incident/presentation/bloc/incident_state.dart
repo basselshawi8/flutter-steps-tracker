@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:micropolis_test/features/incident/data/model/incidents_classification_model.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/core/errors/base_error.dart';
+import 'package:micropolis_test/features/incident/data/model/subject_model.dart';
 
 @immutable
 abstract class IncidentsState extends Equatable {
@@ -31,6 +33,24 @@ class GetIncidentsSuccessState extends IncidentsState {
 
   @override
   List<Object> get props => [incidents];
+}
+
+class GetSubjectsSuccessState extends IncidentsState {
+  final SubjectsModel subjects;
+
+  const GetSubjectsSuccessState(this.subjects);
+
+  @override
+  List<Object> get props => [subjects];
+}
+
+class GetIncidentsClassificationSuccessState extends IncidentsState {
+  final IncidentsClassificationModel classifications;
+
+  const GetIncidentsClassificationSuccessState(this.classifications);
+
+  @override
+  List<Object> get props => [classifications];
 }
 
 class GetIncidentFailureState extends IncidentsState {
