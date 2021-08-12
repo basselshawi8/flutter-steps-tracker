@@ -86,7 +86,6 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                     nationality = state.subjects.data.first.nationality;
                     _isAsync = false;
                   });
-                  print(state.subjects.data.map((e) => e.surname));
                 }
               },
               child: ModalProgressHUD(
