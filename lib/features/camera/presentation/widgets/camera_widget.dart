@@ -5,6 +5,9 @@ import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../../../main.dart';
+import '../../../../mqtt_helper.dart';
+
 class CameraWidget extends StatefulWidget {
   final String url;
   final Offset position;
@@ -72,7 +75,7 @@ class _CameraWidgetState extends State<CameraWidget> {
         left: widget.position.dx,
         top: widget.position.dy,
         child: StreamBuilder(
-          stream: _channel.stream,
+          stream: mqttHelper.dataReceived,
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.data is String == false) {
               return _getParentContainer(snapshot.data);
