@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
+import 'package:micropolis_test/features/incident/presentation/widgets/suspect_data_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:micropolis_test/features/incident/presentation/widgets/incident_action_widget.dart';
@@ -75,90 +76,98 @@ class _IncidentsScreenState extends State<IncidentsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          width: double.maxFinite,
-          height: double.maxFinite,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                  top: 0,
-                  left: 0,
-                  bottom: 0,
-                  right: 800.w,
-                  child: GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    initialCameraPosition: CameraPosition(
-                      target: localLocation,
-                      zoom: 12,
-                    ),
-                    markers: _markers.values.toSet(),
-                  )),
-              Positioned(
-                  top: 25.h,
-                  left: 30.w,
-                  child: ClipRRect(
-                    child: Consumer<IncidentsChangeNotifier>(
-                      builder: (context, state, _) {
-                        if (state.imageCap == null) {
-                          return Image.asset(
-                            IMG_PERSON,
-                            width: 250.w,
-                            height: 250.w,
-                            fit: BoxFit.cover,
-                          );
-                        } else {
-                          Uint8List bytes = base64Decode(state.currentIncident == null ? state.imageCap
-                              .split("data:image/png;base64,")[1] : state.currentIncident.imageCap
-                              .split("data:image/png;base64,")[1]);
-                          return Image.memory(
-                            bytes,
-                            width: 250.w,
-                            height: 250.w,
-                            fit: BoxFit.cover,
-                          );
-                        }
-                      },
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  )),
-              Positioned(
-                  top: 25.h,
-                  left: 300.w,
-                  child: ClipRRect(
-                    child: Consumer<IncidentsChangeNotifier>(
-                      builder: (context, state, _) {
-                        if (state.imageMatch == null) {
-                          return Image.asset(
-                            IMG_PERSON,
-                            width: 120.w,
-                            height: 120.w,
-                            fit: BoxFit.cover,
-                          );
-                        } else {
-                          Uint8List bytes = base64Decode(
-                              state.currentIncident == null
-                                  ? state.imageMatch
-                                      .split("data:image/png;base64,")[1]
-                                  : state.currentIncident.imageMatch
-                                      .split("data:image/png;base64,")[1]);
-                          return Image.memory(
-                            bytes,
-                            width: 120.w,
-                            height: 120.w,
-                            fit: BoxFit.cover,
-                          );
-                        }
-                      },
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  )),
-              IncidentsListWidget(
-                type: widget.type,
+        child: Consumer<IncidentsChangeNotifier>(
+          builder: (context, state, _) {
+            return Container(
+              width: double.maxFinite,
+              height: double.maxFinite,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 800.w,
+                      child: GoogleMap(
+                        onMapCreated: _onMapCreated,
+                        initialCameraPosition: CameraPosition(
+                          target: localLocation,
+                          zoom: 12,
+                        ),
+                        markers: _markers.values.toSet(),
+                      )),
+                  Positioned(
+                      top: 25.h,
+                      left: 30.w,
+                      child: ClipRRect(
+                        child: Consumer<IncidentsChangeNotifier>(
+                          builder: (context, state, _) {
+                            if (state.imageCap == null) {
+                              return Image.asset(
+                                IMG_PERSON,
+                                width: 250.w,
+                                height: 250.w,
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              Uint8List bytes = base64Decode(
+                                  state.currentIncident == null
+                                      ? state.imageCap
+                                          .split("data:image/png;base64,")[1]
+                                      : state.currentIncident.imageCap
+                                          .split("data:image/png;base64,")[1]);
+                              return Image.memory(
+                                bytes,
+                                width: 250.w,
+                                height: 250.w,
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                      )),
+                  Positioned(
+                      top: 25.h,
+                      left: 300.w,
+                      child: ClipRRect(
+                        child: Consumer<IncidentsChangeNotifier>(
+                          builder: (context, state, _) {
+                            if (state.imageMatch == null) {
+                              return Image.asset(
+                                IMG_PERSON,
+                                width: 120.w,
+                                height: 120.w,
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              Uint8List bytes = base64Decode(
+                                  state.currentIncident == null
+                                      ? state.imageMatch
+                                          .split("data:image/png;base64,")[1]
+                                      : state.currentIncident.imageMatch
+                                          .split("data:image/png;base64,")[1]);
+                              return Image.memory(
+                                bytes,
+                                width: 120.w,
+                                height: 120.w,
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                      )),
+                  IncidentsListWidget(
+                    type: widget.type,
+                  ),
+                  IncidentSubjectWidget(),
+                  IncidentActionsWidget(),
+                  if (state.showSubjectData == true) SuspectDataWidget()
+                ],
               ),
-              IncidentSubjectWidget(),
-              IncidentActionsWidget()
-            ],
-          ),
+            );
+          },
         ),
       ),
       backgroundColor: Colors.black,

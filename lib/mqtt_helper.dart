@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
+
 class MqttHelper {
   static final MqttHelper _singleton = MqttHelper._internal();
 
-  final client = MqttBrowserClient('ws://127.0.0.1', '');
+  final client = MqttBrowserClient('ws://192.168.1.104', '');
 
   Stream dataReceived;
   StreamController _streamController;
@@ -17,7 +20,8 @@ class MqttHelper {
   }
 
   initConnection() async {
-    _streamController = StreamController<String>();
+    
+    _streamController = StreamController<dynamic>();
     dataReceived = _streamController.stream.asBroadcastStream();
 
     client.logging(on: false);
@@ -86,8 +90,8 @@ class MqttHelper {
 
     /// Ok, lets try a subscription
     print('EXAMPLE::Subscribing to the test/lol topic');
-    const topic = 'python/testmqtt'; // Not a wildcard topic
-    client.subscribe(topic, MqttQos.atMostOnce);
+    const topic = 'xavier_1/camerastream'; // Not a wildcard topic
+    client.subscribe(topic, MqttQos.atLeastOnce);
 
     /// The client has a change notifier object(see the Observable class) which we then listen to to get
     /// notifications of published updates to each subscribed topic.
@@ -101,16 +105,20 @@ class MqttHelper {
       /// lets not constrain ourselves yet until the package has been in the wild
       /// for a while.
       /// The payload is a byte buffer, this will be specific to the topic
-      _streamController.add(pt);
-      print(
-          'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
-      print('');
+      /// 
+      _streamController.add(base64Decode(pt));
+
+      //print("received data");
+     // print(
+      //    'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+
     });
+
 
     /// If needed you can listen for published messages that have completed the publishing
     /// handshake which is Qos dependant. Any message received on this stream has completed its
     /// publishing handshake with the broker.
-    client.published.listen((MqttPublishMessage message) {
+    /*client.published.listen((MqttPublishMessage message) {
       print(
           'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
     });
@@ -118,20 +126,20 @@ class MqttHelper {
     /// Lets publish to our topic
     /// Use the payload builder rather than a raw buffer
     /// Our known topic to publish to
-    const pubTopic = 'python/testmqtt';
+    const pubTopic = 'xavier_1/camerastream';
     final builder = MqttClientPayloadBuilder();
     builder.addString('Hello from mqtt_client');
 
     /// Subscribe to it
     print('EXAMPLE::Subscribing to the Dart/Mqtt_client/testtopic topic');
-    client.subscribe(pubTopic, MqttQos.exactlyOnce);
+    client.subscribe(pubTopic, MqttQos.atLeastOnce);
 
     /// Publish it
-    print('EXAMPLE::Publishing our topic');
-    client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload);
+    print('EXAMPLE::Publishing our topic');*/
+    //client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload);
 
-    Future.delayed(Duration(seconds: 20)).then((value) =>
-        client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload));
+    //Future.delayed(Duration(seconds: 20)).then((value) =>
+      //  client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload));
 
     /// Ok, we will now sleep a while, in this gap you will see ping request/response
     /// messages being exchanged by the keep alive mechanism.

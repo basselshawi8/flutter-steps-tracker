@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
+import 'package:micropolis_test/features/incident/data/model/subject_model.dart';
 
 class IncidentsChangeNotifier extends ChangeNotifier {
   List<IncidentsDatum> _pinnedIncidents = [];
+  SubjectsModel _suspects;
 
   IncidentsDatum _currentIncident;
+
+  bool _showSubjectData = false;
 
   String _imageCap;
 
@@ -14,7 +18,11 @@ class IncidentsChangeNotifier extends ChangeNotifier {
 
   String get imageMatch => _imageMatch;
 
+  bool get showSubjectData => _showSubjectData;
+
   List<IncidentsDatum> get incidents => _pinnedIncidents;
+
+  SubjectsModel get suspects => _suspects;
 
   IncidentsDatum get currentIncident => _currentIncident;
 
@@ -28,6 +36,11 @@ class IncidentsChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  set suspects(SubjectsModel val) {
+    _suspects = val;
+    notifyListeners();
+  }
+
   set imageCap(String val) {
     _imageCap = val;
     notifyListeners();
@@ -35,6 +48,11 @@ class IncidentsChangeNotifier extends ChangeNotifier {
 
   set imageMatch(String val) {
     _imageMatch = val;
+    notifyListeners();
+  }
+
+  set showSubjectData(bool val) {
+    _showSubjectData = val;
     notifyListeners();
   }
 

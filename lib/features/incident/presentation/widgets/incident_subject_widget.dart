@@ -79,6 +79,9 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
               listener: (context, state) {
                 if (state is GetSubjectsSuccessState) {
                   setState(() {
+                    Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                        .suspects = state.subjects;
+
                     name =
                         "${state.subjects.data.first.name} ${state.subjects.data.first.surname}";
                     idType = state.subjects.data.first.idType;
@@ -464,7 +467,11 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                             height: 6.h,
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Provider.of<IncidentsChangeNotifier>(context,
+                                      listen: false)
+                                  .showSubjectData = true;
+                            },
                             child: Container(
                               height: 42.h,
                               width: double.maxFinite,
