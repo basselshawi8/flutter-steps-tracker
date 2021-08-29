@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/features/incident/data/params/subject_param.dart';
+import 'package:micropolis_test/features/incident/data/params/update_incident_param.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_bloc.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_event.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_state.dart';
@@ -87,6 +89,16 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                     idType = state.subjects.data.first.idType;
                     idNo = state.subjects.data.first.idNo;
                     nationality = state.subjects.data.first.nationality;
+                    _isAsync = false;
+                  });
+                } else if (state is UpgradeIncidentSuccessState) {
+                  setState(() {
+                    _isAsync = false;
+                  });
+                  Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                      .updateHomeIncidentClassifications = true;
+                } else if (state is GetIncidentFailureState) {
+                  setState(() {
                     _isAsync = false;
                   });
                 }
@@ -290,6 +302,22 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                         )),
                                     Text(
                                       location,
+                                      style: TextStyle(
+                                          color:
+                                              CoreStyle.operationLightTextColor,
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 18.sp),
+                                    ),
+                                    Text("Date Raised",
+                                        style: TextStyle(
+                                          color: CoreStyle
+                                              .operationLightTextColor
+                                              .withOpacity(0.4),
+                                          fontWeight: FontWeight.w200,
+                                          fontSize: 14.sp,
+                                        )),
+                                    Text(
+                                      state?.currentIncident?.dateRaise ?? "",
                                       style: TextStyle(
                                           color:
                                               CoreStyle.operationLightTextColor,
@@ -515,7 +543,37 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                             height: 6.h,
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              if (state.currentIncident.classification ==
+                                  BehavioralClass.GAMMA) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                        content: Container(
+                                  height: 40.h,
+                                  child: Center(
+                                    child: Text("Can't upgrade Gamma Incident"),
+                                  ),
+                                )));
+                              } else if (state.currentIncident.classification ==
+                                  BehavioralClass.DELTA) {
+                                _incidentsBloc.add(UpgradeIncident(
+                                    UpdateIncidentParam(
+                                        id: _incidentID,
+                                        classification: "gamma")));
+                                setState(() {
+                                  _isAsync = true;
+                                });
+                              } else if (state.currentIncident.classification ==
+                                  BehavioralClass.BETA) {
+                                _incidentsBloc.add(UpgradeIncident(
+                                    UpdateIncidentParam(
+                                        id: _incidentID,
+                                        classification: "delta")));
+                                setState(() {
+                                  _isAsync = true;
+                                });
+                              }
+                            },
                             child: Container(
                               height: 42.h,
                               width: double.maxFinite,

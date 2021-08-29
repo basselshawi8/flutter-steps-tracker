@@ -31,26 +31,11 @@ class CameraWidget extends StatefulWidget {
 }
 
 class _CameraWidgetState extends State<CameraWidget> {
-  WebSocketChannel _channel;
-
   String cachedURL;
   Timer _connectionTimer;
 
   @override
   void initState() {
-    _channel = WebSocketChannel.connect(
-      Uri.parse(widget.url ?? 'wss://echo.websocket.org'),
-    );
-
-    _connectionTimer =
-        Timer.periodic(Duration(milliseconds: 300), (timer) async {
-      var isDone = await _channel?.sink?.done;
-      if (isDone == true) {
-        _channel = WebSocketChannel.connect(
-          Uri.parse(widget.url ?? 'wss://echo.websocket.org'),
-        );
-      }
-    });
     cachedURL = widget.url;
 
     super.initState();
@@ -58,14 +43,7 @@ class _CameraWidgetState extends State<CameraWidget> {
 
   @override
   void didUpdateWidget(covariant CameraWidget oldWidget) {
-    if (cachedURL != widget.url) {
-      cachedURL = widget.url;
-      _channel?.sink?.close();
-      _channel = WebSocketChannel.connect(
-        Uri.parse(widget.url ?? 'wss://echo.websocket.org'),
-      );
-    }
-
+    cachedURL = widget.url;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -77,8 +55,14 @@ class _CameraWidgetState extends State<CameraWidget> {
         child: StreamBuilder(
           stream: mqttHelper.dataReceived,
           builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data is String == false) {
-              return _getParentContainer(snapshot.data);
+            if (snapshot.hasData &&
+                snapshot.data is Map<String, dynamic> == true) {
+              var data = snapshot.data as Map<String, dynamic>;
+              if (data.containsKey(cachedURL)) {
+                return _getParentContainer(data[cachedURL]);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
             } else {
               return Center(child: CircularProgressIndicator());
             }
@@ -89,7 +73,6 @@ class _CameraWidgetState extends State<CameraWidget> {
   @override
   void dispose() {
     super.dispose();
-    _channel?.sink?.close();
   }
 
   Widget _getParentContainer(Uint8List imageData) {

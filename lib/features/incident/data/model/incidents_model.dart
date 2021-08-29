@@ -48,7 +48,8 @@ class IncidentsModel extends BaseModel {
             ? null
             : json["data"] == null
                 ? null
-                : List<IncidentsDatum>.from(json["data"].map((x) => IncidentsDatum.fromMap(x))),
+                : List<IncidentsDatum>.from(
+                    json["data"].map((x) => IncidentsDatum.fromMap(x))),
       );
 
   Map<String, dynamic> toMap() => {
@@ -68,7 +69,95 @@ class IncidentsModel extends BaseModel {
   }
 }
 
-class IncidentsDatum extends BaseModel{
+class SingleIncidentModel extends BaseModel {
+  SingleIncidentModel({
+    this.success,
+    this.data,
+  });
+
+  final bool success;
+  final IncidentsDatum data;
+
+  factory SingleIncidentModel.fromJson(String str) =>
+      SingleIncidentModel.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory SingleIncidentModel.fromMap(Map<String, dynamic> json) =>
+      SingleIncidentModel(
+        success: json.containsKey("success") == false
+            ? null
+            : json["success"] == null
+                ? null
+                : json["success"],
+        data: json.containsKey("data") == false
+            ? null
+            : json["data"] == null
+                ? null
+                : IncidentsDatum.fromMap(json["data"]),
+      );
+
+  Map<String, dynamic> toMap() => {
+        "success": success == null ? null : success,
+        "data": data == null ? null : data.toMap(),
+      };
+
+  @override
+  BaseEntity toEntity() {
+    // TODO: implement toEntity
+    throw UnimplementedError();
+  }
+}
+
+class UpdatedIncidentModel extends BaseModel {
+  UpdatedIncidentModel({
+    this.success,
+    this.message,
+    this.data,
+  });
+
+  final bool success;
+  final String message;
+  final IncidentsDatum data;
+
+  factory UpdatedIncidentModel.fromJson(String str) =>
+      UpdatedIncidentModel.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory UpdatedIncidentModel.fromMap(Map<String, dynamic> json) =>
+      UpdatedIncidentModel(
+        success: json.containsKey("success") == false
+            ? null
+            : json["success"] == null
+            ? null
+            : json["success"],
+        message: json.containsKey("message") == false
+            ? null
+            : json["message"] == null
+            ? null
+            : json["message"],
+        data: json.containsKey("data") == false
+            ? null
+            : json["data"] == null
+            ? null
+            : IncidentsDatum.fromMap(json["data"]),
+      );
+
+  Map<String, dynamic> toMap() => {
+    "success": success == null ? null : success,
+    "message": message == null ? null : message,
+    "data": data == null ? null : data.toMap(),
+  };
+
+  @override
+  BaseEntity toEntity() {
+    // TODO: implement toEntity
+    throw UnimplementedError();
+  }
+}
+
+class IncidentsDatum extends BaseModel {
   IncidentsDatum({
     this.suspects,
     this.id,
@@ -99,7 +188,8 @@ class IncidentsDatum extends BaseModel{
   final String incidentType;
   final int v;
 
-  factory IncidentsDatum.fromJson(String str) => IncidentsDatum.fromMap(json.decode(str));
+  factory IncidentsDatum.fromJson(String str) =>
+      IncidentsDatum.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 

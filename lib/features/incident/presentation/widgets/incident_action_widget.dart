@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/features/incident/data/params/single_incident_param.dart';
+import 'package:micropolis_test/features/incident/presentation/bloc/incident_bloc.dart';
+import 'package:micropolis_test/features/incident/presentation/bloc/incident_event.dart';
+import 'package:micropolis_test/features/incident/presentation/bloc/incident_state.dart';
+import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 
 class IncidentActionsWidget extends StatefulWidget {
+  final String incidentID;
+
+  const IncidentActionsWidget({Key key, this.incidentID}) : super(key: key);
+
   @override
   _IncidentActionsWidgetState createState() {
     // TODO: implement createState
@@ -12,10 +24,18 @@ class IncidentActionsWidget extends StatefulWidget {
 }
 
 class _IncidentActionsWidgetState extends State<IncidentActionsWidget> {
+  var _incidentBloc = IncidentsListBloc();
+  var _isAsync = false;
+
+  @override
+  void dispose() {
+    _incidentBloc.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
-
       bottom: 40.h,
       left: 120.w,
       right: 920.w,
@@ -29,11 +49,15 @@ class _IncidentActionsWidgetState extends State<IncidentActionsWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             InkWell(
-              onTap: (){},
+              onTap: () {},
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(IMG_DOG,width: 40.w,height: 40.h,),
+                  Image.asset(
+                    IMG_DOG,
+                    width: 40.w,
+                    height: 40.h,
+                  ),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -48,11 +72,15 @@ class _IncidentActionsWidgetState extends State<IncidentActionsWidget> {
               ),
             ),
             InkWell(
-              onTap: (){},
+              onTap: () {},
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(IMG_DRONE,width: 40.w,height: 40.h,),
+                  Image.asset(
+                    IMG_DRONE,
+                    width: 40.w,
+                    height: 40.h,
+                  ),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -67,11 +95,15 @@ class _IncidentActionsWidgetState extends State<IncidentActionsWidget> {
               ),
             ),
             InkWell(
-              onTap: (){},
+              onTap: () {},
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(IMG_POLICE_CAR,width: 40.w,height: 40.h,),
+                  Image.asset(
+                    IMG_POLICE_CAR,
+                    width: 40.w,
+                    height: 40.h,
+                  ),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -86,13 +118,15 @@ class _IncidentActionsWidgetState extends State<IncidentActionsWidget> {
               ),
             ),
             InkWell(
-              onTap: (){
-
-              },
+              onTap: () {},
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(IMG_LIVE,width: 40.w,height: 40.h,),
+                  Image.asset(
+                    IMG_LIVE,
+                    width: 40.w,
+                    height: 40.h,
+                  ),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -106,21 +140,49 @@ class _IncidentActionsWidgetState extends State<IncidentActionsWidget> {
                 ],
               ),
             ),
+            BlocListener(
+              bloc: _incidentBloc,
+              listener: (context, state) {
 
-            Container(
-              height: 50.h,
-              width: 170.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7.r),
-                color: CoreStyle.operationRose2Color
-              ),
-              child: Center(
-                child: Text(
-                  "Dismiss",
-                  style: TextStyle(
-                      color: CoreStyle.operationLightTextColor,
-                      fontSize: 19.sp,
-                      fontWeight: FontWeight.w400),
+                if (state is DeleteIncidentSuccessState) {
+
+                  setState(() {
+                    _isAsync = false;
+                  });
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                        .updateHomeIncidentClassifications = true;
+                  });
+                } else if (state is GetIncidentFailureState) {
+                  setState(() {
+                    _isAsync = false;
+                  });
+                }
+              },
+              child: InkWell(
+                onTap: () {
+
+                  setState(() {
+                    _isAsync = true;
+                  });
+                  _incidentBloc.add(DeleteIncident(
+                      SingleIncidentParam(id: widget.incidentID)));
+                },
+                child: Container(
+                  height: 50.h,
+                  width: 170.w,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(7.r),
+                      color: CoreStyle.operationRose2Color),
+                  child: Center(
+                    child: Text(
+                      "Dismiss",
+                      style: TextStyle(
+                          color: CoreStyle.operationLightTextColor,
+                          fontSize: 19.sp,
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
                 ),
               ),
             )

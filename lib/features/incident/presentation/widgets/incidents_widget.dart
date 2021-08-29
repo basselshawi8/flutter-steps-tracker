@@ -7,12 +7,15 @@ import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/features/incident/data/params/incidents_param.dart';
+import 'package:micropolis_test/features/incident/data/params/single_incident_param.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_bloc.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_event.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_state.dart';
 import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/dashed_circle.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../main.dart';
 
 class IncidentsListWidget extends StatefulWidget {
   final String type;
@@ -75,132 +78,189 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
         right: 0,
         bottom: 0,
         left: 1920.w - 400.w,
-        child: Container(
-          color: CoreStyle.operationIncidentListBlackColor,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20.h,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      widget.type == "gamma"
-                          ? IMG_GAMMA
-                          : widget.type == "delta"
-                              ? IMG_DELTA
-                              : widget.type == "beta"
-                                  ? IMG_BETA
-                                  : IMG_PERSON,
-                      width: 35.w,
-                      height: 35.h,
+        child: StreamBuilder(
+          stream: mqttHelper.incidentReceived,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              print(snapshot.data);
+              //{"title": "Incident, person is wanted", "body": {"incident_id": "1"}}
+              var data = (snapshot.data as Map<String, dynamic>).values.first
+                  as Map<String, dynamic>;
+              var id = data["body"]["incident_id"];
+              if (id != null) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Container(
+                    height: 40.h,
+                    child: Center(
+                      child: Text("New incident\n${data["title"]}"),
                     ),
-                    SizedBox(
-                      width: 20.w,
+                  )));
+                });
+                _incidentsBloc
+                    .add(GetSingleIncident(SingleIncidentParam(id: id)));
+              }
+            }
+            return Container(
+              color: CoreStyle.operationIncidentListBlackColor,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.asset(
+                          widget.type == "gamma"
+                              ? IMG_GAMMA
+                              : widget.type == "delta"
+                                  ? IMG_DELTA
+                                  : widget.type == "beta"
+                                      ? IMG_BETA
+                                      : IMG_PERSON,
+                          width: 35.w,
+                          height: 35.h,
+                        ),
+                        SizedBox(
+                          width: 20.w,
+                        ),
+                        Text(
+                          widget.type == "gamma"
+                              ? "Gamma Cases"
+                              : widget.type == "delta"
+                                  ? "Delta Cases"
+                                  : widget.type == "beta"
+                                      ? "Beta Cases"
+                                      : "Something",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25.sp,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ],
                     ),
-                    Text(
-                      widget.type == "gamma"
-                          ? "Gamma Cases"
-                          : widget.type == "delta"
-                              ? "Delta Cases"
-                              : widget.type == "beta"
-                                  ? "Beta Cases"
-                                  : "Something",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25.sp,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20.h,
-              ),
-              BlocBuilder<IncidentsListBloc, IncidentsState>(
-                bloc: _incidentsBloc,
-                buildWhen: (prev,current){
-                  return prev != current;
-                },
-                builder: (context, state) {
-                  if (state is GetIncidentsSuccessState) {
-                    if (state.incidents.data.length == 0) {
-                      _stopFetchingData = true;
-                    }
-                    var typeToQuery = widget.type == "gamma"
-                        ? BehavioralClass.GAMMA
-                        : widget.type == "delta"
-                            ? BehavioralClass.DELTA
-                            : widget.type == "beta"
-                                ? BehavioralClass.BETA
-                                : BehavioralClass.ALPHA;
-                    var incidents = state.incidents.data
-                        .where(
-                            (element) => element.classification == typeToQuery)
-                        .toList();
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  BlocBuilder<IncidentsListBloc, IncidentsState>(
+                    bloc: _incidentsBloc,
+                    buildWhen: (prev, current) {
+                      return prev != current;
+                    },
+                    builder: (context, state) {
+                      if (state is GetSingleIncidentSuccessState) {
+                        var typeToQuery = widget.type == "gamma"
+                            ? BehavioralClass.GAMMA
+                            : widget.type == "delta"
+                                ? BehavioralClass.DELTA
+                                : widget.type == "beta"
+                                    ? BehavioralClass.BETA
+                                    : BehavioralClass.ALPHA;
 
-                    for (var inc in incidents) {
-                      if (_incidents.firstWhere((element) => element.id == inc.id,orElse: ()=>null)== null) {
-                        _incidents.add(inc);
-                      }
-                    }
-                    _incidents.addAll(incidents);
-
-                    if (Provider.of<IncidentsChangeNotifier>(context,
-                                listen: false)
-                            .currentIncident !=
-                        null) {
-                      _selectedItem = _incidents.indexWhere((element) =>
-                          element.id ==
-                          Provider.of<IncidentsChangeNotifier>(context,
-                                  listen: false)
-                              .currentIncident
-                              .id);
-                    }
-
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      if (_incidents.length > 0 &&
-                          selectedFirst == false &&
-                          Provider.of<IncidentsChangeNotifier>(context,
-                                      listen: false)
-                                  .currentIncident ==
+                        if (state.incident.data.classification == typeToQuery) {
+                          if (_incidents.firstWhere(
+                                  (element) =>
+                                      element.id == state.incident.data.id,
+                                  orElse: () => null) ==
                               null) {
-                        selectedFirst = true;
-                        Provider.of<IncidentsChangeNotifier>(context,
-                                listen: false)
-                            .imageCap = _incidents[0].imageCap;
-                        Provider.of<IncidentsChangeNotifier>(context,
-                                listen: false)
-                            .imageMatch = _incidents[0].imageMatch;
+                            _incidents.insert(0, state.incident.data);
+                            print("single incident");
+                          }
+                        }
+                        return _refreshIncidents();
+                      } else if (state is GetIncidentsSuccessState) {
+                        print(state.incidents.data.length);
+                        if (state.incidents.data.length < 20) {
+                          _stopFetchingData = true;
+                        }
+                        var typeToQuery = widget.type == "gamma"
+                            ? BehavioralClass.GAMMA
+                            : widget.type == "delta"
+                                ? BehavioralClass.DELTA
+                                : widget.type == "beta"
+                                    ? BehavioralClass.BETA
+                                    : BehavioralClass.ALPHA;
+                        var incidents = state.incidents.data
+                            .where((element) =>
+                                element.classification == typeToQuery)
+                            .toList();
 
-                        Provider.of<IncidentsChangeNotifier>(context,
-                                listen: false)
-                            .currentIncident = _incidents[0];
+                        for (var inc in incidents) {
+                          if (_incidents.firstWhere(
+                                  (element) => element.id == inc.id,
+                                  orElse: () => null) ==
+                              null) {
+                            _incidents.add(inc);
+                          }
+                        }
+
+                        return _refreshIncidents();
+                      } else {
+                        return _incidents.length > 0
+                            ? _buildIncidentsContent(true)
+                            : Center(
+                                child: CircularProgressIndicator(),
+                              );
                       }
-                    });
-
-                    return _buildIncidentsContent(false);
-                  } else {
-                    return _incidents.length > 0
-                        ? _buildIncidentsContent(true)
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          );
-                  }
-                },
-              )
-            ],
-          ),
+                    },
+                  )
+                ],
+              ),
+            );
+          },
         ));
+  }
+
+  _refreshIncidents() {
+    if (Provider.of<IncidentsChangeNotifier>(context, listen: false)
+            .currentIncident !=
+        null) {
+      _selectedItem = _incidents.indexWhere((element) =>
+          element.id ==
+          Provider.of<IncidentsChangeNotifier>(context, listen: false)
+              .currentIncident
+              .id);
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (_incidents.length > 0 &&
+          selectedFirst == false &&
+          Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                  .currentIncident ==
+              null) {
+        selectedFirst = true;
+        Provider.of<IncidentsChangeNotifier>(context, listen: false).imageCap =
+            _incidents[0].imageCap;
+        Provider.of<IncidentsChangeNotifier>(context, listen: false)
+            .imageMatch = _incidents[0].imageMatch;
+
+        Provider.of<IncidentsChangeNotifier>(context, listen: false)
+            .currentIncident = _incidents[0];
+      }
+    });
+
+    return _buildIncidentsContent(false);
   }
 
   _buildIncidentsContent(bool loading) {
     return Expanded(
       child: Consumer<IncidentsChangeNotifier>(
         builder: (context, state, _) {
+          if (state.updateHomeIncidentClassifications == true) {
+            _selectedItem = 0;
+            selectedFirst = false;
+            _currentPage = 0;
+            _incidents.clear();
+            _stopFetchingData = false;
+            _incidentsBloc.add(GetIncidents(IncidentsParam(
+                lookup: "classification:${widget.type}",
+                limit: 20,
+                page: _currentPage)));
+          }
           return ListView.builder(
             controller: _controller,
             itemBuilder: (context, index) {

@@ -33,7 +33,7 @@ class MainWindowScreen extends StatefulWidget {
 
 class _MainWindowScreenState extends State<MainWindowScreen>
     with SingleTickerProviderStateMixin {
-  var urls = ['ws://192.168.1.104:9509/sub', 'ws://192.168.1.104:9510/sub'];
+  var urls = ['xavier_1/camerastream', 'xavier_2/camerastream'];
   AnimationController _animationController;
   Animation _incidentsPanelAnimationMain;
   Animation _incidentsPanelAnimationSub;

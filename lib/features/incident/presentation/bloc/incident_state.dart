@@ -35,6 +35,33 @@ class GetIncidentsSuccessState extends IncidentsState {
   List<Object> get props => [incidents];
 }
 
+class GetSingleIncidentSuccessState extends IncidentsState {
+  final SingleIncidentModel incident;
+
+  const GetSingleIncidentSuccessState(this.incident);
+
+  @override
+  List<Object> get props => [incident];
+}
+
+class DeleteIncidentSuccessState extends IncidentsState {
+  final UpdatedIncidentModel incident;
+
+  const DeleteIncidentSuccessState(this.incident);
+
+  @override
+  List<Object> get props => [incident];
+}
+
+class UpgradeIncidentSuccessState extends IncidentsState {
+  final UpdatedIncidentModel incident;
+
+  const UpgradeIncidentSuccessState(this.incident);
+
+  @override
+  List<Object> get props => [incident];
+}
+
 class GetSubjectsSuccessState extends IncidentsState {
   final SubjectsModel subjects;
 

@@ -8,7 +8,9 @@ import 'package:micropolis_test/features/incident/data/model/incidents_classific
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/features/incident/data/model/subject_model.dart';
 import 'package:micropolis_test/features/incident/data/params/incidents_param.dart';
+import 'package:micropolis_test/features/incident/data/params/single_incident_param.dart';
 import 'package:micropolis_test/features/incident/data/params/subject_param.dart';
+import 'package:micropolis_test/features/incident/data/params/update_incident_param.dart';
 
 class IncidentsRemoteDataSource extends RemoteDataSource {
   Future<Either<BaseError, IncidentsModel>> getIncidents(
@@ -18,6 +20,34 @@ class IncidentsRemoteDataSource extends RemoteDataSource {
         method: HttpMethod.GET,
         url: API_GET_INCIDENT,
         queryParameters: params.toMap(),
+        cancelToken: params.cancelToken);
+  }
+
+  Future<Either<BaseError, SingleIncidentModel>> getSingleIncident(
+      SingleIncidentParam params) {
+    return request(
+        converter: (json) => SingleIncidentModel.fromMap(json),
+        method: HttpMethod.GET,
+        url: "$API_GET_INCIDENT/${params.id}",
+        cancelToken: params.cancelToken);
+  }
+
+  Future<Either<BaseError, UpdatedIncidentModel>> upgradeIncident(
+      UpdateIncidentParam params) {
+    return request(
+        converter: (json) => UpdatedIncidentModel.fromMap(json),
+        method: HttpMethod.PUT,
+        url: "$API_GET_INCIDENT/${params.id}",
+        data: params.toMap(),
+        cancelToken: params.cancelToken);
+  }
+
+  Future<Either<BaseError, UpdatedIncidentModel>> deleteIncident(
+      SingleIncidentParam params) {
+    return request(
+        converter: (json) => UpdatedIncidentModel.fromMap(json),
+        method: HttpMethod.DELETE,
+        url: "$API_GET_INCIDENT/${params.id}",
         cancelToken: params.cancelToken);
   }
 

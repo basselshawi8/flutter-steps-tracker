@@ -10,15 +10,24 @@ class IncidentsChangeNotifier extends ChangeNotifier {
 
   bool _showSubjectData = false;
 
+  bool _updateHomeIncidentClassifications = false;
+
   String _imageCap;
 
   String _imageMatch;
 
+  String _newIncidentID;
+
   String get imageCap => _imageCap;
+
+  String get newIncidentID => _newIncidentID;
 
   String get imageMatch => _imageMatch;
 
   bool get showSubjectData => _showSubjectData;
+
+  bool get updateHomeIncidentClassifications =>
+      _updateHomeIncidentClassifications;
 
   List<IncidentsDatum> get incidents => _pinnedIncidents;
 
@@ -46,6 +55,11 @@ class IncidentsChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  set newIncidentID(String val) {
+    _newIncidentID = val;
+    notifyListeners();
+  }
+
   set imageMatch(String val) {
     _imageMatch = val;
     notifyListeners();
@@ -59,5 +73,13 @@ class IncidentsChangeNotifier extends ChangeNotifier {
   set currentIncident(IncidentsDatum val) {
     _currentIncident = val;
     notifyListeners();
+  }
+
+  set updateHomeIncidentClassifications(bool val) {
+    _updateHomeIncidentClassifications = val;
+    notifyListeners();
+
+    Future.delayed(Duration(milliseconds: 100))
+        .then((value) => _updateHomeIncidentClassifications = false);
   }
 }

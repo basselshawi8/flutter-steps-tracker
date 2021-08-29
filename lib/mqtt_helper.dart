@@ -6,23 +6,29 @@ import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
-
 class MqttHelper {
   static final MqttHelper _singleton = MqttHelper._internal();
 
-  final client = MqttBrowserClient('ws://192.168.1.104', '');
+  final client = MqttBrowserClient('ws://192.168.1.101', '');
 
   Stream dataReceived;
+  Stream locationReceived;
+  Stream incidentReceived;
   StreamController _streamController;
+  StreamController _streamLocationController;
+  StreamController _streamIncidnetController;
 
   factory MqttHelper() {
     return _singleton;
   }
 
   initConnection() async {
-    
     _streamController = StreamController<dynamic>();
+    _streamLocationController = StreamController<dynamic>();
+    _streamIncidnetController = StreamController<dynamic>();
     dataReceived = _streamController.stream.asBroadcastStream();
+    locationReceived = _streamLocationController.stream.asBroadcastStream();
+    incidentReceived = _streamIncidnetController.stream.asBroadcastStream();
 
     client.logging(on: false);
 
@@ -53,7 +59,7 @@ class MqttHelper {
     /// client identifier, any supplied username/password and clean session,
     /// an example of a specific one below.
     final connMess = MqttConnectMessage()
-        .withClientIdentifier('Mqtt_MyClientUniqueId')
+        .withClientIdentifier('operationRoom_1')
         .withWillTopic(
             'willtopic') // If you set this you must set a will message
         .withWillMessage('My Will message')
@@ -93,8 +99,13 @@ class MqttHelper {
     const topic = 'xavier_1/camerastream'; // Not a wildcard topic
     client.subscribe(topic, MqttQos.atLeastOnce);
 
+    const topicIncident = 'xavier_1/incident'; // Not a wildcard topic
+    client.subscribe(topicIncident, MqttQos.atLeastOnce);
+
     /// The client has a change notifier object(see the Observable class) which we then listen to to get
     /// notifications of published updates to each subscribed topic.
+    ///
+
     client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final recMess = c[0].payload as MqttPublishMessage;
       final pt =
@@ -105,20 +116,24 @@ class MqttHelper {
       /// lets not constrain ourselves yet until the package has been in the wild
       /// for a while.
       /// The payload is a byte buffer, this will be specific to the topic
-      /// 
-      _streamController.add(base64Decode(pt));
+      ///
+      ///
+
+      if (c[0].topic == topic) {
+        _streamController.add({"${c[0].topic}": base64Decode(pt)});
+      } else if (c[0].topic == topicIncident) {
+        _streamIncidnetController.add({"${c[0].topic}": json.decode(pt)});
+      }
 
       //print("received data");
-     // print(
+      // print(
       //    'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
-
     });
-
 
     /// If needed you can listen for published messages that have completed the publishing
     /// handshake which is Qos dependant. Any message received on this stream has completed its
     /// publishing handshake with the broker.
-    /*client.published.listen((MqttPublishMessage message) {
+/*client.published.listen((MqttPublishMessage message) {
       print(
           'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
     });
@@ -136,14 +151,14 @@ class MqttHelper {
 
     /// Publish it
     print('EXAMPLE::Publishing our topic');*/
-    //client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload);
+//client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload);
 
-    //Future.delayed(Duration(seconds: 20)).then((value) =>
-      //  client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload));
+//Future.delayed(Duration(seconds: 20)).then((value) =>
+//  client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload));
 
     /// Ok, we will now sleep a while, in this gap you will see ping request/response
     /// messages being exchanged by the keep alive mechanism.
-    /* print('EXAMPLE::Sleeping....');
+/* print('EXAMPLE::Sleeping....');
     await MqttUtilities.asyncSleep(120);
 
     /// Finally, unsubscribe and exit gracefully

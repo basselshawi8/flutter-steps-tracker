@@ -13,6 +13,8 @@ import 'package:micropolis_test/features/incident/presentation/widgets/incident_
 import 'package:micropolis_test/features/incident/presentation/widgets/incident_subject_widget.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/incidents_widget.dart';
 
+import '../../../../main.dart';
+
 class IncidentsScreen extends StatefulWidget {
   static const routeName = '/incidentsWindow';
 
@@ -102,7 +104,8 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                       child: ClipRRect(
                         child: Consumer<IncidentsChangeNotifier>(
                           builder: (context, state, _) {
-                            if (state.imageCap == null) {
+                            if (state.imageCap == null ||
+                                state.imageCap.length < 40) {
                               return Image.asset(
                                 IMG_PERSON,
                                 width: 250.w,
@@ -133,7 +136,8 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                       child: ClipRRect(
                         child: Consumer<IncidentsChangeNotifier>(
                           builder: (context, state, _) {
-                            if (state.imageMatch == null) {
+                            if (state.imageMatch == null ||
+                                state.imageMatch.length < 40) {
                               return Image.asset(
                                 IMG_PERSON,
                                 width: 120.w,
@@ -162,7 +166,9 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                     type: widget.type,
                   ),
                   IncidentSubjectWidget(),
-                  IncidentActionsWidget(),
+                  IncidentActionsWidget(
+                    incidentID: state?.currentIncident?.id ?? "",
+                  ),
                   if (state.showSubjectData == true) SuspectDataWidget()
                 ],
               ),
