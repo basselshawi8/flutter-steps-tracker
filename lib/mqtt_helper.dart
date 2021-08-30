@@ -9,7 +9,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 class MqttHelper {
   static final MqttHelper _singleton = MqttHelper._internal();
 
-  final client = MqttBrowserClient('ws://192.168.1.101', '');
+  final client = MqttBrowserClient('ws://192.168.1.103', '');
 
   Stream dataReceived;
   Stream locationReceived;
@@ -17,6 +17,8 @@ class MqttHelper {
   StreamController _streamController;
   StreamController _streamLocationController;
   StreamController _streamIncidnetController;
+
+  var pubTopic = 'xavier_1/control';
 
   factory MqttHelper() {
     return _singleton;
@@ -133,24 +135,15 @@ class MqttHelper {
     /// If needed you can listen for published messages that have completed the publishing
     /// handshake which is Qos dependant. Any message received on this stream has completed its
     /// publishing handshake with the broker.
-/*client.published.listen((MqttPublishMessage message) {
+    client.published.listen((MqttPublishMessage message) {
       print(
           'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
     });
 
-    /// Lets publish to our topic
-    /// Use the payload builder rather than a raw buffer
-    /// Our known topic to publish to
-    const pubTopic = 'xavier_1/camerastream';
-    final builder = MqttClientPayloadBuilder();
-    builder.addString('Hello from mqtt_client');
-
-    /// Subscribe to it
-    print('EXAMPLE::Subscribing to the Dart/Mqtt_client/testtopic topic');
     client.subscribe(pubTopic, MqttQos.atLeastOnce);
 
     /// Publish it
-    print('EXAMPLE::Publishing our topic');*/
+    print('EXAMPLE::Publishing our topic');
 //client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload);
 
 //Future.delayed(Duration(seconds: 20)).then((value) =>
@@ -169,6 +162,13 @@ class MqttHelper {
     await MqttUtilities.asyncSleep(2);
     print('EXAMPLE::Disconnecting');
     client.disconnect();*/
+  }
+
+  void publishAi(bool value) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap = json.encode({"ai":value});
+    builder.addString(payloadMap);
+    client.publishMessage(pubTopic, MqttQos.atLeastOnce, builder.payload);
   }
 
   void onSubscribed(String topic) {

@@ -81,6 +81,8 @@ const IMG_DOG = 'assets/images/png/dog.png';
 const IMG_DRONE = 'assets/images/png/drone.png';
 const IMG_LIVE = 'assets/images/png/live.png';
 const IMG_POLICE_CAR = 'assets/images/png/policeCar.png';
+const IMG_INCIDENT_PIN = 'assets/images/png/incidentPin.png';
+
 
 //map styles
 

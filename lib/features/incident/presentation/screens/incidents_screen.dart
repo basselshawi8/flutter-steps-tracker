@@ -33,6 +33,9 @@ class _IncidentsScreenState extends State<IncidentsScreen>
     with SingleTickerProviderStateMixin {
   LatLng localLocation;
   final Map<String, Marker> _markers = {};
+  GoogleMapController _controller;
+
+  List<LatLng> _locations = [LatLng(40.7831, -73.9712)];
 
   @override
   void initState() {
@@ -50,28 +53,31 @@ class _IncidentsScreenState extends State<IncidentsScreen>
   Future<void> _onMapCreated(GoogleMapController controller) async {
     var _darkMapStyle = await rootBundle.loadString(MAP_DARK_STYLE);
     controller.setMapStyle(_darkMapStyle);
+    _controller = controller;
+  }
 
-    final locations = [LatLng(51.5074, 0.1278), LatLng(48.8566, 2.3522)];
+  _buildMarkers() {
+    _markers.clear();
+    Future.delayed(Duration(milliseconds: 250))
+        .then((value) => _redrawMarkers());
+  }
+
+  _redrawMarkers() async {
     var icon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration.empty, IMG_ROBOT_MARKER);
-
-    setState(() {
-      /*_markers.clear();
-      var count = 1;
-      for (final position in locations) {
-        final marker = Marker(
-            markerId: MarkerId("robot $count"),
-            position: position,
-            infoWindow: InfoWindow(
-              title: "robot $count",
-              snippet: "robot $count position",
-            ),
-            icon: icon
-        );
-        count += 1;
-        _markers["robot $count"] = marker;
-      }*/
-    });
+        ImageConfiguration.empty, IMG_INCIDENT_PIN);
+    var count = 1;
+    for (var position in _locations) {
+      final marker = Marker(
+          markerId: MarkerId("robot $count"),
+          position: position,
+          infoWindow: InfoWindow(
+            title: "robot $count",
+            snippet: "robot $count position",
+          ),
+          icon: icon);
+      count += 1;
+      _markers["robot $count"] = marker;
+    }
   }
 
   @override
@@ -80,6 +86,18 @@ class _IncidentsScreenState extends State<IncidentsScreen>
       body: SafeArea(
         child: Consumer<IncidentsChangeNotifier>(
           builder: (context, state, _) {
+            if (state.currentIncident != null) {
+              var stateLocation = LatLng(
+                  double.tryParse(state.currentIncident.latitude),
+                  double.tryParse(state.currentIncident.longitude));
+              if (_locations.first != stateLocation) {
+                _controller
+                    .animateCamera(CameraUpdate.newLatLng(stateLocation));
+                _locations.clear();
+                _locations.add(stateLocation);
+                _buildMarkers();
+              }
+            }
             return Container(
               width: double.maxFinite,
               height: double.maxFinite,

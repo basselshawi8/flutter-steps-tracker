@@ -3,6 +3,7 @@ import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/main.dart';
 
 class ToggleWidget extends StatefulWidget {
   final String name;
@@ -199,7 +200,7 @@ class _AIWidgetState extends State<AIWidget> {
                       child: ToggleWidget(
                         name: "AI",
                         valueUpdated: (val) {
-                          print(val);
+                          mqttHelper.publishAi(val);
                         },
                       ),
                     ),
