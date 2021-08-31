@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/core/http/api_url.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 import 'package:micropolis_test/features/incident/data/params/incidents_param.dart';
 import 'package:micropolis_test/features/incident/data/params/single_incident_param.dart';
@@ -227,23 +228,37 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (_incidents.length > 0 &&
-          selectedFirst == false &&
-          Provider.of<IncidentsChangeNotifier>(context, listen: false)
-                  .currentIncident ==
-              null) {
+      if (_incidents.length > 0 && selectedFirst == false) {
         selectedFirst = true;
-        Provider.of<IncidentsChangeNotifier>(context, listen: false).imageCap =
-            _incidents[0].imageCap;
-        Provider.of<IncidentsChangeNotifier>(context, listen: false)
-            .imageMatch = _incidents[0].imageMatch;
-
-        Provider.of<IncidentsChangeNotifier>(context, listen: false)
-            .currentIncident = _incidents[0];
+        _loadData(0);
       }
     });
-
     return _buildIncidentsContent(false);
+  }
+
+  _loadData(int index) {
+    setState(() {
+      _selectedItem = index;
+    });
+
+    if (_incidents[index].incidentType == "F") {
+      Provider.of<IncidentsChangeNotifier>(context, listen: false).imageCap =
+          _incidents[index].imageCap;
+      Provider.of<IncidentsChangeNotifier>(context, listen: false).imageMatch =
+          _incidents[index].imageMatch;
+      Provider.of<IncidentsChangeNotifier>(context, listen: false).videoURL =
+          null;
+    } else {
+      Provider.of<IncidentsChangeNotifier>(context, listen: false).imageCap =
+          null;
+      Provider.of<IncidentsChangeNotifier>(context, listen: false).imageMatch =
+          null;
+      Provider.of<IncidentsChangeNotifier>(context, listen: false).videoURL =
+          "$API_OPERATION_BASE/api/v1/incident/behavioral/${_incidents[index].videoRefId}";
+    }
+
+    Provider.of<IncidentsChangeNotifier>(context, listen: false)
+        .currentIncident = _incidents[index];
   }
 
   _buildIncidentsContent(bool loading) {
@@ -282,17 +297,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
 
               return GestureDetector(
                 onTap: () {
-                  setState(() {
-                    _selectedItem = index;
-                  });
-
-                  Provider.of<IncidentsChangeNotifier>(context, listen: false)
-                      .imageCap = _incidents[index].imageCap;
-                  Provider.of<IncidentsChangeNotifier>(context, listen: false)
-                      .imageMatch = _incidents[index].imageMatch;
-
-                  Provider.of<IncidentsChangeNotifier>(context, listen: false)
-                      .currentIncident = _incidents[index];
+                  _loadData(index);
                 },
                 child: IncidentItemWidget(
                   suspectPercentage: min((index + 1) * 10, 100),

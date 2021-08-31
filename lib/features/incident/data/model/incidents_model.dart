@@ -130,25 +130,25 @@ class UpdatedIncidentModel extends BaseModel {
         success: json.containsKey("success") == false
             ? null
             : json["success"] == null
-            ? null
-            : json["success"],
+                ? null
+                : json["success"],
         message: json.containsKey("message") == false
             ? null
             : json["message"] == null
-            ? null
-            : json["message"],
+                ? null
+                : json["message"],
         data: json.containsKey("data") == false
             ? null
             : json["data"] == null
-            ? null
-            : IncidentsDatum.fromMap(json["data"]),
+                ? null
+                : IncidentsDatum.fromMap(json["data"]),
       );
 
   Map<String, dynamic> toMap() => {
-    "success": success == null ? null : success,
-    "message": message == null ? null : message,
-    "data": data == null ? null : data.toMap(),
-  };
+        "success": success == null ? null : success,
+        "message": message == null ? null : message,
+        "data": data == null ? null : data.toMap(),
+      };
 
   @override
   BaseEntity toEntity() {
@@ -169,6 +169,7 @@ class IncidentsDatum extends BaseModel {
     this.dateRaise,
     this.latitude,
     this.longitude,
+    this.videoRefId,
     this.behavioralClass,
     this.incidentType,
     this.v,
@@ -184,6 +185,7 @@ class IncidentsDatum extends BaseModel {
   final String dateRaise;
   final String latitude;
   final String longitude;
+  final String videoRefId;
   final BehavioralClass behavioralClass;
   final String incidentType;
   final int v;
@@ -219,6 +221,11 @@ class IncidentsDatum extends BaseModel {
             : json["imageMatch"] == null
                 ? null
                 : json["imageMatch"],
+        videoRefId: json.containsKey("video_refid") == false
+            ? null
+            : json["video_refid"] == null
+                ? null
+                : json["video_refid"],
         classification: json.containsKey("classification") == false
             ? null
             : json["classification"] == null
@@ -269,6 +276,7 @@ class IncidentsDatum extends BaseModel {
         "incidentDesc": incidentDesc == null ? null : incidentDesc,
         "imageCap": imageCap == null ? null : imageCap,
         "imageMatch": imageMatch == null ? null : imageMatch,
+        "video_refid": videoRefId == null ? null : videoRefId,
         "classification": classification == null
             ? null
             : behavioralClassValues.reverse[classification],

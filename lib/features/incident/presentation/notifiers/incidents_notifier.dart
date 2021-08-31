@@ -18,11 +18,15 @@ class IncidentsChangeNotifier extends ChangeNotifier {
 
   String _newIncidentID;
 
+  String _videoURL;
+
   String get imageCap => _imageCap;
 
   String get newIncidentID => _newIncidentID;
 
   String get imageMatch => _imageMatch;
+
+  String get videoURL => _videoURL;
 
   bool get showSubjectData => _showSubjectData;
 
@@ -54,6 +58,9 @@ class IncidentsChangeNotifier extends ChangeNotifier {
     _imageCap = val;
     notifyListeners();
   }
+  setImageCapWithoutNotifications(String val) {
+    _imageCap = val;
+  }
 
   set newIncidentID(String val) {
     _newIncidentID = val;
@@ -65,6 +72,15 @@ class IncidentsChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  setImageMatchWithoutNotifications(String val) {
+    _imageMatch = val;
+  }
+
+  set videoURL(String val) {
+    _videoURL = val;
+    notifyListeners();
+  }
+
   set showSubjectData(bool val) {
     _showSubjectData = val;
     notifyListeners();
@@ -73,6 +89,10 @@ class IncidentsChangeNotifier extends ChangeNotifier {
   set currentIncident(IncidentsDatum val) {
     _currentIncident = val;
     notifyListeners();
+  }
+
+  setCurrentIncidentWithoutNotifications(IncidentsDatum val) {
+    _currentIncident = val;
   }
 
   set updateHomeIncidentClassifications(bool val) {
