@@ -171,7 +171,6 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                                   orElse: () => null) ==
                               null) {
                             _incidents.insert(0, state.incident.data);
-                            print("single incident");
                           }
                         }
                         return _refreshIncidents();
@@ -187,6 +186,21 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                                 : widget.type == "beta"
                                     ? BehavioralClass.BETA
                                     : BehavioralClass.ALPHA;
+
+                        var pinned = Provider.of<IncidentsChangeNotifier>(
+                                context,
+                                listen: false)
+                            .incidents;
+
+                        for (var inc in pinned) {
+                          if (_incidents.firstWhere(
+                                  (element) => element.id == inc.id,
+                                  orElse: () => null) ==
+                              null) {
+                            _incidents.add(inc);
+                          }
+                        }
+
                         var incidents = state.incidents.data
                             .where((element) =>
                                 element.classification == typeToQuery)
