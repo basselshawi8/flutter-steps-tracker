@@ -47,6 +47,7 @@ class _AppState extends State<App> {
         ChangeNotifierProvider.value(
           value: IncidentsChangeNotifier(),
         ),
+
         BlocProvider(
           create: (_) => RestaurantsBloc(),
           lazy: true,

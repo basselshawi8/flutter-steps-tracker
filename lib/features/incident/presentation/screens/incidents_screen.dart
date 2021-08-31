@@ -5,6 +5,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/core/http/api_url.dart';
 import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/behavior_video_widget.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/suspect_data_widget.dart';
@@ -99,6 +100,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                 _buildMarkers();
               }
             }
+
             return Container(
               width: double.maxFinite,
               height: double.maxFinite,
@@ -117,70 +119,31 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                         ),
                         markers: _markers.values.toSet(),
                       )),
-                  if (state.imageMatch != null)
+                  if (state?.currentIncident?.imageMatch != null && state?.currentIncident?.videoRefId == null)
                     Positioned(
                         top: 25.h,
                         left: 30.w,
                         child: ClipRRect(
-                          child: Consumer<IncidentsChangeNotifier>(
-                            builder: (context, state, _) {
-                              if (state.imageCap == null ||
-                                  state.imageCap.length < 40) {
-                                return Image.asset(
-                                  IMG_PERSON,
-                                  width: 250.w,
-                                  height: 250.w,
-                                  fit: BoxFit.cover,
-                                );
-                              } else {
-                                Uint8List bytes = base64Decode(
-                                    state.currentIncident == null
-                                        ? state.imageCap
-                                            .split("data:image/png;base64,")[1]
-                                        : state.currentIncident.imageCap.split(
-                                            "data:image/png;base64,")[1]);
-                                return Image.memory(
-                                  bytes,
-                                  width: 250.w,
-                                  height: 250.w,
-                                  fit: BoxFit.cover,
-                                );
-                              }
-                            },
+                          child: Image.memory(
+                            base64Decode(state.currentIncident.imageCap
+                                .split("data:image/png;base64,")[1]),
+                            width: 250.w,
+                            height: 250.w,
+                            fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )),
-                  if (state.imageMatch != null)
+                  if (state?.currentIncident?.imageCap != null && state?.currentIncident?.videoRefId == null)
                     Positioned(
                         top: 25.h,
                         left: 300.w,
                         child: ClipRRect(
-                          child: Consumer<IncidentsChangeNotifier>(
-                            builder: (context, state, _) {
-                              if (state.imageMatch == null ||
-                                  state.imageMatch.length < 40) {
-                                return Image.asset(
-                                  IMG_PERSON,
-                                  width: 120.w,
-                                  height: 120.w,
-                                  fit: BoxFit.cover,
-                                );
-                              } else {
-                                Uint8List bytes = base64Decode(state
-                                            .currentIncident ==
-                                        null
-                                    ? state.imageMatch
-                                        .split("data:image/png;base64,")[1]
-                                    : state.currentIncident.imageMatch
-                                        .split("data:image/png;base64,")[1]);
-                                return Image.memory(
-                                  bytes,
-                                  width: 120.w,
-                                  height: 120.w,
-                                  fit: BoxFit.cover,
-                                );
-                              }
-                            },
+                          child: Image.memory(
+                            base64Decode(state.currentIncident.imageMatch
+                                .split("data:image/png;base64,")[1]),
+                            width: 250.w,
+                            height: 250.w,
+                            fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )),
@@ -188,9 +151,10 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                     type: widget.type,
                   ),
                   IncidentSubjectWidget(),
-                  if (state.videoURL != null)
+                  if (state?.currentIncident?.videoRefId != null)
                     BehaviorVideoWidget(
-                      videoURL: state.videoURL,
+                      videoURL:
+                          "$API_OPERATION_BASE/api/v1/incident/behavioral/${state.currentIncident.videoRefId}",
                     ),
                   IncidentActionsWidget(
                     incidentID: state?.currentIncident?.id ?? "",

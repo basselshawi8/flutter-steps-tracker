@@ -21,7 +21,10 @@ import '../../../../main.dart';
 class IncidentsListWidget extends StatefulWidget {
   final String type;
 
-  const IncidentsListWidget({Key key, this.type}) : super(key: key);
+  const IncidentsListWidget({
+    Key key,
+    this.type,
+  }) : super(key: key);
 
   @override
   _IncidentsListWidgetState createState() {
@@ -33,7 +36,6 @@ class IncidentsListWidget extends StatefulWidget {
 class _IncidentsListWidgetState extends State<IncidentsListWidget> {
   int _selectedItem = 0;
 
-  var selectedFirst = false;
   var _incidentsBloc = IncidentsListBloc();
 
   var _currentPage = 0;
@@ -228,8 +230,11 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (_incidents.length > 0 && selectedFirst == false) {
-        selectedFirst = true;
+      if (_incidents.length > 0 &&
+          (_selectedItem < 0 ||
+              Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                      .currentIncident ==
+                  null)) {
         _loadData(0);
       }
     });
@@ -241,22 +246,6 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
       _selectedItem = index;
     });
 
-    if (_incidents[index].incidentType == "F") {
-      Provider.of<IncidentsChangeNotifier>(context, listen: false).imageCap =
-          _incidents[index].imageCap;
-      Provider.of<IncidentsChangeNotifier>(context, listen: false).imageMatch =
-          _incidents[index].imageMatch;
-      Provider.of<IncidentsChangeNotifier>(context, listen: false).videoURL =
-          null;
-    } else {
-      Provider.of<IncidentsChangeNotifier>(context, listen: false).imageCap =
-          null;
-      Provider.of<IncidentsChangeNotifier>(context, listen: false).imageMatch =
-          null;
-      Provider.of<IncidentsChangeNotifier>(context, listen: false).videoURL =
-          "$API_OPERATION_BASE/api/v1/incident/behavioral/${_incidents[index].videoRefId}";
-    }
-
     Provider.of<IncidentsChangeNotifier>(context, listen: false)
         .currentIncident = _incidents[index];
   }
@@ -267,7 +256,6 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
         builder: (context, state, _) {
           if (state.updateHomeIncidentClassifications == true) {
             _selectedItem = 0;
-            selectedFirst = false;
             _currentPage = 0;
             _incidents.clear();
             _stopFetchingData = false;
