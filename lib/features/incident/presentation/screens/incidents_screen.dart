@@ -60,7 +60,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
 
   _buildMarkers() {
     _markers.clear();
-    Future.delayed(Duration(milliseconds: 250))
+    Future.delayed(Duration(milliseconds: 500))
         .then((value) => _redrawMarkers());
   }
 
@@ -101,6 +101,20 @@ class _IncidentsScreenState extends State<IncidentsScreen>
               }
             }
 
+            String imageCapDecoded = null;
+            String imageMathcDecoded = null;
+            if (state?.currentIncident?.imageCap != null && state.currentIncident.imageCap
+                .split("data:image/jpeg;base64,").length > 1) {
+              imageCapDecoded = state.currentIncident.imageCap
+                  .split("data:image/jpeg;base64,")[1];
+            }
+
+            if (state?.currentIncident?.imageMatch != null && state.currentIncident.imageMatch
+                .split("data:image/jpeg;base64,").length > 1) {
+              imageMathcDecoded = state.currentIncident.imageMatch
+                  .split("data:image/jpeg;base64,")[1];
+            }
+
             return Container(
               width: double.maxFinite,
               height: double.maxFinite,
@@ -119,28 +133,30 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                         ),
                         markers: _markers.values.toSet(),
                       )),
-                  if (state?.currentIncident?.imageMatch != null && state?.currentIncident?.videoRefId == null)
+                  if (imageMathcDecoded != null &&
+                      imageCapDecoded != null &&
+                      state?.currentIncident?.videoRefId == null)
                     Positioned(
                         top: 25.h,
                         left: 30.w,
                         child: ClipRRect(
                           child: Image.memory(
-                            base64Decode(state.currentIncident.imageCap
-                                .split("data:image/png;base64,")[1]),
+                            base64Decode(imageCapDecoded),
                             width: 250.w,
                             height: 250.w,
                             fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )),
-                  if (state?.currentIncident?.imageCap != null && state?.currentIncident?.videoRefId == null)
+                  if (imageMathcDecoded != null &&
+                      imageCapDecoded != null &&
+                      state?.currentIncident?.videoRefId == null)
                     Positioned(
                         top: 25.h,
                         left: 300.w,
                         child: ClipRRect(
                           child: Image.memory(
-                            base64Decode(state.currentIncident.imageMatch
-                                .split("data:image/png;base64,")[1]),
+                            base64Decode(imageMathcDecoded),
                             width: 250.w,
                             height: 250.w,
                             fit: BoxFit.cover,
@@ -154,7 +170,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                   if (state?.currentIncident?.videoRefId != null)
                     BehaviorVideoWidget(
                       videoURL:
-                          "$API_OPERATION_BASE/api/v1/incident/behavioral/${state.currentIncident.videoRefId}",
+                          "${API_OPERATION_BASE}api/v1/incident/behavioral/${state.currentIncident.videoRefId}",
                     ),
                   IncidentActionsWidget(
                     incidentID: state?.currentIncident?.id ?? "",

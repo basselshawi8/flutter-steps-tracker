@@ -24,7 +24,6 @@ class _BehaviorVideoWidgetState extends State<BehaviorVideoWidget> {
   @override
   void initState() {
     super.initState();
-
     _configureCamera();
   }
 
@@ -113,7 +112,6 @@ class _BehaviorVideoWidgetState extends State<BehaviorVideoWidget> {
             ),
           ),
         ),
-
       ],
     );
   }

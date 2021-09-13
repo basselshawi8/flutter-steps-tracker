@@ -1,8 +1,7 @@
 import '../entities/base_entity.dart';
 
-abstract class BaseModel<T extends BaseEntity>{
+abstract class BaseModel<T extends BaseEntity> {
   T toEntity();
 }
 
-abstract class Basel<T>{
-}
+abstract class Basel<T> {}

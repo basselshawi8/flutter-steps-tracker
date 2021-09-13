@@ -18,6 +18,9 @@ import 'package:provider/provider.dart';
 
 import '../../../../main.dart';
 
+List<IncidentsDatum> _incidents = [];
+int _selectedItem = 0;
+
 class IncidentsListWidget extends StatefulWidget {
   final String type;
 
@@ -34,17 +37,17 @@ class IncidentsListWidget extends StatefulWidget {
 }
 
 class _IncidentsListWidgetState extends State<IncidentsListWidget> {
-  int _selectedItem = 0;
-
   var _incidentsBloc = IncidentsListBloc();
 
   var _currentPage = 0;
   var _stopFetchingData = false;
   var _controller = ScrollController();
-  List<IncidentsDatum> _incidents = [];
 
   @override
   void initState() {
+    if (_selectedItem >= _incidents.length) {
+      _selectedItem = 0;
+    }
     _incidentsBloc.add(GetIncidents(IncidentsParam(
         lookup: "classification:${widget.type}",
         limit: 20,

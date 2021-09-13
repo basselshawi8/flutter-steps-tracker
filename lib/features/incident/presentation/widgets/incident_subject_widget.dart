@@ -59,6 +59,8 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
         right: 400.w,
         child: Consumer<IncidentsChangeNotifier>(
           builder: (context, state, _) {
+            print("suspects");
+            print(state.currentIncident?.suspects?.length);
             if (state.currentIncident != null) {
               if (_incidentID != state.currentIncident.id) {
                 _isAsync = true;
@@ -84,11 +86,13 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                     Provider.of<IncidentsChangeNotifier>(context, listen: false)
                         .suspects = state.subjects;
 
-                    name =
-                        "${state.subjects.data.first.name} ${state.subjects.data.first.surname}";
-                    idType = state.subjects.data.first.idType;
-                    idNo = state.subjects.data.first.idNo;
-                    nationality = state.subjects.data.first.nationality;
+                    if (state.subjects.data.length > 0) {
+                      name =
+                          "${state.subjects.data.first.name} ${state.subjects.data.first.surname}";
+                      idType = state.subjects.data.first.idType;
+                      idNo = state.subjects.data.first.idNo;
+                      nationality = state.subjects.data.first.nationality;
+                    }
                     _isAsync = false;
                   });
                 } else if (state is UpgradeIncidentSuccessState) {
