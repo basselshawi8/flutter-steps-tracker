@@ -63,6 +63,8 @@ dependencies:
   web_socket_channel: ^2.1.0
   image: ^3.0.2
   mqtt_client: ^9.5.0
+  country_picker: ^2.0.8
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:

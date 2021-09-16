@@ -18,7 +18,7 @@ import 'package:micropolis_test/features/camera/presentation/widgets/incidents_w
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_list_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_widget.dart';
-import 'package:micropolis_test/features/map/presentation/screen/robot_location_map.dart';
+import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -141,7 +141,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.of(context)
-                                        .pushNamed(RobotLocationMap.routeName);
+                                        .pushNamed(PolygonDrawer.routeName);
                                   },
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,

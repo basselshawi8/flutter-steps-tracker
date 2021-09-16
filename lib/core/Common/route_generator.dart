@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:micropolis_test/features/incident/presentation/screens/incidents_screen.dart';
-import 'package:micropolis_test/features/map/presentation/screen/robot_location_map.dart';
+import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
 import 'package:micropolis_test/features/restaurants/presentation/screen/menu_screen.dart';
 
 class RouteGenerator {
@@ -19,9 +19,9 @@ class RouteGenerator {
               settings: settings);
         }
         return _errorRoute();
-      case RobotLocationMap.routeName:
+      case PolygonDrawer.routeName:
         return CupertinoPageRoute(
-            builder: (_) => RobotLocationMap(), settings: settings);
+            builder: (_) => PolygonDrawer(), settings: settings);
       case IncidentsScreen.routeName:
         return CupertinoPageRoute(
             builder: (_) => IncidentsScreen(
