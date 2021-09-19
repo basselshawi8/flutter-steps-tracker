@@ -14,6 +14,7 @@ import 'features/camera/presentation/bloc/incident_bloc.dart';
 import 'features/camera/presentation/notifiers/actions_change_notifier.dart';
 import 'features/camera/presentation/screens/main_window_screen.dart';
 import 'features/incident/presentation/bloc/incident_bloc.dart';
+import 'features/map/presentation/bloc/map_bloc.dart';
 import 'features/restaurants/presentation/bloc/restaurants_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'navigation_service.dart';
@@ -47,9 +48,12 @@ class _AppState extends State<App> {
         ChangeNotifierProvider.value(
           value: IncidentsChangeNotifier(),
         ),
-
         BlocProvider(
           create: (_) => RestaurantsBloc(),
+          lazy: true,
+        ),
+        BlocProvider(
+          create: (_) => MapBloc(),
           lazy: true,
         ),
         BlocProvider(
@@ -155,6 +159,8 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     super.dispose();
+
+    BlocProvider.of<MapBloc>(context).close();
     BlocProvider.of<RestaurantsBloc>(context).close();
     BlocProvider.of<IncidentsBloc>(context).close();
     BlocProvider.of<IncidentsListBloc>(context).close();

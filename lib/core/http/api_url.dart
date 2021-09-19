@@ -11,3 +11,5 @@ const API_MENUS = "/api/v1/menus/restaurant";
 const API_GET_INCIDENT = "api/v1/incident";
 const API_GET_INCIDENT_CLASSIFICATION = "api/v1/incident/countclassification";
 const API_GET_SUBJECTS = "api/v1/subject/getManySubject";
+
+const API_CREATE_POLYGON = "api/v1/sensitivelocation";

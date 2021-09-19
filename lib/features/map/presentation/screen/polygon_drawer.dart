@@ -1,5 +1,7 @@
 import 'package:country_picker/country_picker.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -7,6 +9,10 @@ import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/core/extensions/latLng_extension.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/core/params/no_params.dart';
+import 'package:micropolis_test/core/ui/error_widget.dart';
+import 'package:micropolis_test/features/map/data/models/polygons_model.dart';
+import 'package:micropolis_test/features/map/presentation/bloc/bloc.dart';
 import 'package:micropolis_test/features/map/presentation/ui_extension/edit_polygon_extension.dart';
 
 class CriticalTime {
@@ -23,7 +29,6 @@ class PolygonDrawer extends StatefulWidget {
 
   @override
   PolygonDrawerState createState() {
-
     return PolygonDrawerState();
   }
 }
@@ -49,9 +54,126 @@ class PolygonDrawerState extends State<PolygonDrawer> {
   String selectedDay = "Mon";
   TimeOfDay from;
   TimeOfDay to;
+  bool isAsync = false;
   bool flagSuspect = false;
+  CancelToken cancelToken = CancelToken();
 
   Map<String, List<LatLng>> polygonLocations = {"1": []};
+
+  Map<String, List<LatLng>> networkPolygonLocations = {};
+
+  @override
+  void dispose() {
+    cancelToken.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    BlocProvider.of<MapBloc>(context)
+        .add(GetPolygons(NoParams(cancelToken: cancelToken)));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Map Drawer'),
+          backgroundColor: CoreStyle.operationGreenContent,
+        ),
+        body: BlocBuilder<MapBloc, MapState>(
+          buildWhen: (prev, next) {
+            if (next is GetPolygonsWaitingState ||
+                next is GetPolygonsSuccessState ||
+                next is GetPolygonsFailureState) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          builder: (context, state) {
+            if (state is GetPolygonsWaitingState) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is GetPolygonsFailureState) {
+              return ErrorScreenWidget(
+                error: state.error,
+                state: state,
+              );
+            } else if (state is GetPolygonsSuccessState) {
+              return _buildContent(state.polygonModel);
+            } else {
+              return Container();
+            }
+          },
+        ));
+  }
+
+  _buildContent(PolygonsModel model) {
+    networkPolygonLocations.clear();
+    for (var poly in model.data) {
+      networkPolygonLocations[poly.id] = poly.polygon.coordinates.first
+          .map((e) => LatLng(e[0], e[1]))
+          .toList();
+    }
+    _buildPolygon();
+
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: const LatLng(40.7831, -73.9712),
+              zoom: 12,
+            ),
+            polylines: currentPolyline.toSet(),
+            polygons: _polygons.values.toSet(),
+            circles: _circles.toSet(),
+            markers: _markers.values.toSet(),
+          ),
+        ),
+        Positioned.fill(child: GestureDetector(onTapUp: (details) async {
+          if (isDrawingMode == false) {
+            return;
+          }
+          var latLong = await _controller.getLatLng(ScreenCoordinate(
+              x: details.localPosition.dx.toInt(),
+              y: details.localPosition.dy.toInt()));
+
+          if (currentPositions.length > 0) {
+            var lastPosition = currentPositions.first;
+            var dist = lastPosition.dist(latLong);
+            print(dist);
+            if (dist < 0.1) {
+              var key = polygonLocations?.keys?.last ?? "1";
+              polygonLocations["${int.tryParse(key) + 1}"] = currentPositions;
+              currentPositions = [];
+              isDrawingMode = false;
+              showEditPolygonDetails = true;
+            } else {
+              currentPositions.add(latLong);
+            }
+          } else {
+            currentPositions.add(latLong);
+          }
+
+          _buildPolygon();
+          _buildPolyline();
+          _buildCircles();
+          Future.delayed(Duration(milliseconds: 100))
+              .then((value) => setState(() {}));
+        })),
+        _buildStartPolygonDrawing(),
+        _buildClearPolygonDrawing(),
+        _buildClosePolygonDrawing(),
+        _buildRemoveLastPoint(),
+        if (showEditPolygonDetails == true) editPolygonDetails()
+      ],
+    );
+  }
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     _controller = controller;
@@ -96,6 +218,20 @@ class PolygonDrawerState extends State<PolygonDrawer> {
       count += 1;
       _polygons["robot $count"] = polygon;
     }
+
+    for (var key in networkPolygonLocations.keys) {
+      final polygon = Polygon(
+          polygonId: PolygonId(key),
+          points: networkPolygonLocations[key],
+          strokeColor: CoreStyle.operationBlackColor,
+          strokeWidth: 2,
+          fillColor: CoreStyle.operationBlackColor.withOpacity(0.35),
+          zIndex: 9,
+          onTap: () {
+            print(key);
+          });
+      _polygons[key] = polygon;
+    }
   }
 
   _buildPolyline() async {
@@ -113,10 +249,11 @@ class PolygonDrawerState extends State<PolygonDrawer> {
   _buildCircles() async {
     _circles.clear();
 
+    var zoomLevel = await _controller.getZoomLevel();
     var count = 0;
     for (var point in currentPositions) {
       var circle = Circle(
-          radius: 40,
+          radius: 40 / (zoomLevel / 4),
           circleId: CircleId("id$count"),
           center: point,
           zIndex: 10,
@@ -126,70 +263,6 @@ class PolygonDrawerState extends State<PolygonDrawer> {
       _circles.add(circle);
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Robots Locations'),
-          backgroundColor: CoreStyle.operationGreenContent,
-        ),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
-                  target: const LatLng(40.7831, -73.9712),
-                  zoom: 12,
-                ),
-                polylines: currentPolyline.toSet(),
-                polygons: _polygons.values.toSet(),
-                circles: _circles.toSet(),
-                markers: _markers.values.toSet(),
-              ),
-            ),
-            Positioned.fill(child: GestureDetector(onTapUp: (details) async {
-              if (isDrawingMode == false) {
-                return;
-              }
-              var latLong = await _controller.getLatLng(ScreenCoordinate(
-                  x: details.localPosition.dx.toInt(),
-                  y: details.localPosition.dy.toInt()));
-
-              if (currentPositions.length > 0) {
-                var lastPosition = currentPositions.first;
-                var dist = lastPosition.dist(latLong);
-                print(dist);
-                if (dist < 0.1) {
-                  var key = polygonLocations?.keys?.last ?? "1";
-                  polygonLocations["${int.tryParse(key) + 1}"] =
-                      currentPositions;
-                  currentPositions = [];
-                  isDrawingMode = false;
-                  showEditPolygonDetails = true;
-                } else {
-                  currentPositions.add(latLong);
-                }
-              } else {
-                currentPositions.add(latLong);
-              }
-
-              _buildPolygon();
-              _buildPolyline();
-              _buildCircles();
-              Future.delayed(Duration(milliseconds: 100))
-                  .then((value) => setState(() {}));
-            })),
-            _buildStartPolygonDrawing(),
-            _buildClearPolygonDrawing(),
-            _buildClosePolygonDrawing(),
-            _buildRemoveLastPoint(),
-            if (showEditPolygonDetails == true) editPolygonDetails()
-          ],
-        ));
-  }
-
 
   _buildStartPolygonDrawing() {
     return Positioned(
@@ -310,5 +383,6 @@ class PolygonDrawerState extends State<PolygonDrawer> {
           ),
         ));
   }
+
   refresh() => setState(() {});
 }
