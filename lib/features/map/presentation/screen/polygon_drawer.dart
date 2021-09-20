@@ -212,7 +212,7 @@ class PolygonDrawerState extends State<PolygonDrawer> {
           points: polygonLocations[key],
           strokeColor: CoreStyle.operationBlackColor,
           strokeWidth: 2,
-          fillColor: CoreStyle.operationBlackColor.withOpacity(0.35),
+          fillColor: CoreStyle.operationMapPolygonColor.withOpacity(0.35),
           zIndex: 9,
           onTap: () {});
       count += 1;
@@ -225,7 +225,7 @@ class PolygonDrawerState extends State<PolygonDrawer> {
           points: networkPolygonLocations[key],
           strokeColor: CoreStyle.operationBlackColor,
           strokeWidth: 2,
-          fillColor: CoreStyle.operationBlackColor.withOpacity(0.35),
+          fillColor: CoreStyle.operationMapPolygonColor.withOpacity(0.35),
           zIndex: 9,
           onTap: () {
             print(key);

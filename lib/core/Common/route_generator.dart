@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:micropolis_test/features/camera/presentation/screens/main_window_screen.dart';
 import 'package:micropolis_test/features/incident/presentation/screens/incidents_screen.dart';
 import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
 import 'package:micropolis_test/features/restaurants/presentation/screen/menu_screen.dart';
+import 'package:micropolis_test/features/user_managment/presentation/screen/login_screen.dart';
+import 'package:micropolis_test/features/user_managment/presentation/screen/main_navigation_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -19,9 +22,19 @@ class RouteGenerator {
               settings: settings);
         }
         return _errorRoute();
+
+      case MainWindowScreen.routeName:
+        return CupertinoPageRoute(
+            builder: (_) => MainWindowScreen(), settings: settings);
+      case MainNavigationPage.routeName:
+        return CupertinoPageRoute(
+            builder: (_) => MainNavigationPage(), settings: settings);
       case PolygonDrawer.routeName:
         return CupertinoPageRoute(
             builder: (_) => PolygonDrawer(), settings: settings);
+      case LoginScreen.routeName:
+        return CupertinoPageRoute(
+            builder: (_) => LoginScreen(), settings: settings);
       case IncidentsScreen.routeName:
         return CupertinoPageRoute(
             builder: (_) => IncidentsScreen(

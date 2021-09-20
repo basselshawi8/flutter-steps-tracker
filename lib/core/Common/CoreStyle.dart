@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 abstract class CoreStyle {
   static double setWidthPercentage(percentage, context) {
@@ -15,6 +16,10 @@ abstract class CoreStyle {
       return MediaQuery.of(context).size.height;
   }
 
+  static String fontWithWeight(FontWeight weight) {
+    return GoogleFonts.poppins(fontWeight: weight)
+        .fontFamily;
+  }
 
   static const Color operationBlack3Color = Color(0xFF141414);
   static const Color operationBlack2Color = Color(0xFF252424);
@@ -30,14 +35,27 @@ abstract class CoreStyle {
   static const Color operationIncidentListBlackColor = Color(0xFF141313);
   static const Color operationIncidentItemListBlackColor = Color(0xFF212121);
   static const Color operationRedColor = Color(0xFFFF2424);
+  static const Color operationMapPolygonColor = Color(0xFFEA2A2A);
   static const Color operationRoseColor = Color(0xFFFFA5A5);
   static const Color operationRose2Color = Color(0xFFDE5E5E);
+  static const Color operationTextBlueColor = Color(0xFF404254);
+  static const Color operationLoginTextFieldBorderColor = Color(0xFFE8E8E8);
+  static const Color operationLightGreyTextColor = Color(0xFF8E8E8E);
+  static const Color operationButtonGreenColor = Color(0xFF008952);
+  static const Color operationDarkTextColor = Color(0xFF292929);
+  static const Color operationGrayTextColor = Color(0xFF464646);
+  static const Color operationLittleBoxColor = Color(0xFFF2F2F2);
+  static const Color operationGrayBackgroundColor = Color.fromARGB(255, 237, 237, 237);
+  static const Color operationBlackTextColor = Color(0xFF141313);
+  static const Color operationBoxShadow = Color.fromARGB(255, 237, 238, 241);
+
 
   static const Color operationDashColor = Color(0xFF313131);
   static const Color operationLightTextColor = Color(0xFFEAEAEA);
   static const Color operationPinBlackColor = Color(0xFF121212);
   static const Color operationDarkGreen = Color(0xFF38845D);
   static const Color operationIncidentActionColor = Color(0xFF2E2E2E);
+  static const Color operationTextGrayColor = Color(0xFF414141);
 
   static const Color operationGreyContent = Color(0xFF4A4A4A);
 
