@@ -8,6 +8,7 @@ import 'package:micropolis_test/features/map/presentation/bloc/bloc.dart';
 import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/features/user_managment/presentation/widgets/login_text_field.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 extension editPolygonDetailsExtension on PolygonDrawerState {
@@ -42,183 +43,268 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
           }
         },
         child: Positioned(
-            left: 460.w,
+            left: 260.w,
             top: 190.h,
             child: Container(
-              width: 1000.w,
-              height: 700.h,
+              width: 700.w,
+              height: 500.h,
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
               decoration: BoxDecoration(
-                  color: CoreStyle.operationBlack2Color,
+                  color: CoreStyle.white,
                   borderRadius: BorderRadius.circular(12.r)),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    SizedBox(
+                      height: 16.h,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        GestureDetector(
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 24.w),
+                          child: Text(
+                            "Area Details",
+                            style: TextStyle(
+                                color: CoreStyle.operationTextGrayColor,
+                                fontSize: 17.sp,
+                                fontFamily:
+                                    CoreStyle.fontWithWeight(FontWeight.w700)),
+                          ),
+                        ),
+                        InkWell(
                           onTap: () {
                             polygonNameController.text = "";
                             showEditPolygonDetails = false;
                             refresh();
                           },
-                          child: Icon(
-                            Icons.close,
-                            size: 40.w,
-                            color: CoreStyle.white,
+                          child: Container(
+                            width: 36.w,
+                            height: 36.w,
+                            margin: EdgeInsets.only(right: 12.w),
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 242, 242, 242),
+                                borderRadius: BorderRadius.circular(18.w)),
+                            child: Icon(Icons.close,
+                                size: 30.w,
+                                color: Color.fromARGB(
+                                  255,
+                                  105,
+                                  105,
+                                  105,
+                                )),
                           ),
                         ),
-                        Text(
-                          "Edit Polygon Details",
-                          style: TextStyle(
-                              color: CoreStyle.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 28.sp),
-                        ),
-                        Container(
-                          width: 10.w,
-                        )
                       ],
                     ),
                     SizedBox(
-                      height: 24.h,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 60.w),
-                      child: CustomTextField(
-                        helperText: "Polygon name",
-                        textInputAction: TextInputAction.done,
-                        focusNode: polygonNameFocusNode,
-                        textKey: polygonNameKey,
-                        controller: polygonNameController,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 24.h,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        showCountryPicker(
-                          context: context,
-                          showPhoneCode: true,
-                          // optional. Shows phone code before the country name.
-                          onSelect: (Country country) {
-                            selectedCountries.add(country);
-                            refresh();
-                          },
-                        );
-                      },
-                      child: Container(
-                        width: 160.w,
-                        height: 40.h,
-                        decoration: BoxDecoration(
-                            color: CoreStyle.white.withOpacity(0.8),
-                            borderRadius: BorderRadius.circular(8.r)),
-                        child: Center(
-                          child: Text(
-                            "Add Country",
-                            style: TextStyle(
-                                color: CoreStyle.operationBlack2Color,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 26.sp),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 12.h,
+                      height: 16.h,
                     ),
                     Container(
-                      height: 40.h,
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(horizontal: 12.w),
-                            padding: EdgeInsets.symmetric(horizontal: 6.w),
-                            decoration: BoxDecoration(
-                                color: CoreStyle.white,
-                                borderRadius: BorderRadius.circular(8.r)),
-                            child: Row(
-                              children: [
-                                InkWell(
-                                  child: Icon(
-                                    Icons.close,
-                                    color: CoreStyle.operationBlack2Color,
-                                  ),
-                                  onTap: () {
-                                    selectedCountries.removeAt(index);
-                                    refresh();
-                                  },
-                                ),
-                                Text(
-                                  selectedCountries[index].name,
-                                  style: TextStyle(
-                                    color: CoreStyle.operationBlack2Color,
-                                    fontSize: 19.sp,
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: selectedCountries.length,
-                      ),
+                      width: double.maxFinite,
+                      height: 1.h,
+                      color: CoreStyle.operationBlack2Color.withOpacity(0.1),
                     ),
                     SizedBox(
-                      height: 12.h,
+                      height: 16.h,
+                    ),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: constraints.maxWidth * 0.45,
+                                  child: LoginTextField(
+                                    helperText: "Area Name",
+                                    textInputAction: TextInputAction.done,
+                                    focusNode: polygonNameFocusNode,
+                                    textKey: polygonNameKey,
+                                    controller: polygonNameController,
+                                    height: 40.h,
+                                  ),
+                                ),
+                                Container(
+                                  width: constraints.maxWidth * 0.45,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Severity Weight",
+                                        style: TextStyle(
+                                            color: CoreStyle
+                                                .operationTextBlueColor,
+                                            fontSize: 15.sp,
+                                            fontFamily:
+                                                CoreStyle.fontWithWeight(
+                                                    FontWeight.w400)),
+                                      ),
+                                      DropdownButton<String>(
+                                        value: severityValue,
+                                        items: <String>['1', '2', '3', '4']
+                                            .map((String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(
+                                              value,
+                                              style: TextStyle(
+                                                  color: CoreStyle
+                                                      .operationGrayTextColor,
+                                                  fontSize: 23.sp,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (_value) {
+                                          severityValue = _value;
+                                          refresh();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ]),
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: 16.h,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 100.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                              child: Text(
-                            "Severity Weight",
+                          Text(
+                            "Select Suspects Nationality",
                             style: TextStyle(
-                                color: CoreStyle.white,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w600),
-                          )),
-                          DropdownButton<String>(
-                            value: severityValue,
-                            items: <String>['1', '2', '3', '4']
-                                .map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                  style: TextStyle(
-                                      color: CoreStyle.operationRedColor,
-                                      fontSize: 23.sp,
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                color: CoreStyle.operationTextBlueColor,
+                                fontSize: 15.sp,
+                                fontFamily:
+                                    CoreStyle.fontWithWeight(FontWeight.w400)),
+                          ),
+                          SizedBox(
+                            height: 8.h,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              showCountryPicker(
+                                context: context,
+                                showPhoneCode: true,
+                                // optional. Shows phone code before the country name.
+                                onSelect: (Country country) {
+                                  selectedCountries.add(country);
+                                  refresh();
+                                },
                               );
-                            }).toList(),
-                            onChanged: (_value) {
-                              severityValue = _value;
-                              refresh();
                             },
+                            child: Container(
+                              height: 50.h,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4.r),
+                                  border: Border.all(
+                                      color: CoreStyle.operationBlack2Color
+                                          .withOpacity(0.2),
+                                      width: 1.w)),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ListView.builder(
+                                      itemBuilder: (context, index) {
+                                        return Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 12.w, vertical: 4.h),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 3.w),
+                                          decoration: BoxDecoration(
+                                              color: CoreStyle
+                                                  .operationGrayBoxColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r)),
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 8.w,
+                                              ),
+                                              Text(
+                                                selectedCountries[index].name,
+                                                style: TextStyle(
+                                                    color: CoreStyle
+                                                        .operationTextGrayColor,
+                                                    fontSize: 16.sp,
+                                                    fontFamily: CoreStyle
+                                                        .fontWithWeight(
+                                                            FontWeight.w600)),
+                                              ),
+                                              SizedBox(
+                                                width: 8.w,
+                                              ),
+                                              InkWell(
+                                                child: Icon(
+                                                  Icons.close,
+                                                  size: 25.w,
+                                                  color: CoreStyle
+                                                      .operationTextGrayColor,
+                                                ),
+                                                onTap: () {
+                                                  selectedCountries
+                                                      .removeAt(index);
+                                                  refresh();
+                                                },
+                                              ),
+                                              SizedBox(
+                                                width: 8.w,
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: selectedCountries.length,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 4.w,
+                                  ),
+                                  Icon(
+                                    Icons.keyboard_arrow_down,
+                                    size: 25.w,
+                                    color: CoreStyle.operationGrayTextColor,
+                                  ),
+                                  SizedBox(
+                                    width: 4.w,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ),
                     SizedBox(
-                      height: 80.h,
+                      height: 24.h,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 100.w),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.r),
+                          color: Color(0xFFFCFCFC),
+                          border: Border.all(
+                              color: CoreStyle.operationBlack2Color
+                                  .withOpacity(0.2),
+                              width: 1.w)),
+                      margin: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Selected Days",
+                            "Select Days",
                             style: TextStyle(
-                                color: CoreStyle.white,
-                                fontSize: 22.sp,
+                                color: Color(0xFF7E7E7E),
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w500),
                           ),
                           SizedBox(
@@ -240,7 +326,8 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                                 child: Text(
                                   value,
                                   style: TextStyle(
-                                      color: CoreStyle.operationGreenContent,
+                                      color: CoreStyle
+                                          .operationIncidentActionColor,
                                       fontSize: 23.sp,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -260,7 +347,11 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: CoreStyle.white.withOpacity(0.8),
+                                  color: CoreStyle.white,
+                                  border: Border.all(
+                                      color: CoreStyle.operationBlack2Color
+                                          .withOpacity(0.2),
+                                      width: 1.w),
                                   borderRadius: BorderRadius.circular(8.r)),
                               width: 80.w,
                               height: 30.h,
@@ -268,7 +359,10 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                                 child: Text(
                                   "From",
                                   style: TextStyle(
-                                      color: CoreStyle.operationBlack2Color,
+                                      color: CoreStyle
+                                          .operationIncidentActionColor,
+                                      fontFamily: CoreStyle.fontWithWeight(
+                                          FontWeight.w400),
                                       fontSize: 19.sp),
                                 ),
                               ),
@@ -283,7 +377,11 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: CoreStyle.white.withOpacity(0.8),
+                                  color: CoreStyle.white,
+                                  border: Border.all(
+                                      color: CoreStyle.operationBlack2Color
+                                          .withOpacity(0.2),
+                                      width: 1.w),
                                   borderRadius: BorderRadius.circular(8.r)),
                               width: 80.w,
                               height: 30.h,
@@ -291,7 +389,10 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                                 child: Text(
                                   "To",
                                   style: TextStyle(
-                                      color: CoreStyle.operationBlack2Color,
+                                      color: CoreStyle
+                                          .operationIncidentActionColor,
+                                      fontFamily: CoreStyle.fontWithWeight(
+                                          FontWeight.w400),
                                       fontSize: 19.sp),
                                 ),
                               ),
@@ -303,7 +404,10 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                           Text(
                             "Flag Suspect",
                             style: TextStyle(
-                                color: CoreStyle.white, fontSize: 16.sp),
+                                color: CoreStyle.operationIncidentActionColor,
+                                fontSize: 16.sp,
+                                fontFamily:
+                                    CoreStyle.fontWithWeight(FontWeight.w400)),
                           ),
                           SizedBox(
                             width: 4.w,
@@ -325,7 +429,7 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: CoreStyle.white.withOpacity(0.8),
+                                  color: CoreStyle.operationButtonGreenColor,
                                   borderRadius: BorderRadius.circular(8.r)),
                               width: 80.w,
                               height: 30.h,
@@ -333,14 +437,19 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                                 child: Text(
                                   "Add",
                                   style: TextStyle(
-                                      color: CoreStyle.operationBlack2Color,
-                                      fontSize: 19.sp),
+                                      color: CoreStyle.white,
+                                      fontFamily: CoreStyle.fontWithWeight(
+                                          FontWeight.w300),
+                                      fontSize: 14.sp),
                                 ),
                               ),
                             ),
                           )
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: 12.h,
                     ),
                     Container(
                       height: 40.h,
@@ -350,27 +459,38 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                             margin: EdgeInsets.symmetric(horizontal: 12.w),
                             padding: EdgeInsets.symmetric(horizontal: 6.w),
                             decoration: BoxDecoration(
-                                color: CoreStyle.white,
+                                color: CoreStyle.operationLittleBoxColor,
                                 borderRadius: BorderRadius.circular(8.r)),
                             child: Row(
                               children: [
+                                SizedBox(
+                                  width: 4.w,
+                                ),
+                                Text(
+                                  "${selectedDays[index].day} ${selectedDays[index].from.hour}:${selectedDays[index].from.minute} - ${selectedDays[index].to.hour}:${selectedDays[index].to.hour}",
+                                  style: TextStyle(
+                                      color: CoreStyle.operationTextGrayColor,
+                                      fontSize: 17.sp,
+                                      fontFamily: CoreStyle.fontWithWeight(
+                                          FontWeight.w400)),
+                                ),
+                                SizedBox(
+                                  width: 4.w,
+                                ),
                                 InkWell(
                                   child: Icon(
                                     Icons.close,
-                                    color: CoreStyle.operationBlack2Color,
+                                    color: CoreStyle.operationTextGrayColor,
+                                    size: 25.w,
                                   ),
                                   onTap: () {
                                     selectedDays.removeAt(index);
                                     refresh();
                                   },
                                 ),
-                                Text(
-                                  "${selectedDays[index].day} ${selectedDays[index].from.hour} ${selectedDays[index].to.hour}",
-                                  style: TextStyle(
-                                    color: CoreStyle.operationBlack2Color,
-                                    fontSize: 19.sp,
-                                  ),
-                                )
+                                SizedBox(
+                                  width: 4.w,
+                                ),
                               ],
                             ),
                           );
@@ -381,40 +501,51 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                       ),
                     ),
                     SizedBox(
-                      height: 80.h,
+                      height: 50.h,
                     ),
-                    InkWell(
-                      onTap: () {
-                        isAsync = true;
-                        var key = polygonLocations?.keys?.last ?? "1";
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            isAsync = true;
+                            var key = polygonLocations?.keys?.last ?? "1";
 
-                        BlocProvider.of<MapBloc>(context).add(CreatePolygon(
-                            AddPolygonParam(
-                                points: polygonLocations[key],
-                                weight: int.tryParse(severityValue),
-                                nationality: selectedCountries
-                                    .map((e) => e.countryCode)
-                                    .toList(),
-                                days: selectedDays,
-                                name: polygonNameController.text,
-                                cancelToken: cancelToken)));
+                            BlocProvider.of<MapBloc>(context).add(CreatePolygon(
+                                AddPolygonParam(
+                                    points: polygonLocations[key],
+                                    weight: int.tryParse(severityValue),
+                                    nationality: selectedCountries
+                                        .map((e) => e.countryCode)
+                                        .toList(),
+                                    days: selectedDays,
+                                    name: polygonNameController.text,
+                                    cancelToken: cancelToken)));
 
-                        refresh();
-                      },
-                      child: Container(
-                        width: 180.w,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.r),
-                            color: CoreStyle.white.withOpacity(0.8)),
-                        child: Center(
-                          child: Text(
-                            "Save",
-                            style: TextStyle(
-                                color: CoreStyle.operationBlackColor,
-                                fontSize: 22.sp),
+                            refresh();
+                          },
+                          child: Container(
+                            width: 120.w,
+                            height: 36.h,
+                            decoration: BoxDecoration(
+                                color: CoreStyle.operationButtonGreenColor,
+                                borderRadius: BorderRadius.circular(8.r)),
+                            child: Center(
+                              child: Text(
+                                "Save",
+                                style: TextStyle(
+                                    color: CoreStyle.white,
+                                    fontFamily: CoreStyle.fontWithWeight(
+                                        FontWeight.w500),
+                                    fontSize: 17.sp),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          width: 16.w,
+                        )
+                      ],
                     )
                   ],
                 ),

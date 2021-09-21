@@ -16,6 +16,7 @@ import 'package:micropolis_test/features/incident/presentation/bloc/incident_eve
 import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:micropolis_test/features/incident/presentation/screens/incidents_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:micropolis_test/features/incident/presentation/widgets/incidents_widget.dart';
 
 class IncidentsWidget extends StatefulWidget {
   @override
@@ -103,6 +104,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                   GestureDetector(
                     onTap: () {
                       _selected = 1;
+                      incidentsList = [];
                       Navigator.of(context).pushNamed(
                           "${IncidentsScreen.routeName}?type=gamma",
                           arguments: {"location": LatLng(40.7831, -73.9712)});
@@ -160,6 +162,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     onTap: () {
                       setState(() {
                         _selected = 2;
+                        incidentsList = [];
                         Navigator.of(context).pushNamed(
                             "${IncidentsScreen.routeName}?type=delta",
                             arguments: {"location": LatLng(40.7831, -73.9712)});
@@ -219,6 +222,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     onTap: () {
                       setState(() {
                         _selected = 3;
+                        incidentsList = [];
                         Navigator.of(context).pushNamed(
                             "${IncidentsScreen.routeName}?type=beta",
                             arguments: {"location": LatLng(40.7831, -73.9712)});

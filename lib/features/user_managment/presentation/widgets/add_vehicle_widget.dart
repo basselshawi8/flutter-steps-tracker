@@ -156,7 +156,7 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
                       borderRadius: BorderRadius.circular(6.r)),
                   child: Center(
                     child: Text(
-                      "Save",
+                      "Sync",
                       style: TextStyle(
                           color: CoreStyle.white,
                           fontSize: 15.sp,

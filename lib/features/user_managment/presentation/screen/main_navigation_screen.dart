@@ -4,6 +4,7 @@ import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/features/camera/presentation/screens/main_window_screen.dart';
 import 'package:micropolis_test/features/user_managment/presentation/change_notifiers/user_managment_change_notifier.dart';
+import 'package:micropolis_test/features/user_managment/presentation/widgets/add_user_widget.dart';
 import 'package:micropolis_test/features/user_managment/presentation/widgets/add_vehicle_widget.dart';
 import 'package:micropolis_test/features/user_managment/presentation/widgets/ai_configuration_widget.dart';
 import 'package:micropolis_test/features/user_managment/presentation/widgets/criminal_login_widget.dart';
@@ -289,6 +290,14 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
                   height: double.maxFinite,
                   color: CoreStyle.operationBlack2Color.withOpacity(0.4),
                   child: AddVehicleWidget(),
+                )),
+              if (state.showAddUser == true)
+                Positioned.fill(
+                    child: Container(
+                  width: double.maxFinite,
+                  height: double.maxFinite,
+                  color: CoreStyle.operationBlack2Color.withOpacity(0.4),
+                  child: AddUserWidget(),
                 ))
             ],
           );

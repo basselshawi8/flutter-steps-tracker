@@ -14,6 +14,8 @@ import 'package:micropolis_test/core/ui/error_widget.dart';
 import 'package:micropolis_test/features/map/data/models/polygons_model.dart';
 import 'package:micropolis_test/features/map/presentation/bloc/bloc.dart';
 import 'package:micropolis_test/features/map/presentation/ui_extension/edit_polygon_extension.dart';
+import 'package:micropolis_test/features/user_managment/presentation/change_notifiers/user_managment_change_notifier.dart';
+import 'package:provider/provider.dart';
 
 class CriticalTime {
   final TimeOfDay from;
@@ -78,37 +80,104 @@ class PolygonDrawerState extends State<PolygonDrawer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Map Drawer'),
-          backgroundColor: CoreStyle.operationGreenContent,
+        body: Column(
+      children: [
+        Container(
+          height: 50.h,
+          width: double.maxFinite,
+          color: CoreStyle.white,
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "AI Configurations",
+                style: TextStyle(
+                    color: CoreStyle.operationBlackTextColor,
+                    fontFamily: CoreStyle.fontWithWeight(FontWeight.w600),
+                    fontSize: 21.sp),
+              ),
+              InkWell(
+                child: Container(
+                  height: 35.h,
+                  width: 140.w,
+                  decoration: BoxDecoration(
+                      color: Provider.of<UserManagementChangeNotifier>(context,
+                                      listen: false)
+                                  .showAddPolygon ==
+                              false
+                          ? CoreStyle.operationButtonGreenColor
+                          : Colors.black.withOpacity(0.075),
+                      borderRadius: BorderRadius.circular(7.r)),
+                  child: Center(
+                    child: Text(
+                      Provider.of<UserManagementChangeNotifier>(context,
+                                      listen: false)
+                                  .showAddPolygon ==
+                              false
+                          ? "+   New Area"
+                          : "Cancel",
+                      style: TextStyle(
+                          color: Provider.of<UserManagementChangeNotifier>(
+                                          context,
+                                          listen: false)
+                                      .showAddPolygon ==
+                                  false
+                              ? CoreStyle.white
+                              : CoreStyle.operationGrayTextColor,
+                          fontSize: 15.sp,
+                          fontFamily:
+                              CoreStyle.fontWithWeight(FontWeight.w300)),
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Provider.of<UserManagementChangeNotifier>(context,
+                              listen: false)
+                          .showAddPolygon =
+                      !Provider.of<UserManagementChangeNotifier>(context,
+                              listen: false)
+                          .showAddPolygon;
+                  isDrawingMode = Provider.of<UserManagementChangeNotifier>(
+                          context,
+                          listen: false)
+                      .showAddPolygon;
+                },
+              )
+            ],
+          ),
         ),
-        body: BlocBuilder<MapBloc, MapState>(
-          buildWhen: (prev, next) {
-            if (next is GetPolygonsWaitingState ||
-                next is GetPolygonsSuccessState ||
-                next is GetPolygonsFailureState) {
-              return true;
-            } else {
-              return false;
-            }
-          },
-          builder: (context, state) {
-            if (state is GetPolygonsWaitingState) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is GetPolygonsFailureState) {
-              return ErrorScreenWidget(
-                error: state.error,
-                state: state,
-              );
-            } else if (state is GetPolygonsSuccessState) {
-              return _buildContent(state.polygonModel);
-            } else {
-              return Container();
-            }
-          },
-        ));
+        Expanded(
+          child: BlocBuilder<MapBloc, MapState>(
+            buildWhen: (prev, next) {
+              if (next is GetPolygonsWaitingState ||
+                  next is GetPolygonsSuccessState ||
+                  next is GetPolygonsFailureState) {
+                return true;
+              } else {
+                return false;
+              }
+            },
+            builder: (context, state) {
+              if (state is GetPolygonsWaitingState) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is GetPolygonsFailureState) {
+                return ErrorScreenWidget(
+                  error: state.error,
+                  state: state,
+                );
+              } else if (state is GetPolygonsSuccessState) {
+                return _buildContent(state.polygonModel);
+              } else {
+                return Container();
+              }
+            },
+          ),
+        ),
+      ],
+    ));
   }
 
   _buildContent(PolygonsModel model) {
@@ -166,10 +235,13 @@ class PolygonDrawerState extends State<PolygonDrawer> {
           Future.delayed(Duration(milliseconds: 100))
               .then((value) => setState(() {}));
         })),
-        _buildStartPolygonDrawing(),
-        _buildClearPolygonDrawing(),
-        _buildClosePolygonDrawing(),
-        _buildRemoveLastPoint(),
+        if (Provider.of<UserManagementChangeNotifier>(context, listen: false)
+                .showAddPolygon ==
+            true) ...[
+          _buildClearPolygonDrawing(),
+          _buildClosePolygonDrawing(),
+          _buildRemoveLastPoint()
+        ],
         if (showEditPolygonDetails == true) editPolygonDetails()
       ],
     );
@@ -177,10 +249,6 @@ class PolygonDrawerState extends State<PolygonDrawer> {
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     _controller = controller;
-    var _darkMapStyle = await rootBundle.loadString(MAP_DARK_STYLE);
-    controller.setMapStyle(_darkMapStyle);
-
-    _buildMarkers();
   }
 
   _buildMarkers() async {
@@ -210,7 +278,7 @@ class PolygonDrawerState extends State<PolygonDrawer> {
       final polygon = Polygon(
           polygonId: PolygonId("robot $count"),
           points: polygonLocations[key],
-          strokeColor: CoreStyle.operationBlackColor,
+          strokeColor: CoreStyle.operationMapPolygonColor,
           strokeWidth: 2,
           fillColor: CoreStyle.operationMapPolygonColor.withOpacity(0.35),
           zIndex: 9,
@@ -223,7 +291,7 @@ class PolygonDrawerState extends State<PolygonDrawer> {
       final polygon = Polygon(
           polygonId: PolygonId(key),
           points: networkPolygonLocations[key],
-          strokeColor: CoreStyle.operationBlackColor,
+          strokeColor: CoreStyle.operationMapPolygonColor,
           strokeWidth: 2,
           fillColor: CoreStyle.operationMapPolygonColor.withOpacity(0.35),
           zIndex: 9,
@@ -264,35 +332,10 @@ class PolygonDrawerState extends State<PolygonDrawer> {
     }
   }
 
-  _buildStartPolygonDrawing() {
-    return Positioned(
-        left: 40.w,
-        top: 40.h,
-        child: GestureDetector(
-          onTap: () {
-            isDrawingMode = true;
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: CoreStyle.operationBlack2Color.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            width: 180.w,
-            height: 50.h,
-            child: Center(
-              child: Text(
-                "Start Draw",
-                style: TextStyle(color: CoreStyle.white),
-              ),
-            ),
-          ),
-        ));
-  }
-
   _buildClosePolygonDrawing() {
     return Positioned(
         left: 40.w,
-        top: 100.h,
+        bottom: 240.h,
         child: GestureDetector(
           onTap: () {
             var key = polygonLocations?.keys?.last ?? "1";
@@ -302,21 +345,31 @@ class PolygonDrawerState extends State<PolygonDrawer> {
             _buildPolyline();
             _buildCircles();
             isDrawingMode = false;
+            Provider.of<UserManagementChangeNotifier>(context, listen: false)
+                .showAddPolygon = false;
             showEditPolygonDetails = true;
             Future.delayed(Duration(milliseconds: 100))
                 .then((value) => setState(() {}));
           },
           child: Container(
             decoration: BoxDecoration(
-              color: CoreStyle.operationBlack2Color.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
+                color: CoreStyle.white,
+                borderRadius: BorderRadius.circular(12.r),
+                boxShadow: [
+                  BoxShadow(
+                      color: CoreStyle.operationGrayBackgroundColor
+                          .withOpacity(0.1),
+                      blurRadius: 4)
+                ]),
             width: 180.w,
             height: 50.h,
             child: Center(
               child: Text(
-                "Close Polygon",
-                style: TextStyle(color: CoreStyle.white),
+                "Save",
+                style: TextStyle(
+                    color: CoreStyle.operationIncidentItemListBlackColor,
+                    fontFamily: CoreStyle.fontWithWeight(FontWeight.w600),
+                    fontSize: 16.sp),
               ),
             ),
           ),
@@ -326,10 +379,9 @@ class PolygonDrawerState extends State<PolygonDrawer> {
   _buildClearPolygonDrawing() {
     return Positioned(
         left: 40.w,
-        top: 160.h,
+        bottom: 160.h,
         child: GestureDetector(
           onTap: () {
-            isDrawingMode = false;
             currentPositions = [];
             _buildPolygon();
             _buildPolyline();
@@ -339,15 +391,23 @@ class PolygonDrawerState extends State<PolygonDrawer> {
           },
           child: Container(
             decoration: BoxDecoration(
-              color: CoreStyle.operationBlack2Color.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
+                color: CoreStyle.white,
+                borderRadius: BorderRadius.circular(12.r),
+                boxShadow: [
+                  BoxShadow(
+                      color: CoreStyle.operationGrayBackgroundColor
+                          .withOpacity(0.1),
+                      blurRadius: 4)
+                ]),
             width: 180.w,
             height: 50.h,
             child: Center(
               child: Text(
                 "Clear Draw",
-                style: TextStyle(color: CoreStyle.white),
+                style: TextStyle(
+                    color: CoreStyle.operationIncidentItemListBlackColor,
+                    fontFamily: CoreStyle.fontWithWeight(FontWeight.w600),
+                    fontSize: 16.sp),
               ),
             ),
           ),
@@ -357,7 +417,7 @@ class PolygonDrawerState extends State<PolygonDrawer> {
   _buildRemoveLastPoint() {
     return Positioned(
         left: 40.w,
-        top: 220.h,
+        bottom: 80.h,
         child: GestureDetector(
           onTap: () {
             currentPositions.removeLast();
@@ -369,15 +429,23 @@ class PolygonDrawerState extends State<PolygonDrawer> {
           },
           child: Container(
             decoration: BoxDecoration(
-              color: CoreStyle.operationBlack2Color.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
+                color: CoreStyle.white,
+                borderRadius: BorderRadius.circular(12.r),
+                boxShadow: [
+                  BoxShadow(
+                      color: CoreStyle.operationGrayBackgroundColor
+                          .withOpacity(0.1),
+                      blurRadius: 4)
+                ]),
             width: 180.w,
             height: 50.h,
             child: Center(
               child: Text(
                 "Remove last",
-                style: TextStyle(color: CoreStyle.white),
+                style: TextStyle(
+                    color: CoreStyle.operationIncidentItemListBlackColor,
+                    fontFamily: CoreStyle.fontWithWeight(FontWeight.w600),
+                    fontSize: 16.sp),
               ),
             ),
           ),

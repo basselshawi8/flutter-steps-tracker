@@ -19,7 +19,6 @@ class IncidentsParam extends BaseParams {
         "select": this.query,
         "limit": this.limit,
         "page": this.page,
-        "lookup": this.lookup,
-
+        "lookup": "{${this.lookup}}",
       };
 }

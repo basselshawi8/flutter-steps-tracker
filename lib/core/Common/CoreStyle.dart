@@ -49,6 +49,7 @@ abstract class CoreStyle {
   static const Color operationBlackTextColor = Color(0xFF141313);
   static const Color operationBoxShadow = Color.fromARGB(255, 237, 238, 241);
 
+  static const Color operationGrayBoxColor = Color(0xFFF7F7F7);
 
   static const Color operationDashColor = Color(0xFF313131);
   static const Color operationLightTextColor = Color(0xFFEAEAEA);
@@ -58,6 +59,7 @@ abstract class CoreStyle {
   static const Color operationTextGrayColor = Color(0xFF414141);
 
   static const Color operationGreyContent = Color(0xFF4A4A4A);
+  static const Color operationGreyText = Color(0xFF3C3C3C);
 
   static const Color restaurantBackground = Color(0xFFFFF5EF);
   static const Color restaurantHeaderColor = Color(0xFF1F1F1F);
