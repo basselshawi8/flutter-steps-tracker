@@ -103,16 +103,14 @@ class _IncidentsScreenState extends State<IncidentsScreen>
 
             String imageCapDecoded = null;
             String imageMathcDecoded = null;
-            if (state?.currentIncident?.imageCap != null && state.currentIncident.imageCap
-                .split("data:image/jpeg;base64,").length > 1) {
-              imageCapDecoded = state.currentIncident.imageCap
-                  .split("data:image/jpeg;base64,")[1];
+            if (state?.currentIncident?.imageCap != null) {
+              imageCapDecoded =
+                  "http://212.114.52.13:5001/api/v1/incident/image/${state.currentIncident.imageCap}";
             }
 
-            if (state?.currentIncident?.imageMatch != null && state.currentIncident.imageMatch
-                .split("data:image/jpeg;base64,").length > 1) {
-              imageMathcDecoded = state.currentIncident.imageMatch
-                  .split("data:image/jpeg;base64,")[1];
+            if (state?.currentIncident?.imageMatch != null) {
+              imageMathcDecoded =
+                  "http://212.114.52.13:5001/api/v1/incident/image/${state.currentIncident.imageMatch}";
             }
 
             return Container(
@@ -140,8 +138,8 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                         top: 25.h,
                         left: 30.w,
                         child: ClipRRect(
-                          child: Image.memory(
-                            base64Decode(imageCapDecoded),
+                          child: Image.network(
+                            imageCapDecoded,
                             width: 250.w,
                             height: 250.w,
                             fit: BoxFit.cover,
@@ -155,8 +153,8 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                         top: 25.h,
                         left: 300.w,
                         child: ClipRRect(
-                          child: Image.memory(
-                            base64Decode(imageMathcDecoded),
+                          child: Image.network(
+                            imageMathcDecoded,
                             width: 250.w,
                             height: 250.w,
                             fit: BoxFit.cover,

@@ -13,3 +13,4 @@ const API_GET_INCIDENT_CLASSIFICATION = "api/v1/incident/countclassification";
 const API_GET_SUBJECTS = "api/v1/subject/getManySubject";
 
 const API_CREATE_POLYGON = "api/v1/sensitivelocation";
+const API_CREATE_USER = "api/v1/user";
