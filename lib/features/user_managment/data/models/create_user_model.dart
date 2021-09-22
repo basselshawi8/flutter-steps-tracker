@@ -48,16 +48,18 @@ class UserData extends BaseModel {
     this.email,
     this.password,
     this.createdAt,
+    this.username,
     this.v,
   });
 
-  final List<dynamic> role;
+  final List<String> role;
   final bool isLock;
   final String id;
   final String name;
   final String surname;
   final String email;
   final String password;
+  final String username;
   final DateTime createdAt;
   final int v;
 
@@ -68,10 +70,11 @@ class UserData extends BaseModel {
   factory UserData.fromMap(Map<String, dynamic> json) => UserData(
         role: json["role"] == null
             ? null
-            : List<dynamic>.from(json["role"].map((x) => x)),
+            : List<String>.from(json["role"].map((x) => x)),
         isLock: json["isLock"] == null ? null : json["isLock"],
         id: json["_id"] == null ? null : json["_id"],
         name: json["name"] == null ? null : json["name"],
+        username: json["username"] == null ? null : json["username"],
         surname: json["surname"] == null ? null : json["surname"],
         email: json["email"] == null ? null : json["email"],
         password: json["password"] == null ? null : json["password"],
@@ -82,10 +85,11 @@ class UserData extends BaseModel {
       );
 
   Map<String, dynamic> toMap() => {
-        "role": role == null ? null : List<dynamic>.from(role.map((x) => x)),
+        "role": role == null ? null : List<String>.from(role.map((x) => x)),
         "isLock": isLock == null ? null : isLock,
         "_id": id == null ? null : id,
         "name": name == null ? null : name,
+        "username": username == null ? null : username,
         "surname": surname == null ? null : surname,
         "email": email == null ? null : email,
         "password": password == null ? null : password,

@@ -5,8 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:micropolis_test/core/errors/base_error.dart';
 import 'package:micropolis_test/core/results/result.dart';
 import 'package:micropolis_test/features/user_managment/data/datasource/usermanagment_datasource.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_behavioral_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_facial_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_user_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/role_list_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/users_list_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/vechile_list_model.dart';
 
 import './bloc.dart';
 
@@ -48,6 +52,78 @@ class UserManagementBloc
         var error =
             Result(error: (remote as Left<BaseError, UsersListModel>).value);
         yield GetUsersFailureState(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is GetRoles) {
+      yield GetRolesWaitingState();
+
+      final remote =
+          await UserManagementRemoteDataSource().getRoles(event.param);
+      if (remote.isRight()) {
+        var result =
+            Result(data: (remote as Right<BaseError, RoleListModel>).value);
+        yield GetRolesSuccessState(result.data);
+      } else {
+        var error =
+            Result(error: (remote as Left<BaseError, RoleListModel>).value);
+        yield GetRolesFailureState(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is GetVehicles) {
+      yield GetVehiclesWaitingState();
+
+      final remote =
+          await UserManagementRemoteDataSource().getVehicles(event.param);
+      if (remote.isRight()) {
+        var result =
+            Result(data: (remote as Right<BaseError, VehicleListModel>).value);
+        yield GetVehiclesSuccessState(result.data);
+      } else {
+        var error =
+            Result(error: (remote as Left<BaseError, VehicleListModel>).value);
+        yield GetVehiclesFailureState(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is CreateBehavioralAnalysis) {
+      yield CreateBehavioralAnalysisWaitingState();
+
+      final remote =
+          await UserManagementRemoteDataSource().createBehavioral(event.param);
+      if (remote.isRight()) {
+        var result = Result(
+            data: (remote as Right<BaseError, CreateBehavioralModel>).value);
+        yield CreateBehavioralAnalysisSuccessState(result.data);
+      } else {
+        var error = Result(
+            error: (remote as Left<BaseError, CreateBehavioralModel>).value);
+        yield CreateBehavioralAnalysisFailureStat(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is CreateFacialRecognition) {
+      yield CreateFacialRecognitionWaitingState();
+
+      final remote =
+          await UserManagementRemoteDataSource().createFacial(event.param);
+      if (remote.isRight()) {
+        var result =
+            Result(data: (remote as Right<BaseError, CreateFacialModel>).value);
+        yield CreateFacialRecognitionSuccessState(result.data);
+      } else {
+        var error =
+            Result(error: (remote as Left<BaseError, CreateFacialModel>).value);
+        yield CreateFacialRecognitionFailureStat(
             error: error.error,
             callback: () {
               this.add(event);

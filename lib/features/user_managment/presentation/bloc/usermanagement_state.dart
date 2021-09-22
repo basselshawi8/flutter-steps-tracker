@@ -2,8 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:micropolis_test/core/errors/base_error.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_behavioral_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_facial_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_user_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/role_list_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/users_list_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/vechile_list_model.dart';
 
 @immutable
 abstract class UserManagementState extends Equatable {
@@ -66,6 +70,114 @@ class GetUsersFailureState extends UserManagementState {
   final VoidCallback callback;
 
   const GetUsersFailureState({this.error, this.callback});
+
+  @override
+  List<Object> get props => [error, callback];
+}
+
+/// get roles
+class GetRolesWaitingState extends UserManagementState {
+  const GetRolesWaitingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetRolesSuccessState extends UserManagementState {
+  final RoleListModel roles;
+
+  const GetRolesSuccessState(this.roles);
+
+  @override
+  List<Object> get props => [roles];
+}
+
+class GetRolesFailureState extends UserManagementState {
+  final BaseError error;
+  final VoidCallback callback;
+
+  const GetRolesFailureState({this.error, this.callback});
+
+  @override
+  List<Object> get props => [error, callback];
+}
+
+/// get vehicles
+class GetVehiclesWaitingState extends UserManagementState {
+  const GetVehiclesWaitingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetVehiclesSuccessState extends UserManagementState {
+  final VehicleListModel vehicles;
+
+  const GetVehiclesSuccessState(this.vehicles);
+
+  @override
+  List<Object> get props => [vehicles];
+}
+
+class GetVehiclesFailureState extends UserManagementState {
+  final BaseError error;
+  final VoidCallback callback;
+
+  const GetVehiclesFailureState({this.error, this.callback});
+
+  @override
+  List<Object> get props => [error, callback];
+}
+
+/// create bahavioral
+class CreateBehavioralAnalysisWaitingState extends UserManagementState {
+  const CreateBehavioralAnalysisWaitingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class CreateBehavioralAnalysisSuccessState extends UserManagementState {
+  final CreateBehavioralModel behavioral;
+
+  const CreateBehavioralAnalysisSuccessState(this.behavioral);
+
+  @override
+  List<Object> get props => [behavioral];
+}
+
+class CreateBehavioralAnalysisFailureStat extends UserManagementState {
+  final BaseError error;
+  final VoidCallback callback;
+
+  const CreateBehavioralAnalysisFailureStat({this.error, this.callback});
+
+  @override
+  List<Object> get props => [error, callback];
+}
+
+/// create facial
+class CreateFacialRecognitionWaitingState extends UserManagementState {
+  const CreateFacialRecognitionWaitingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class CreateFacialRecognitionSuccessState extends UserManagementState {
+  final CreateFacialModel facial;
+
+  const CreateFacialRecognitionSuccessState(this.facial);
+
+  @override
+  List<Object> get props => [facial];
+}
+
+class CreateFacialRecognitionFailureStat extends UserManagementState {
+  final BaseError error;
+  final VoidCallback callback;
+
+  const CreateFacialRecognitionFailureStat({this.error, this.callback});
 
   @override
   List<Object> get props => [error, callback];

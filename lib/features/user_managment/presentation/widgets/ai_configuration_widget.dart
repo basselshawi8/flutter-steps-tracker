@@ -1,10 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
+import 'package:micropolis_test/core/params/no_params.dart';
+import 'package:micropolis_test/core/ui/error_widget.dart';
 import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
+import 'package:micropolis_test/features/user_managment/data/models/vechile_list_model.dart';
+import 'package:micropolis_test/features/user_managment/presentation/bloc/bloc.dart';
 import 'package:micropolis_test/features/user_managment/presentation/change_notifiers/user_managment_change_notifier.dart';
 import 'package:provider/provider.dart';
+
+String vechile_id = "";
 
 class AIConfigurationWidget extends StatefulWidget {
   @override
@@ -14,6 +22,21 @@ class AIConfigurationWidget extends StatefulWidget {
 }
 
 class _AIConfigurationWidgetState extends State<AIConfigurationWidget> {
+  CancelToken _cancelToken = CancelToken();
+
+  @override
+  void initState() {
+    BlocProvider.of<UserManagementBloc>(context)
+        .add(GetVehicles(NoParams(cancelToken: _cancelToken)));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _cancelToken.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -117,24 +140,52 @@ class _AIConfigurationWidgetState extends State<AIConfigurationWidget> {
                   SizedBox(
                     height: 16.h,
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return _buildHeader();
-                        } else {
-                          return _buildCell();
-                        }
-                      },
-                      shrinkWrap: true,
-                      itemCount: 15,
-                    ),
-                  )
+                  BlocBuilder<UserManagementBloc, UserManagementState>(
+                      buildWhen: (prev, current) {
+                    if (current is GetVehiclesFailureState ||
+                        current is GetVehiclesSuccessState ||
+                        current is GetVehiclesWaitingState) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  }, builder: (context, state) {
+                    if (state is GetVehiclesWaitingState) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (state is GetVehiclesFailureState) {
+                      return ErrorScreenWidget(
+                        error: state.error,
+                        state: state,
+                      );
+                    } else if (state is GetVehiclesSuccessState) {
+                      return _buildContent(state.vehicles);
+                    } else {
+                      return Container();
+                    }
+                  })
                 ],
               ),
             ),
           )
         ],
+      ),
+    );
+  }
+
+  _buildContent(VehicleListModel vehicles) {
+    return Expanded(
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return _buildHeader();
+          } else {
+            return _buildCell(vehicles.data[index - 1]);
+          }
+        },
+        shrinkWrap: true,
+        itemCount: vehicles.data.length + 1,
       ),
     );
   }
@@ -193,7 +244,7 @@ class _AIConfigurationWidgetState extends State<AIConfigurationWidget> {
     );
   }
 
-  _buildCell() {
+  _buildCell(VehicleData vehicle) {
     return Column(
       children: [
         Container(
@@ -205,12 +256,12 @@ class _AIConfigurationWidgetState extends State<AIConfigurationWidget> {
               Container(
                   width: 220.w,
                   child: Text(
-                    "335245453",
+                    vehicle?.vehicleId ?? "",
                     style: TextStyle(color: CoreStyle.operationTextGrayColor),
                   )),
               Container(
                   child: Text(
-                "something here",
+                vehicle?.vehicleCode ?? "",
                 style: TextStyle(color: CoreStyle.operationTextGrayColor),
               )),
               Expanded(
@@ -218,11 +269,17 @@ class _AIConfigurationWidgetState extends State<AIConfigurationWidget> {
                   width: 10.w,
                 ),
               ),
-              CupertinoSwitch(value: true, onChanged: (val) {}),
+              CupertinoSwitch(value: vehicle.isActive, onChanged: (val) {}),
               SizedBox(
                 width: 80.w,
               ),
               InkWell(
+                onTap: () {
+                  vechile_id = vehicle.id;
+                  Provider.of<UserManagementChangeNotifier>(context,
+                          listen: false)
+                      .showAddVehicle = true;
+                },
                 child: Icon(
                   Icons.more_vert,
                   size: 30.w,

@@ -14,3 +14,7 @@ const API_GET_SUBJECTS = "api/v1/subject/getManySubject";
 
 const API_CREATE_POLYGON = "api/v1/sensitivelocation";
 const API_CREATE_USER = "api/v1/user";
+const API_GET_ROLE = "api/v1/role";
+const API_GET_VEHICLE = "api/v1/Vehicle";
+const API_GET_BEHAVIORAL = "api/v1/BehavioralAnalysis";
+const API_GET_FACIAL = "api/v1/facialRecognition";

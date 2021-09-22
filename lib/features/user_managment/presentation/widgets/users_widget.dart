@@ -1,8 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
+import 'package:micropolis_test/core/params/no_params.dart';
+import 'package:micropolis_test/core/ui/error_widget.dart';
 import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_user_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/users_list_model.dart';
+import 'package:micropolis_test/features/user_managment/presentation/bloc/bloc.dart';
+import 'package:micropolis_test/features/user_managment/presentation/bloc/usermanagement_bloc.dart';
+import 'package:micropolis_test/features/user_managment/presentation/bloc/usermanagement_event.dart';
 import 'package:micropolis_test/features/user_managment/presentation/change_notifiers/user_managment_change_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +23,22 @@ class UsersWidget extends StatefulWidget {
 }
 
 class _UsersWidgetState extends State<UsersWidget> {
+  CancelToken _cancelToken = CancelToken();
+
+  @override
+  void initState() {
+    BlocProvider.of<UserManagementBloc>(context)
+        .add(GetUsers(NoParams(cancelToken: _cancelToken)));
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _cancelToken.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -117,24 +142,54 @@ class _UsersWidgetState extends State<UsersWidget> {
                   SizedBox(
                     height: 16.h,
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return _buildHeader();
-                        } else {
-                          return _buildCell();
-                        }
-                      },
-                      shrinkWrap: true,
-                      itemCount: 15,
-                    ),
+                  BlocBuilder<UserManagementBloc, UserManagementState>(
+                    buildWhen: (prev, current) {
+                      if (current is GetUsersWaitingState ||
+                          current is GetUsersSuccessState ||
+                          current is GetUsersFailureState) {
+                        return true;
+                      } else {
+                        return false;
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is GetUsersWaitingState) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is GetUsersFailureState) {
+                        return ErrorScreenWidget(
+                          error: state.error,
+                          state: state,
+                        );
+                      } else if (state is GetUsersSuccessState) {
+                        return _buildContent(state.users);
+                      } else {
+                        return Container();
+                      }
+                    },
                   )
                 ],
               ),
             ),
           )
         ],
+      ),
+    );
+  }
+
+  _buildContent(UsersListModel users) {
+    return Expanded(
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return _buildHeader();
+          } else {
+            return _buildCell(users.data[index - 1]);
+          }
+        },
+        shrinkWrap: true,
+        itemCount: users.data.length + 1,
       ),
     );
   }
@@ -216,7 +271,7 @@ class _UsersWidgetState extends State<UsersWidget> {
     );
   }
 
-  _buildCell() {
+  _buildCell(UserData user) {
     return Column(
       children: [
         Container(
@@ -227,19 +282,19 @@ class _UsersWidgetState extends State<UsersWidget> {
               Container(
                   width: 200.w,
                   child: Text(
-                    "user_ 4",
+                    user?.username ?? "user_1",
                     style: TextStyle(color: CoreStyle.operationTextGrayColor),
                   )),
               Container(
                   width: 170.w,
                   child: Text(
-                    "bassel ",
+                    user.name,
                     style: TextStyle(color: CoreStyle.operationTextGrayColor),
                   )),
               Container(
                   width: 170.w,
                   child: Text(
-                    "shawi ",
+                    user.surname,
                     style: TextStyle(color: CoreStyle.operationTextGrayColor),
                   )),
               Container(
@@ -251,7 +306,7 @@ class _UsersWidgetState extends State<UsersWidget> {
               Container(
                   width: 200.w,
                   child: Text(
-                    "bassel role",
+                    user.role.length > 0 == true ? user.role.first : "",
                     style: TextStyle(color: CoreStyle.operationTextGrayColor),
                   )),
               Expanded(

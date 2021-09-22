@@ -174,5 +174,6 @@ class _AppState extends State<App> {
     BlocProvider.of<RestaurantsBloc>(context).close();
     BlocProvider.of<IncidentsBloc>(context).close();
     BlocProvider.of<IncidentsListBloc>(context).close();
+    BlocProvider.of<UserManagementBloc>(context).close();
   }
 }

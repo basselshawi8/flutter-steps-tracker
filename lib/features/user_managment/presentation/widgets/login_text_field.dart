@@ -91,8 +91,8 @@ class LoginTextField extends StatelessWidget {
                                 .withOpacity(0.5)),
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        errorStyle: const TextStyle(
-                            color: CoreStyle.operationBlack2Color)),
+                        errorStyle:
+                            const TextStyle(color: CoreStyle.textColorRed)),
                     validator: validator,
                     autovalidate: false,
                     onFieldSubmitted: onFieldSubmitted,

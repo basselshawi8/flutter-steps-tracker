@@ -1,9 +1,13 @@
 
 import 'dart:convert';
 
+import 'package:micropolis_test/core/entities/base_entity.dart';
+import 'package:micropolis_test/core/models/BaseModel.dart';
+import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
+
 import 'create_user_model.dart';
 
-class UsersListModel {
+class UsersListModel extends BaseModel{
   UsersListModel({
     this.success,
     this.count,
@@ -44,17 +48,10 @@ class UsersListModel {
             ? null
             : List<dynamic>.from(data.map((x) => x.toMap())),
       };
-}
 
-class Pagination {
-  Pagination();
-
-  factory Pagination.fromJson(String str) =>
-      Pagination.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory Pagination.fromMap(Map<String, dynamic> json) => Pagination();
-
-  Map<String, dynamic> toMap() => {};
+  @override
+  BaseEntity toEntity() {
+    // TODO: implement toEntity
+    throw UnimplementedError();
+  }
 }

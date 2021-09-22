@@ -9,13 +9,13 @@ class CreateUserParam extends BaseParams {
   final String email;
   final String password;
 
-  CreateUserParam(this.rolesIds, this.name, this.surname, this.username,
-      this.email, this.password);
+  CreateUserParam({this.rolesIds, this.name, this.surname, this.username,
+      this.email, this.password});
 
   String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => {
-        "rolesIds": rolesIds,
+        "role": rolesIds,
         "name": name,
         "surname": surname,
         "username": username,
