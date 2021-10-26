@@ -7,11 +7,17 @@ import 'package:micropolis_test/core/results/result.dart';
 import 'package:micropolis_test/features/user_managment/data/datasource/usermanagment_datasource.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_behavioral_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_facial_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_human_detection_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_user_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/get_behavioral_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/get_facial_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/get_human_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/role_list_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/users_list_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/vechile_list_model.dart';
+import 'package:micropolis_test/features/user_managment/presentation/widgets/add_vehicle_widget.dart';
 
+import '../../../../main.dart';
 import './bloc.dart';
 
 class UserManagementBloc
@@ -101,6 +107,7 @@ class UserManagementBloc
       if (remote.isRight()) {
         var result = Result(
             data: (remote as Right<BaseError, CreateBehavioralModel>).value);
+        mqttHelper.publishBehavior(behavioralAnalysisActive, result.data);
         yield CreateBehavioralAnalysisSuccessState(result.data);
       } else {
         var error = Result(
@@ -119,11 +126,92 @@ class UserManagementBloc
       if (remote.isRight()) {
         var result =
             Result(data: (remote as Right<BaseError, CreateFacialModel>).value);
+        mqttHelper.publishFacial(facialActive, result.data);
         yield CreateFacialRecognitionSuccessState(result.data);
       } else {
         var error =
             Result(error: (remote as Left<BaseError, CreateFacialModel>).value);
         yield CreateFacialRecognitionFailureStat(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is CreateHumanDetection) {
+      yield CreateHumanDetectionWaitingState();
+
+      final remote = await UserManagementRemoteDataSource()
+          .createHumanDetection(event.param);
+      if (remote.isRight()) {
+        var result = Result(
+            data:
+                (remote as Right<BaseError, CreateHumanDetectionModel>).value);
+        mqttHelper.publishHuman(humanActive, result.data);
+        yield CreateHumanDetectionSuccessState(result.data);
+      } else {
+        var error = Result(
+            error:
+                (remote as Left<BaseError, CreateHumanDetectionModel>).value);
+        yield CreateHumanDetectionFailureState(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is GetFacial) {
+      yield GetFacialRecognitionWaitingState();
+
+      final remote = await UserManagementRemoteDataSource()
+          .getFacialRecognition(event.param);
+      if (remote.isRight()) {
+        var result = Result(
+            data:
+                (remote as Right<BaseError, GetFacialRecognitionModel>).value);
+        yield GetFacialRecognitionSuccessState(result.data);
+      } else {
+        var error = Result(
+            error:
+                (remote as Left<BaseError, GetFacialRecognitionModel>).value);
+        yield GetFacialRecognitionFailureState(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is GetBehavioral) {
+      yield GetBehavioralAnalysisWaitingState();
+
+      final remote = await UserManagementRemoteDataSource()
+          .getBehavioralAnalysis(event.param);
+      if (remote.isRight()) {
+        var result = Result(
+            data:
+                (remote as Right<BaseError, GetBehavioralAnalysisModel>).value);
+        yield GetBehavioralAnalysisSuccessState(result.data);
+      } else {
+        var error = Result(
+            error:
+                (remote as Left<BaseError, GetBehavioralAnalysisModel>).value);
+        yield GetBehavioralAnalysisFailureState(
+            error: error.error,
+            callback: () {
+              this.add(event);
+            });
+      }
+    } else if (event is GetHumanDetection) {
+      yield GetHumanDetectionWaitingState();
+
+      final remote =
+          await UserManagementRemoteDataSource().getHumanDetection(event.param);
+      if (remote.isRight()) {
+        var result = Result(
+            data: (remote as Right<BaseError, GetHumanDetectionModel>).value);
+
+        yield GetHumanDetectionSuccessState(result.data);
+      } else {
+        var error = Result(
+            error: (remote as Left<BaseError, GetHumanDetectionModel>).value);
+        yield GetHumanDetectionFailureState(
             error: error.error,
             callback: () {
               this.add(event);

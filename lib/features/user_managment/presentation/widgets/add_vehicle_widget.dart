@@ -7,13 +7,21 @@ import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/params/no_params.dart';
 import 'package:micropolis_test/features/user_managment/data/params/create_behavioral_param.dart';
 import 'package:micropolis_test/features/user_managment/data/params/create_facial_param.dart';
+import 'package:micropolis_test/features/user_managment/data/params/create_human_param.dart';
+import 'package:micropolis_test/features/user_managment/data/params/get_vehicle_attr_param.dart';
 import 'package:micropolis_test/features/user_managment/presentation/bloc/bloc.dart';
 import 'package:micropolis_test/features/user_managment/presentation/change_notifiers/user_managment_change_notifier.dart';
 import 'package:micropolis_test/features/user_managment/presentation/widgets/ai_configuration_widget.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../main.dart';
 import 'login_text_field.dart';
+
+
+bool behavioralAnalysisActive = true;
+bool facialActive = true;
+bool humanActive = true;
 
 class AddVehicleWidget extends StatefulWidget {
   @override
@@ -23,8 +31,8 @@ class AddVehicleWidget extends StatefulWidget {
 }
 
 class _AddVehicleWidgetState extends State<AddVehicleWidget> {
-  bool behavioralAnalysisActive = true;
-  bool facialActive = true;
+
+
   var imagePerFrameController = TextEditingController();
   var imageBufferSizeController = TextEditingController();
 
@@ -34,11 +42,25 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
   var frCachedFrames = TextEditingController();
   var vsNumberOfFrames = TextEditingController();
 
+  var vehicleIdController = TextEditingController();
+  var vehicleNameController = TextEditingController();
+
   var _isAsync = false;
   var _cancelToken = CancelToken();
 
   @override
   void initState() {
+    BlocProvider.of<UserManagementBloc>(context)
+        .add(GetFacial(GetVechileParam(vechileID: vechile_name_id)));
+    BlocProvider.of<UserManagementBloc>(context)
+        .add(GetBehavioral(GetVechileParam(vechileID: vechile_name_id)));
+    BlocProvider.of<UserManagementBloc>(context)
+        .add(GetHumanDetection(GetVechileParam(vechileID: vechile_name_id)));
+
+     behavioralAnalysisActive = true;
+     facialActive = true;
+     humanActive = true;
+
     super.initState();
   }
 
@@ -51,7 +73,12 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
   Widget build(BuildContext context) {
     return BlocListener<UserManagementBloc, UserManagementState>(
       listenWhen: (prev, current) {
-        if (current is CreateBehavioralAnalysisFailureStat ||
+        if (current is CreateHumanDetectionFailureState ||
+            current is CreateHumanDetectionSuccessState ||
+            current is GetFacialRecognitionSuccessState ||
+            current is GetHumanDetectionSuccessState ||
+            current is GetBehavioralAnalysisSuccessState ||
+            current is CreateBehavioralAnalysisFailureStat ||
             current is CreateBehavioralAnalysisSuccessState ||
             current is CreateFacialRecognitionFailureStat ||
             current is CreateFacialRecognitionSuccessState) {
@@ -80,6 +107,7 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
             ),
           ));
         } else if (state is CreateBehavioralAnalysisSuccessState) {
+
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Container(
               height: 40.h,
@@ -93,6 +121,8 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
           BlocProvider.of<UserManagementBloc>(context)
               .add(GetVehicles(NoParams(cancelToken: _cancelToken)));
         } else if (state is CreateFacialRecognitionSuccessState) {
+
+
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Container(
               height: 40.h,
@@ -105,6 +135,50 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
               .showAddVehicle = false;
           BlocProvider.of<UserManagementBloc>(context)
               .add(GetVehicles(NoParams(cancelToken: _cancelToken)));
+        } else if (state is CreateHumanDetectionSuccessState) {
+
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Container(
+              height: 40.h,
+              child: Center(
+                child: Text(
+                    "Human Detection ${humanActive == true ? "Enabled" : "Disabled"}"),
+              ),
+            ),
+          ));
+          Provider.of<UserManagementChangeNotifier>(context, listen: false)
+              .showAddVehicle = false;
+          BlocProvider.of<UserManagementBloc>(context)
+              .add(GetVehicles(NoParams(cancelToken: _cancelToken)));
+        } else if (state is CreateHumanDetectionFailureState) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Container(
+              height: 40.h,
+              child: Center(
+                child: Text(state.error.toString()),
+              ),
+            ),
+          ));
+        } else if (state is GetFacialRecognitionSuccessState) {
+          frProcessFrame.text = "${state.facialModel.data.frProcessFrame}";
+          frFrameSize.text = "${state.facialModel.data.frFrameSize}";
+          frAccuracyController.text =
+              "${state.facialModel.data.frAccuracyValue}";
+          frCachedFrames.text = "${state.facialModel.data.frCachedFaces}";
+          vsNumberOfFrames.text = "${state.facialModel.data.v}";
+          facialActive = state.facialModel.data.frActive;
+          vehicleIdController.text =
+              state.facialModel.data.vehicleId.vehicleCode;
+          vehicleNameController.text =
+              state.facialModel.data.vehicleId.vehicleId;
+        } else if (state is GetBehavioralAnalysisSuccessState) {
+          imagePerFrameController.text =
+              "${state.behavioralModel.data.baImagesPerFile}";
+          imageBufferSizeController.text =
+              "${state.behavioralModel.data.baImgSize}";
+          behavioralAnalysisActive = state.behavioralModel.data.baActive;
+        } else if (state is GetHumanDetectionSuccessState) {
+          humanActive = state.humanDetectionModel.data.hd == 1 ? true : false;
         }
         setState(() {
           _isAsync = false;
@@ -241,12 +315,12 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
                 children: [
                   InkWell(
                     onTap: () {
+                      setState(() {
+                        _isAsync = true;
+                      });
+
                       if (imagePerFrameController.text.isNotEmpty ||
                           imageBufferSizeController.text.isNotEmpty) {
-                        setState(() {
-                          _isAsync = true;
-                        });
-
                         BlocProvider.of<UserManagementBloc>(context).add(
                             CreateBehavioralAnalysis(CreateBehavioralParam(
                                 ba_active: behavioralAnalysisActive,
@@ -261,9 +335,6 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
                           frFrameSize.text.isNotEmpty ||
                           frAccuracyController.text.isNotEmpty ||
                           vsNumberOfFrames.text.isNotEmpty) {
-                        setState(() {
-                          _isAsync = true;
-                        });
                         BlocProvider.of<UserManagementBloc>(context).add(
                             CreateFacialRecognition(CreateFacialParam(
                                 fr_cached_faces:
@@ -279,6 +350,9 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
                                 fr_process_frame:
                                     int.tryParse(frProcessFrame.text))));
                       }
+                      BlocProvider.of<UserManagementBloc>(context).add(
+                          CreateHumanDetection(CreateHumanDetectionParam(
+                              vechileID: vechile_id, hd: humanActive)));
                     },
                     child: Container(
                       width: 120.w,
@@ -344,7 +418,13 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
             SizedBox(
               width: 12.w,
             ),
-            CupertinoSwitch(value: true, onChanged: (val) {}),
+            CupertinoSwitch(
+                value: humanActive,
+                onChanged: (val) {
+                  setState(() {
+                    humanActive = val;
+                  });
+                }),
             SizedBox(
               width: 12.w,
             ),
@@ -614,6 +694,7 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
                 width: constraints.maxWidth * 0.45,
                 child: LoginTextField(
                   helperText: "No.",
+                  controller: vehicleIdController,
                   height: 40.h,
                 ),
               ),
@@ -621,6 +702,7 @@ class _AddVehicleWidgetState extends State<AddVehicleWidget> {
                 width: constraints.maxWidth * 0.45,
                 child: LoginTextField(
                   height: 40.h,
+                  controller: vehicleNameController,
                   helperText: "Name",
                 ),
               ),

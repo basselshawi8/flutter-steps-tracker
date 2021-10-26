@@ -4,7 +4,11 @@ import 'package:meta/meta.dart';
 import 'package:micropolis_test/core/errors/base_error.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_behavioral_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_facial_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_human_detection_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_user_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/get_behavioral_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/get_facial_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/get_human_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/role_list_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/users_list_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/vechile_list_model.dart';
@@ -178,6 +182,114 @@ class CreateFacialRecognitionFailureStat extends UserManagementState {
   final VoidCallback callback;
 
   const CreateFacialRecognitionFailureStat({this.error, this.callback});
+
+  @override
+  List<Object> get props => [error, callback];
+}
+
+/// create human detection
+class CreateHumanDetectionWaitingState extends UserManagementState {
+  const CreateHumanDetectionWaitingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class CreateHumanDetectionSuccessState extends UserManagementState {
+  final CreateHumanDetectionModel detectionModel;
+
+  const CreateHumanDetectionSuccessState(this.detectionModel);
+
+  @override
+  List<Object> get props => [detectionModel];
+}
+
+class CreateHumanDetectionFailureState extends UserManagementState {
+  final BaseError error;
+  final VoidCallback callback;
+
+  const CreateHumanDetectionFailureState({this.error, this.callback});
+
+  @override
+  List<Object> get props => [error, callback];
+}
+
+/// Get Facial Model
+class GetFacialRecognitionWaitingState extends UserManagementState {
+  const GetFacialRecognitionWaitingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetFacialRecognitionSuccessState extends UserManagementState {
+  final GetFacialRecognitionModel facialModel;
+
+  const GetFacialRecognitionSuccessState(this.facialModel);
+
+  @override
+  List<Object> get props => [facialModel];
+}
+
+class GetFacialRecognitionFailureState extends UserManagementState {
+  final BaseError error;
+  final VoidCallback callback;
+
+  const GetFacialRecognitionFailureState({this.error, this.callback});
+
+  @override
+  List<Object> get props => [error, callback];
+}
+
+/// Get Behavioral
+class GetBehavioralAnalysisWaitingState extends UserManagementState {
+  const GetBehavioralAnalysisWaitingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetBehavioralAnalysisSuccessState extends UserManagementState {
+  final GetBehavioralAnalysisModel behavioralModel;
+
+  const GetBehavioralAnalysisSuccessState(this.behavioralModel);
+
+  @override
+  List<Object> get props => [behavioralModel];
+}
+
+class GetBehavioralAnalysisFailureState extends UserManagementState {
+  final BaseError error;
+  final VoidCallback callback;
+
+  const GetBehavioralAnalysisFailureState({this.error, this.callback});
+
+  @override
+  List<Object> get props => [error, callback];
+}
+
+/// Get Human Detection
+class GetHumanDetectionWaitingState extends UserManagementState {
+  const GetHumanDetectionWaitingState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetHumanDetectionSuccessState extends UserManagementState {
+  final GetHumanDetectionModel humanDetectionModel;
+
+  const GetHumanDetectionSuccessState(this.humanDetectionModel);
+
+  @override
+  List<Object> get props => [humanDetectionModel];
+}
+
+class GetHumanDetectionFailureState extends UserManagementState {
+  final BaseError error;
+  final VoidCallback callback;
+
+  const GetHumanDetectionFailureState({this.error, this.callback});
 
   @override
   List<Object> get props => [error, callback];

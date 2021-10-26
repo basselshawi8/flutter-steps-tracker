@@ -16,7 +16,6 @@ class CreateBehavioralParam extends BaseParams {
   String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => {
-        "vehicle_id": vehicle_id,
         "ba_img_size": ba_img_size,
         "ba_images_per_file": ba_images_per_file,
         "ba_active": ba_active == true ? 1 : 0,

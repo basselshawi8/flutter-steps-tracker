@@ -13,6 +13,7 @@ import 'package:micropolis_test/features/user_managment/presentation/change_noti
 import 'package:provider/provider.dart';
 
 String vechile_id = "";
+String vechile_name_id = "";
 
 class AIConfigurationWidget extends StatefulWidget {
   @override
@@ -276,6 +277,7 @@ class _AIConfigurationWidgetState extends State<AIConfigurationWidget> {
               InkWell(
                 onTap: () {
                   vechile_id = vehicle.id;
+                  vechile_name_id = vehicle.vehicleId;
                   Provider.of<UserManagementChangeNotifier>(context,
                           listen: false)
                       .showAddVehicle = true;

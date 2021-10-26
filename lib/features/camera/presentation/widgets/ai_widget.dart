@@ -145,7 +145,7 @@ class AIWidget extends StatefulWidget {
 }
 
 class _AIWidgetState extends State<AIWidget> {
-  Offset offset = Offset(0,0);
+  Offset offset = Offset(0, 0);
   var firstFetch = false;
   Future<Offset> futureOffset;
 
@@ -159,11 +159,10 @@ class _AIWidgetState extends State<AIWidget> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: futureOffset,
-
       builder: (context, snapshot) {
-        if (snapshot.hasData&&firstFetch == false) {
+        if (snapshot.hasData && firstFetch == false) {
           firstFetch = true;
-          offset =  (snapshot.data as Offset);
+          offset = (snapshot.data as Offset);
         }
         return Positioned(
             bottom: 32.w + offset.dx,
@@ -200,6 +199,7 @@ class _AIWidgetState extends State<AIWidget> {
                       child: ToggleWidget(
                         name: "AI",
                         valueUpdated: (val) {
+
                           mqttHelper.publishAi(val);
                         },
                       ),

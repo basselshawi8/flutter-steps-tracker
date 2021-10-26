@@ -214,7 +214,7 @@ class _AddUserWidgetState extends State<AddUserWidget> {
                         });
                         BlocProvider.of<UserManagementBloc>(context).add(
                             CreateUser(CreateUserParam(
-                                rolesIds: [_currentRole.name],
+                                rolesIds: [_currentRole.id],
                                 name: _firstNameController.text,
                                 surname: _surNameController.text,
                                 username: _loginNameController.text,

@@ -172,6 +172,19 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                                           )
                                         ],
                                       )),
+                                )),
+                            Positioned(
+                                top: 110.h,
+                                left: 20.w,
+                                child: InkWell(
+                                  child: Icon(
+                                    Icons.arrow_back,
+                                    color: CoreStyle.white,
+                                    size: 60.w,
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
                                 ))
                           ],
                         ),

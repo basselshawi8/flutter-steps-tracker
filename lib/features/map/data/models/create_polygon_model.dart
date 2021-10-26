@@ -12,7 +12,7 @@ class CreatePolygonModel extends BaseModel {
 
   final bool success;
   final String message;
-  final PolygonData data;
+  final dynamic data;
 
   factory CreatePolygonModel.fromJson(String str) =>
       CreatePolygonModel.fromMap(json.decode(str));
@@ -23,13 +23,13 @@ class CreatePolygonModel extends BaseModel {
       CreatePolygonModel(
         success: json["success"] == null ? null : json["success"],
         message: json["message"] == null ? null : json["message"],
-        data: json["data"] == null ? null : PolygonData.fromMap(json["data"]),
+        data: json["data"] == null ? null : json["data"],
       );
 
   Map<String, dynamic> toMap() => {
         "success": success == null ? null : success,
         "message": message == null ? null : message,
-        "data": data == null ? null : data.toMap(),
+        "data": data == null ? null : data,
       };
 
   @override
@@ -39,7 +39,7 @@ class CreatePolygonModel extends BaseModel {
   }
 }
 
-class PolygonData extends BaseModel{
+class PolygonData extends BaseModel {
   PolygonData({
     this.constraints,
     this.nationalitiesSensit,

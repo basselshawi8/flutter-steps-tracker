@@ -195,7 +195,7 @@ class PolygonDrawerState extends State<PolygonDrawer> {
           child: GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: const LatLng(40.7831, -73.9712),
+              target: const LatLng(25.2048, 55.2708),
               zoom: 12,
             ),
             polylines: currentPolyline.toSet(),

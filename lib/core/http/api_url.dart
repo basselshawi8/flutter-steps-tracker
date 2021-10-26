@@ -2,7 +2,7 @@
 
 const API_BASE = "https://long-rubber.herokuapp.com/";
 
-const API_OPERATION_BASE = "http://212.114.52.13:5001/";
+const API_OPERATION_BASE = "http://localhost:5001/";
 //const API_OPERATION_BASE = "http://192.168.1.101:5001/";
 
 const API_RESTAURANTS = "/api/v1/restaurants";
@@ -18,3 +18,4 @@ const API_GET_ROLE = "api/v1/role";
 const API_GET_VEHICLE = "api/v1/Vehicle";
 const API_GET_BEHAVIORAL = "api/v1/BehavioralAnalysis";
 const API_GET_FACIAL = "api/v1/facialRecognition";
+const API_GET_HUMAN_DETECTION = "api/v1/humandetection";

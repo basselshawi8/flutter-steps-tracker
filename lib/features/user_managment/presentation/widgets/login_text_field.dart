@@ -55,7 +55,8 @@ class LoginTextField extends StatelessWidget {
           height: 4.h,
         ),
         Container(
-            height: this.height ?? 55.h,
+            height:
+                this.height != null && this.height > 55.h ? this.height : 55.h,
             decoration: BoxDecoration(
                 border: Border.all(
                     color: CoreStyle.operationLoginTextFieldBorderColor,

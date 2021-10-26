@@ -105,12 +105,12 @@ class _IncidentsScreenState extends State<IncidentsScreen>
             String imageMathcDecoded = null;
             if (state?.currentIncident?.imageCap != null) {
               imageCapDecoded =
-                  "http://212.114.52.13:5001/api/v1/incident/image/${state.currentIncident.imageCap}";
+                  "http://localhost:5001/api/v1/incident/image/${state.currentIncident.imageCap}";
             }
 
             if (state?.currentIncident?.imageMatch != null) {
               imageMathcDecoded =
-                  "http://212.114.52.13:5001/api/v1/incident/image/${state.currentIncident.imageMatch}";
+                  "http://localhost:5001/api/v1/incident/image/${state.currentIncident.imageMatch}";
             }
 
             return Container(

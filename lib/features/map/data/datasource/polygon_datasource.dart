@@ -17,7 +17,7 @@ class PolygonRemoteDataSource extends RemoteDataSource {
         method: HttpMethod.POST,
         data: params.toMap(),
         url: API_CREATE_POLYGON,
-        baseURL: "http://212.114.52.13:5003/",
+        baseURL: "http://localhost:5003/",
         cancelToken: params.cancelToken);
   }
 
@@ -26,7 +26,7 @@ class PolygonRemoteDataSource extends RemoteDataSource {
         converter: (json) => PolygonsModel.fromMap(json),
         method: HttpMethod.GET,
         url: API_CREATE_POLYGON,
-        baseURL: "http://212.114.52.13:5003/",
+        baseURL: "http://localhost:5003/",
         cancelToken: params.cancelToken);
   }
 }

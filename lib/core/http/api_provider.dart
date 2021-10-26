@@ -120,6 +120,7 @@ class ApiProvider {
       /// response.data["succeed"] return true if request
       /// succeed and false if not so if was true we don't need
       /// return this value to model we just need the data
+      print(response.data);
       var model;
       if (response.data != null) {
         // Here we send the data from response to Models factory

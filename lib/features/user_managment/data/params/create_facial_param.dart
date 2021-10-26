@@ -22,7 +22,6 @@ class CreateFacialParam extends BaseParams {
   String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => {
-        "vehicle_id": vehicle_id,
         "fr_accuracy_value": fr_accuracy_value,
         "fr_frame_size": fr_frame_size,
         "fr_active": fr_active == true ? 1 : 0,

@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:micropolis_test/features/user_managment/data/models/create_behavioral_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_facial_model.dart';
+import 'package:micropolis_test/features/user_managment/data/models/create_human_detection_model.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -19,6 +22,10 @@ class MqttHelper {
   StreamController _streamIncidnetController;
 
   var pubTopic = 'xavier_1/control';
+
+  var pubBehaviorTopic = 'xavier_1/behavioral_control';
+  var pubFacialTopic = 'xavier_1/facial_control';
+  var pubHumanTopic = 'xavier_1/human_control';
 
   factory MqttHelper() {
     return _singleton;
@@ -61,7 +68,8 @@ class MqttHelper {
     /// client identifier, any supplied username/password and clean session,
     /// an example of a specific one below.
     final connMess = MqttConnectMessage()
-        .withClientIdentifier('operationRoom_1')
+        .withClientIdentifier('op' +
+            (DateTime.now().millisecondsSinceEpoch / 1000).toString())
         .withWillTopic(
             'willtopic') // If you set this you must set a will message
         .withWillMessage('My Will message')
@@ -70,6 +78,10 @@ class MqttHelper {
     print('EXAMPLE::Mosquitto client connecting....');
     client.connectionMessage = connMess;
 
+    connect();
+  }
+
+  void connect() async {
     /// Connect the client, any errors here are communicated by raising of the appropriate exception. Note
     /// in some circumstances the broker will just disconnect us, see the spec about this, we however will
     /// never send malformed messages.
@@ -141,6 +153,9 @@ class MqttHelper {
     });
 
     client.subscribe(pubTopic, MqttQos.atLeastOnce);
+    client.subscribe(pubBehaviorTopic, MqttQos.atLeastOnce);
+    client.subscribe(pubFacialTopic, MqttQos.atLeastOnce);
+    client.subscribe(pubHumanTopic, MqttQos.atLeastOnce);
 
     /// Publish it
     print('EXAMPLE::Publishing our topic');
@@ -165,10 +180,37 @@ class MqttHelper {
   }
 
   void publishAi(bool value) {
+    print("publish ai");
     final builder = MqttClientPayloadBuilder();
-    var payloadMap = json.encode({"ai":value});
+    var payloadMap = json.encode({"AI_status": value});
     builder.addString(payloadMap);
     client.publishMessage(pubTopic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishHuman(bool value, CreateHumanDetectionModel model) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap =
+        json.encode({"human_status": value, "human_config": model});
+    print("human");
+    builder.addString(payloadMap);
+    client.publishMessage(pubHumanTopic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishFacial(bool value, CreateFacialModel model) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap =
+        json.encode({"facial_status": value, "facial_config": model});
+    builder.addString(payloadMap);
+    client.publishMessage(pubFacialTopic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishBehavior(bool value, CreateBehavioralModel model) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap =
+        json.encode({"behavioral_status": value, "behavioral_config": model});
+    builder.addString(payloadMap);
+    client.publishMessage(
+        pubBehaviorTopic, MqttQos.atLeastOnce, builder.payload);
   }
 
   void onSubscribed(String topic) {
@@ -182,7 +224,7 @@ class MqttHelper {
         MqttDisconnectionOrigin.solicited) {
       print('EXAMPLE::OnDisconnected callback is solicited, this is correct');
     }
-    exit(-1);
+    connect();
   }
 
   /// The successful connect callback
