@@ -12,7 +12,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 class MqttHelper {
   static final MqttHelper _singleton = MqttHelper._internal();
 
-  final client = MqttBrowserClient('ws://212.114.52.13:9509/', '');
+  final client = MqttBrowserClient('ws://94.206.14.42:9509/', '');
 
   Stream dataReceived;
   Stream locationReceived;

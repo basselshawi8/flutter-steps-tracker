@@ -66,7 +66,7 @@ class IncidentsRemoteDataSource extends RemoteDataSource {
         method: HttpMethod.POST,
         url: API_GET_SUBJECTS,
         data: params.toMap(),
-        baseURL: "http://localhost:5000/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 }

@@ -105,12 +105,12 @@ class _IncidentsScreenState extends State<IncidentsScreen>
             String imageMathcDecoded = null;
             if (state?.currentIncident?.imageCap != null) {
               imageCapDecoded =
-                  "http://localhost:5001/api/v1/incident/image/${state.currentIncident.imageCap}";
+                  "http://94.206.14.42:5000/incident/image/${state.currentIncident.imageCap}";
             }
 
             if (state?.currentIncident?.imageMatch != null) {
               imageMathcDecoded =
-                  "http://localhost:5001/api/v1/incident/image/${state.currentIncident.imageMatch}";
+                  "http://94.206.14.42:5000/incident/image/${state.currentIncident.imageMatch}";
             }
 
             return Container(
@@ -168,7 +168,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                   if (state?.currentIncident?.videoRefId != null)
                     BehaviorVideoWidget(
                       videoURL:
-                          "${API_OPERATION_BASE}api/v1/incident/behavioral/${state.currentIncident.videoRefId}",
+                          "${API_OPERATION_BASE}incident/behavioral/${state.currentIncident.videoRefId}",
                     ),
                   IncidentActionsWidget(
                     incidentID: state?.currentIncident?.id ?? "",

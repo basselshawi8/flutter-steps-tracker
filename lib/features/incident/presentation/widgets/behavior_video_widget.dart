@@ -16,7 +16,7 @@ class BehaviorVideoWidget extends StatefulWidget {
 
 class _BehaviorVideoWidgetState extends State<BehaviorVideoWidget> {
   final _videoURL =
-      "https://incidentapi.herokuapp.com/api/v1/incident/behavioral/612df485d949b90016b3cc02";
+      "https://incidentapi.herokuapp.com/incident/behavioral/612df485d949b90016b3cc02";
 
   VideoPlayerController _controller;
   Future<void> _initializeVideoPlayerFuture;

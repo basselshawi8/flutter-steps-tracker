@@ -44,7 +44,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
   @override
   void initState() {
     _incidentsChannel = WebSocketChannel.connect(
-      Uri.parse('ws://212.114.52.13:9509'),
+      Uri.parse('ws://94.206.14.42:9509'),
     );
 
     /*WidgetsBinding.instance.addObserver(ResizeNotifier(() {

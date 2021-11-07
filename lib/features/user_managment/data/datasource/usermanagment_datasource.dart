@@ -28,7 +28,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         method: HttpMethod.POST,
         data: params.toMap(),
         url: API_CREATE_USER,
-        baseURL: "http://localhost:5002/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -37,7 +37,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         converter: (json) => UsersListModel.fromMap(json),
         method: HttpMethod.GET,
         url: API_CREATE_USER,
-        baseURL: "http://localhost:5002/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -46,7 +46,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         converter: (json) => RoleListModel.fromMap(json),
         method: HttpMethod.GET,
         url: API_GET_ROLE,
-        baseURL: "http://localhost:5002/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -55,7 +55,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         converter: (json) => VehicleListModel.fromMap(json),
         method: HttpMethod.GET,
         url: API_GET_VEHICLE,
-        baseURL: "http://localhost:5004/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -66,7 +66,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         method: HttpMethod.POST,
         data: params.toMap(),
         url: "$API_GET_BEHAVIORAL/${params.vehicle_id}",
-        baseURL: "http://localhost:5004/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -78,7 +78,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         method: HttpMethod.POST,
         data: params.toMap(),
         url: "$API_GET_FACIAL/${params.vehicle_id}",
-        baseURL: "http://localhost:5004/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -89,7 +89,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         method: HttpMethod.POST,
         data: params.toMap(),
         url: "$API_GET_HUMAN_DETECTION/${params.vechileID}",
-        baseURL: "http://localhost:5004/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -99,7 +99,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         converter: (json) => GetFacialRecognitionModel.fromMap(json),
         method: HttpMethod.GET,
         url: "$API_GET_FACIAL/${params.vechileID}",
-        baseURL: "http://localhost:5004/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -109,7 +109,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         converter: (json) => GetBehavioralAnalysisModel.fromMap(json),
         method: HttpMethod.GET,
         url: "$API_GET_BEHAVIORAL/${params.vechileID}",
-        baseURL: "http://localhost:5004/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 
@@ -119,7 +119,7 @@ class UserManagementRemoteDataSource extends RemoteDataSource {
         converter: (json) => GetHumanDetectionModel.fromMap(json),
         method: HttpMethod.GET,
         url: "$API_GET_HUMAN_DETECTION/${params.vechileID}",
-        baseURL: "http://localhost:5004/",
+        baseURL: "http://94.206.14.42:5000/",
         cancelToken: params.cancelToken);
   }
 }

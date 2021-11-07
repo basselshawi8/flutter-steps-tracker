@@ -20,6 +20,6 @@ class IncidentsParam extends BaseParams {
         "limit": this.limit,
         "page": this.page,
         "sort": "{dateRaise:desc}",
-        //"lookup": "{${this.lookup}}",
+        "lookup": "{${this.lookup}}",
       };
 }

@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/params/no_params.dart';
 import 'package:micropolis_test/core/ui/custom_text_field.dart';
+import 'package:micropolis_test/core/ui/error_widget.dart';
 import 'package:micropolis_test/features/map/data/params/add_polygon_param.dart';
 import 'package:micropolis_test/features/map/presentation/bloc/bloc.dart';
 import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
@@ -10,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/features/user_managment/presentation/widgets/login_text_field.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:maps_toolkit/maps_toolkit.dart' as mp;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 extension editPolygonDetailsExtension on PolygonDrawerState {
   editPolygonDetails() {
@@ -17,23 +23,36 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
       inAsyncCall: isAsync,
       child: BlocListener<MapBloc, MapState>(
         listenWhen: (prev, current) {
-          if (current is CreatePolygonSuccessState ||
-              current is CreatePolygonWaitingState ||
-              current is CreatePolygonFailureState) {
+          if (current is CreateSensitiveLocationSuccessState ||
+              current is CreateSensitiveLocationWaitingState ||
+              current is GetRegionsSuccessState ||
+              current is GetRegionTypesSuccessState ||
+              current is CreateSensitiveLocationFailureState) {
             return true;
           } else {
             return false;
           }
         },
         listener: (context, state) {
-          if (state is CreatePolygonSuccessState) {
+          if (state is CreateSensitiveLocationSuccessState) {
             polygonNameController.text = "";
-            showEditPolygonDetails = false;
+            showEditAreaDetails = false;
             isAsync = false;
             BlocProvider.of<MapBloc>(context)
-                .add(GetPolygons(NoParams(cancelToken: cancelToken)));
+                .add(GetSensitiveLocations(NoParams(cancelToken: cancelToken)));
             refresh();
-          } else if (state is CreatePolygonFailureState) {
+          } else if (state is GetRegionTypesSuccessState) {
+            print("region types");
+            regionTypes = state.regionTypeModel.data;
+            if (selectedRegionType == null)
+              selectedRegionType = regionTypes.first;
+            refresh();
+          } else if (state is GetRegionsSuccessState) {
+            print("regions");
+            regions = state.regionModel.data;
+            if (selectedRegion == null) selectedRegion = regions.first;
+            refresh();
+          } else if (state is CreateSensitiveLocationFailureState) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Container(
                     height: 40.h,
@@ -47,7 +66,7 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
             top: 190.h,
             child: Container(
               width: 700.w,
-              height: 500.h,
+              height: 700.h,
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
               decoration: BoxDecoration(
                   color: CoreStyle.white,
@@ -75,7 +94,7 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                         InkWell(
                           onTap: () {
                             polygonNameController.text = "";
-                            showEditPolygonDetails = false;
+                            showEditAreaDetails = false;
                             refresh();
                           },
                           child: Container(
@@ -503,24 +522,179 @@ extension editPolygonDetailsExtension on PolygonDrawerState {
                     SizedBox(
                       height: 50.h,
                     ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Region",
+                                style: TextStyle(
+                                    color: CoreStyle.operationTextBlueColor,
+                                    fontSize: 15.sp,
+                                    fontFamily: CoreStyle.fontWithWeight(
+                                        FontWeight.w400)),
+                              ),
+                              selectedRegion == null
+                                  ? Container()
+                                  : DropdownButton<String>(
+                                      value: selectedRegion.name,
+                                      items: regions
+                                          .map((e) => e.name)
+                                          .map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: TextStyle(
+                                                color: CoreStyle
+                                                    .operationGrayTextColor,
+                                                fontSize: 23.sp,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (_value) {
+                                        selectedRegion = regions.firstWhere(
+                                            (element) => element.name == _value,
+                                            orElse: () => null);
+                                        refresh();
+                                      },
+                                    ),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Region Types",
+                                style: TextStyle(
+                                    color: CoreStyle.operationTextBlueColor,
+                                    fontSize: 15.sp,
+                                    fontFamily: CoreStyle.fontWithWeight(
+                                        FontWeight.w400)),
+                              ),
+                              selectedRegionType == null
+                                  ? Container()
+                                  : DropdownButton<String>(
+                                      value: selectedRegionType.name,
+                                      items: regionTypes
+                                          .map((e) => e.name)
+                                          .map((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: TextStyle(
+                                                color: CoreStyle
+                                                    .operationGrayTextColor,
+                                                fontSize: 23.sp,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (_value) {
+                                        selectedRegionType =
+                                            regionTypes.firstWhere(
+                                                (element) =>
+                                                    element.name == _value,
+                                                orElse: () => null);
+                                        refresh();
+                                      },
+                                    ),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Authority Areas",
+                                style: TextStyle(
+                                    color: CoreStyle.operationTextBlueColor,
+                                    fontSize: 15.sp,
+                                    fontFamily: CoreStyle.fontWithWeight(
+                                        FontWeight.w400)),
+                              ),
+                              DropdownButton<String>(
+                                value: selectedAuthorityArea.title,
+                                items: authorityAreas
+                                    .map((e) => e.title)
+                                    .map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(
+                                          color:
+                                              CoreStyle.operationGrayTextColor,
+                                          fontSize: 23.sp,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (_value) {
+                                  selectedAuthorityArea =
+                                      authorityAreas.firstWhere(
+                                          (element) => element.title == _value,
+                                          orElse: () => null);
+                                  refresh();
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         InkWell(
                           onTap: () {
-                            isAsync = true;
                             var key = polygonLocations?.keys?.last ?? "1";
+                            var isInside = true;
+                            for (var point in polygonLocations[key].points) {
+                              if (mp.PolygonUtil.containsLocation(
+                                      mp.LatLng(
+                                          point.latitude, point.longitude),
+                                      selectedAuthorityArea
+                                          .polygon.coordinates.first
+                                          .map((e) => mp.LatLng(e[0], e[1]))
+                                          .toList(),
+                                      true) ==
+                                  false) {
+                                isInside = false;
+                              }
+                            }
 
-                            BlocProvider.of<MapBloc>(context).add(CreatePolygon(
-                                AddPolygonParam(
-                                    points: polygonLocations[key],
-                                    weight: int.tryParse(severityValue),
-                                    nationality: selectedCountries
-                                        .map((e) => e.countryCode)
-                                        .toList(),
-                                    days: selectedDays,
-                                    name: polygonNameController.text,
-                                    cancelToken: cancelToken)));
+                            if (isInside == true) {
+                              isAsync = true;
+                              BlocProvider.of<MapBloc>(context).add(
+                                  CreateSensitiveLocation(
+                                      AddSensitiveLocationParam(
+                                          points: polygonLocations[key].points,
+                                          region: selectedRegion.id,
+                                          region_type: selectedRegionType.id,
+                                          authority_area:
+                                              selectedAuthorityArea.id,
+                                          nationality: selectedCountries
+                                              .map((e) => e.countryCode)
+                                              .toList(),
+                                          days: selectedDays,
+                                          name: polygonNameController.text,
+                                          cancelToken: cancelToken)));
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      content: Container(
+                                height: 40.h,
+                                child: Center(
+                                    child: Text(
+                                        "SubArea is not inside the area you want to add")),
+                              )));
+                            }
 
                             refresh();
                           },

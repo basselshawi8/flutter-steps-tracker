@@ -41,6 +41,7 @@ dependencies:
   package_info: ^0.4.1
   url_launcher: ^6.0.9
   flutter_phoenix: ^1.0.0
+  maps_toolkit: ^2.0.0
 
 
   # To know if keyboard is visibility or not

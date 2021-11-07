@@ -4,7 +4,6 @@ import 'package:micropolis_test/core/models/BaseModel.dart';
 class ModelsFactory {
   // Singleton handling.
   static ModelsFactory _instance;
-  var isList = false;
 
   static ModelsFactory getInstance() {
     if (_instance != null) return _instance;
@@ -21,8 +20,9 @@ class ModelsFactory {
   void registerModel(
     String modelName,
     dynamic Function(dynamic) modelCreator,
+      bool isList,
   ) {
-    if (isList) {
+    if (isList!=null && isList) {
       _modelsList.putIfAbsent(modelName, () => modelCreator);
     }
     else {
@@ -35,7 +35,7 @@ class ModelsFactory {
   T createModel<T extends BaseModel>(json) {
     final modelName = T.toString();
 //    assert(_modelsMap.containsKey(modelName));
-    final model = isList == false ? _modelsMap[modelName](json) as T : _modelsList[modelName](json) as T;
+    final model = json is List == false ? _modelsMap[modelName](json) as T : _modelsList[modelName](json) as T;
     return model;
   }
 

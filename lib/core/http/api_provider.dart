@@ -45,6 +45,7 @@ class ApiProvider {
     @required HttpMethod method,
     @required String url,
     Map<String, dynamic> data,
+    String dataString,
     Map<String, dynamic> headers,
     String baseURL,
     Map<String, dynamic> queryParameters,
@@ -84,10 +85,11 @@ class ApiProvider {
         case HttpMethod.POST:
           response = await _dio.post(
             url,
-            data: data,
+            data: data != null ? data : dataString,
             queryParameters: queryParameters,
             options: Options(
               headers: headers,
+              contentType: dataString!=null ? "text/plain" : "application/json"
             ),
             cancelToken: cancelToken,
           );

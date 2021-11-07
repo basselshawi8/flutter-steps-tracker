@@ -18,8 +18,10 @@ abstract class RemoteDataSource {
     @required String url,
     Map<String, dynamic> queryParameters,
     Map<String, dynamic> data,
+    String dataString,
     bool withAuthentication = false,
     bool withCurrency = false,
+    bool isList = false,
     String baseURL,
     CancelToken cancelToken,
   }) async {
@@ -31,6 +33,7 @@ abstract class RemoteDataSource {
     ModelsFactory.getInstance().registerModel(
       T.toString(),
       converter,
+      isList
     );
     // Specify the headers.
     final Map<String, dynamic> headers = {};
@@ -53,6 +56,7 @@ abstract class RemoteDataSource {
       baseURL: baseURL,
       queryParameters: queryParameters ?? {},
       data: data,
+      dataString: dataString,
       cancelToken: cancelToken,
     );
 
@@ -78,6 +82,7 @@ abstract class RemoteDataSource {
     ProgressCallback onSendProgress,
     ProgressCallback onReceiveProgress,
     bool withAuthentication = false,
+    bool isList = false,
     CancelToken cancelToken,
   }) async {
     assert(converter != null);
@@ -87,6 +92,7 @@ abstract class RemoteDataSource {
     ModelsFactory.getInstance().registerModel(
       T.toString(),
       converter,
+        isList
     );
 
     // Specify the headers.
