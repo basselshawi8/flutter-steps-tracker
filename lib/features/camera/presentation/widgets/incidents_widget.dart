@@ -30,7 +30,6 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
 
   var _cancelToken = CancelToken();
 
-
   @override
   void initState() {
     BlocProvider.of<IncidentsListBloc>(context)
@@ -48,112 +47,104 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
   Widget build(BuildContext context) {
     return Positioned(
         top: 512.h - 200.h,
-        right: 60.w,
+        right: 360.w,
         child: Consumer<IncidentsChangeNotifier>(
-          builder: (context,state,_){
-            if(state.updateHomeIncidentClassifications == true) {
-              BlocProvider.of<IncidentsListBloc>(context)
-                  .add(GetIncidentClassification(NoParams(cancelToken: _cancelToken)));
+          builder: (context, state, _) {
+            if (state.updateHomeIncidentClassifications == true) {
+              BlocProvider.of<IncidentsListBloc>(context).add(
+                  GetIncidentClassification(
+                      NoParams(cancelToken: _cancelToken)));
             }
             return Container(
-              width: 120.w,
-              height: 400.h,
+              width: 600.w,
+              height: 85.h,
               decoration: BoxDecoration(
-                  border: Border.all(
-                      color: CoreStyle.operationBorder3Color, width: 3.w),
                   color: CoreStyle.operationBlackColor,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
                         blurRadius: 40.r,
                         offset: Offset(0, 10.h),
                         color: CoreStyle.operationShadowColor)
                   ]),
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              child: Column(
+              padding: EdgeInsets.symmetric(horizontal: 24.h),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Provider.of<ActionsChangeNotifier>(context, listen: false)
-                          .showIncidentsPanel = !Provider.of<ActionsChangeNotifier>(
-                          context,
-                          listen: false)
-                          .showIncidentsPanel;
                       setState(() {
-                        _selected = 0;
+                        _selected = 3;
+                        incidentsList = [];
+                        Navigator.of(context).pushNamed(
+                            "${IncidentsScreen.routeName}?type=beta",
+                            arguments: {"location": LatLng(40.7831, -73.9712)});
                       });
                     },
                     child: Container(
                       width: 70.h,
-                      height: 70.h,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      height: 85.h,
+
+                      child: Stack(
                         children: [
-                          Image.asset(IMG_BULK_CATEGORY, width: 36.w),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          color: _selected == 0
-                              ? CoreStyle.operationGreenContent
-                              : CoreStyle.operationBlack2Color),
-                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _selected = 1;
-                      incidentsList = [];
-                      Navigator.of(context).pushNamed(
-                          "${IncidentsScreen.routeName}?type=gamma",
-                          arguments: {"location": LatLng(40.7831, -73.9712)});
-                    },
-                    child: Container(
-                      width: 70.h,
-                      height: 70.h,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          color: _selected == 1
-                              ? CoreStyle.operationGreenContent
-                              : CoreStyle.operationBlack2Color),
-                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            IMG_GAMMA,
-                            width: 30.w,
+                          Positioned.fill(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset(
+                                  IMG_BETA,
+                                  color: Color.fromARGB(255, 83, 83, 83),
+                                  width: 50.w,
+                                ),
+                                BlocBuilder<IncidentsListBloc, IncidentsState>(
+                                  buildWhen: (prev, current) {
+                                    return prev != current;
+                                  },
+                                  builder: (context, state) {
+                                    if (state
+                                        is GetIncidentsClassificationSuccessState) {
+                                      var classifications = state
+                                          .classifications.data
+                                          .where((element) =>
+                                              element.id.classification
+                                                  .toLowerCase()
+                                                  .contains("beta") ==
+                                              true);
+                                      return Expanded(
+                                        child: FittedBox(
+                                          child: Text(
+                                            "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
+                                            style: TextStyle(
+                                                color: CoreStyle.white,
+                                                fontSize: 20.sp),
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        width: 20.w,
+                                        height: 20.w,
+                                        child: Center(
+                                          child: CircularProgressIndicator(strokeWidth: 2,),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                )
+                              ],
+                            ),
                           ),
-                          BlocBuilder<IncidentsListBloc, IncidentsState>(
-                            buildWhen: (prev, current) {
-                              return prev != current;
-                            },
-                            builder: (context, state) {
-                              if (state is GetIncidentsClassificationSuccessState) {
-                                var classifications = state.classifications.data
-                                    .where((element) =>
-                                element.id.classification == "gamma");
-                                return Expanded(
-                                  child: FittedBox(
-                                    child: Text(
-                                      "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
-                                      style: TextStyle(
-                                          color: CoreStyle.white, fontSize: 20.sp),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return Container(
-                                  width: 25.w,
-                                  height: 25.w,
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-                            },
-                          )
+                          Positioned(
+                              bottom: -13.h,
+                              left: 10.w,
+                              right: 10.w,
+                              child: Container(
+
+                                height: 20.h,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFBD5CF0),
+                                    borderRadius: BorderRadius.circular(8.r)),
+                              ))
                         ],
                       ),
                     ),
@@ -170,110 +161,164 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     },
                     child: Container(
                       width: 70.h,
-                      height: 70.h,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          color: _selected == 2
-                              ? CoreStyle.operationGreenContent
-                              : CoreStyle.operationBlack2Color),
-                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            IMG_DELTA,
-                            width: 30.w,
-                          ),
-                          BlocBuilder<IncidentsListBloc, IncidentsState>(
-                            buildWhen: (prev, current) {
-                              return prev != current;
-                            },
-                            builder: (context, state) {
-                              if (state is GetIncidentsClassificationSuccessState) {
-                                var classifications = state.classifications.data
-                                    .where((element) =>
-                                element.id.classification == "delta");
+                      height: 85.h,
 
-                                return Expanded(
-                                  child: FittedBox(
-                                    child: Text(
-                                      "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
-                                      style: TextStyle(
-                                          color: CoreStyle.white, fontSize: 20.sp),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return Container(
-                                  width: 25.w,
-                                  height: 25.w,
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-                            },
-                          )
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset(
+                                  IMG_DELTA,
+                                  color: Color.fromARGB(255, 83, 83, 83),
+                                  width: 50.w,
+                                ),
+                                BlocBuilder<IncidentsListBloc, IncidentsState>(
+                                  buildWhen: (prev, current) {
+                                    return prev != current;
+                                  },
+                                  builder: (context, state) {
+                                    if (state
+                                        is GetIncidentsClassificationSuccessState) {
+                                      var classifications = state.classifications.data
+                                          .where((element) =>
+                                              element.id.classification
+                                                  .toLowerCase()
+                                                  .contains("delta") ==
+                                              true);
+
+                                      return Expanded(
+                                        child: FittedBox(
+                                          child: Text(
+                                            "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
+                                            style: TextStyle(
+                                                color: CoreStyle.white,
+                                                fontSize: 20.sp),
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        width: 20.w,
+                                        height: 20.w,
+                                        child: Center(
+                                          child: CircularProgressIndicator(strokeWidth: 2,),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                              bottom: -13.h,
+                              left: 10.w,
+                              right: 10.w,
+                              child: Container(
+
+                                height: 20.h,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFF0AC5C),
+                                    borderRadius: BorderRadius.circular(8.r)),
+                              ))
                         ],
                       ),
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        _selected = 3;
-                        incidentsList = [];
-                        Navigator.of(context).pushNamed(
-                            "${IncidentsScreen.routeName}?type=beta",
-                            arguments: {"location": LatLng(40.7831, -73.9712)});
-                      });
+                      _selected = 1;
+                      incidentsList = [];
+                      Navigator.of(context).pushNamed(
+                          "${IncidentsScreen.routeName}?type=gamma",
+                          arguments: {"location": LatLng(40.7831, -73.9712)});
                     },
                     child: Container(
                       width: 70.h,
-                      height: 70.h,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          color: _selected == 3
-                              ? CoreStyle.operationGreenContent
-                              : CoreStyle.operationBlack2Color),
-                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      height: 85.h,
+                      child: Stack(
                         children: [
-                          Image.asset(
-                            IMG_BETA,
-                            width: 30.w,
+                          Positioned.fill(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset(
+                                  IMG_GAMMA,
+                                  width: 50.w,
+                                  color: Color.fromARGB(255, 83, 83, 83),
+                                ),
+                                BlocBuilder<IncidentsListBloc, IncidentsState>(
+                                  buildWhen: (prev, current) {
+                                    return prev != current;
+                                  },
+                                  builder: (context, state) {
+                                    if (state
+                                        is GetIncidentsClassificationSuccessState) {
+                                      var classifications = state.classifications.data
+                                          .where((element) =>
+                                              element.id.classification
+                                                  .toLowerCase()
+                                                  .contains("gamma") ==
+                                              true);
+                                      return Expanded(
+                                        child: FittedBox(
+                                          child: Text(
+                                            "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
+                                            style: TextStyle(
+                                                color: CoreStyle.white,
+                                                fontSize: 20.sp),
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        width: 20.w,
+                                        height: 20.w,
+                                        child: Center(
+                                          child: CircularProgressIndicator(strokeWidth: 2,),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                )
+                              ],
+                            ),
                           ),
-                          BlocBuilder<IncidentsListBloc, IncidentsState>(
-                            buildWhen: (prev, current) {
-                              return prev != current;
-                            },
-                            builder: (context, state) {
-                              if (state is GetIncidentsClassificationSuccessState) {
+                          Positioned(
+                              bottom: -13.h,
+                              left: 10.w,
+                              right: 10.w,
+                              child: Container(
 
-                                var classifications = state.classifications.data
-                                    .where((element) =>
-                                element.id.classification == "beta");
-                                return Expanded(
-                                  child: FittedBox(
-                                    child: Text(
-                                      "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
-                                      style: TextStyle(
-                                          color: CoreStyle.white, fontSize: 20.sp),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return Container(
-                                  width: 25.w,
-                                  height: 25.w,
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-                            },
-                          )
+                                height: 20.h,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFF05C5C),
+                                    borderRadius: BorderRadius.circular(8.r)),
+                              ))
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Provider.of<ActionsChangeNotifier>(context, listen: false)
+                              .showIncidentsPanel =
+                          !Provider.of<ActionsChangeNotifier>(context,
+                                  listen: false)
+                              .showIncidentsPanel;
+                      setState(() {
+                        _selected = 0;
+                      });
+                    },
+                    child: Container(
+                      width: 60.h,
+                      height: 60.h,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(IMG_BULK_CATEGORY, width: 50.w),
                         ],
                       ),
                     ),

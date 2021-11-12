@@ -7,11 +7,15 @@ import 'package:micropolis_test/core/models/BaseModel.dart';
 
 class IncidentsClassificationModel extends BaseModel {
   IncidentsClassificationModel({
-    this.success,
+    this.code,
+    this.message,
+    this.action,
     this.data,
   });
 
-  final bool success;
+  final int code;
+  final String message;
+  final String action;
   final List<ClassificationDatum> data;
 
   factory IncidentsClassificationModel.fromJson(String str) => IncidentsClassificationModel.fromMap(json.decode(str));
@@ -19,12 +23,16 @@ class IncidentsClassificationModel extends BaseModel {
   String toJson() => json.encode(toMap());
 
   factory IncidentsClassificationModel.fromMap(Map<String, dynamic> json) => IncidentsClassificationModel(
-    success: json["success"] == null ? null : json["success"],
+    code: json["code"] == null ? null : json["code"],
+    message: json["message"] == null ? null : json["message"],
+    action: json["action"] == null ? null : json["action"],
     data: json["data"] == null ? null : List<ClassificationDatum>.from(json["data"].map((x) => ClassificationDatum.fromMap(x))),
   );
 
   Map<String, dynamic> toMap() => {
-    "success": success == null ? null : success,
+    "code": code == null ? null : code,
+    "message": message == null ? null : message,
+    "action": action == null ? null : action,
     "data": data == null ? null : List<dynamic>.from(data.map((x) => x.toMap())),
   };
 
@@ -35,13 +43,13 @@ class IncidentsClassificationModel extends BaseModel {
   }
 }
 
-class ClassificationDatum extends BaseModel{
+class ClassificationDatum extends BaseModel {
   ClassificationDatum({
     this.id,
     this.count,
   });
 
-  final ClassificationId id;
+  final Id id;
   final int count;
 
   factory ClassificationDatum.fromJson(String str) => ClassificationDatum.fromMap(json.decode(str));
@@ -49,7 +57,7 @@ class ClassificationDatum extends BaseModel{
   String toJson() => json.encode(toMap());
 
   factory ClassificationDatum.fromMap(Map<String, dynamic> json) => ClassificationDatum(
-    id: json["_id"] == null ? null : ClassificationId.fromMap(json["_id"]),
+    id: json["_id"] == null ? null : Id.fromMap(json["_id"]),
     count: json["count"] == null ? null : json["count"],
   );
 
@@ -65,18 +73,18 @@ class ClassificationDatum extends BaseModel{
   }
 }
 
-class ClassificationId extends BaseModel{
-  ClassificationId({
+class Id extends BaseModel{
+  Id({
     this.classification,
   });
 
   final String classification;
 
-  factory ClassificationId.fromJson(String str) => ClassificationId.fromMap(json.decode(str));
+  factory Id.fromJson(String str) => Id.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory ClassificationId.fromMap(Map<String, dynamic> json) => ClassificationId(
+  factory Id.fromMap(Map<String, dynamic> json) => Id(
     classification: json["classification"] == null ? null : json["classification"],
   );
 

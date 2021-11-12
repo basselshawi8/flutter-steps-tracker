@@ -161,7 +161,7 @@ class _AppState extends State<App> {
                 GlobalCupertinoLocalizations.delegate
               ],
               //home: SplashScreen()));
-              home: PolygonDrawer()),
+              home: MainWindowScreen()),
         );
       }),
     );

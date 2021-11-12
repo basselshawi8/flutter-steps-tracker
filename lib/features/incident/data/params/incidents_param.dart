@@ -3,23 +3,18 @@ import 'dart:convert';
 import 'package:micropolis_test/core/params/base_params.dart';
 
 class IncidentsParam extends BaseParams {
-  final String query;
-  final int limit;
-  final int page;
-  final String lookup;
+
   final String sort;
+  final List<String> populate;
 
   IncidentsParam(
-      {this.limit, this.page, this.lookup, this.query, this.sort, cancelToken})
+      {this.sort, this.populate, cancelToken})
       : super(cancelToken: cancelToken);
 
   String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => {
-        "select": this.query,
-        "limit": this.limit,
-        "page": this.page,
-        "sort": "{dateRaise:desc}",
-        "lookup": "{${this.lookup}}",
+        "_sort:${this.sort}": "",
+        "populate": this.populate,
       };
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:micropolis_test/core/entities/base_entity.dart';
 import 'package:micropolis_test/core/models/BaseModel.dart';
-import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
+import 'package:micropolis_test/features/map/data/models/polygons_model.dart';
 
 import 'create_user_model.dart';
 

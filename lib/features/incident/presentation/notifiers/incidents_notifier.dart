@@ -3,10 +3,10 @@ import 'package:micropolis_test/features/incident/data/model/incidents_model.dar
 import 'package:micropolis_test/features/incident/data/model/subject_model.dart';
 
 class IncidentsChangeNotifier extends ChangeNotifier {
-  List<IncidentsDatum> _pinnedIncidents = [];
+  List<IncidentModel> _pinnedIncidents = [];
   SubjectsModel _suspects;
 
-  IncidentsDatum _currentIncident;
+  IncidentModel _currentIncident;
 
   bool _showSubjectData = false;
 
@@ -21,18 +21,18 @@ class IncidentsChangeNotifier extends ChangeNotifier {
   bool get updateHomeIncidentClassifications =>
       _updateHomeIncidentClassifications;
 
-  List<IncidentsDatum> get incidents => _pinnedIncidents;
+  List<IncidentModel> get incidents => _pinnedIncidents;
 
   SubjectsModel get suspects => _suspects;
 
-  IncidentsDatum get currentIncident => _currentIncident;
+  IncidentModel get currentIncident => _currentIncident;
 
-  addIncident(IncidentsDatum item) {
+  addIncident(IncidentModel item) {
     _pinnedIncidents.add(item);
     notifyListeners();
   }
 
-  deleteIncident(IncidentsDatum item) {
+  deleteIncident(IncidentModel item) {
     _pinnedIncidents.removeWhere((element) => element.id == item.id);
     notifyListeners();
   }
@@ -52,12 +52,12 @@ class IncidentsChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  set currentIncident(IncidentsDatum val) {
+  set currentIncident(IncidentModel val) {
     _currentIncident = val;
     notifyListeners();
   }
 
-  setCurrentIncidentWithoutNotifications(IncidentsDatum val) {
+  setCurrentIncidentWithoutNotifications(IncidentModel val) {
     _currentIncident = val;
   }
 

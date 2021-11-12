@@ -1,66 +1,42 @@
+// To parse this JSON data, do
+//
+//     final incidentsModel = incidentsModelFromMap(jsonString);
+
 import 'dart:convert';
 
 import 'package:micropolis_test/core/entities/base_entity.dart';
 import 'package:micropolis_test/core/models/BaseModel.dart';
 
-class IncidentsModel extends BaseModel {
+class IncidentsModel extends BaseModel{
   IncidentsModel({
-    this.success,
-    this.count,
-    this.total,
-    this.pagination,
+    this.code,
+    this.message,
+    this.action,
     this.data,
   });
 
-  final bool success;
-  final int count;
-  final int total;
-  final Pagination pagination;
-  final List<IncidentsDatum> data;
+  final int code;
+  final String message;
+  final String action;
+  final List<IncidentModel> data;
 
-  factory IncidentsModel.fromJson(String str) =>
-      IncidentsModel.fromMap(json.decode(str));
+  factory IncidentsModel.fromJson(String str) => IncidentsModel.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
   factory IncidentsModel.fromMap(Map<String, dynamic> json) => IncidentsModel(
-        success: json.containsKey("success") == false
-            ? null
-            : json["success"] == null
-                ? null
-                : json["success"],
-        count: json.containsKey("count") == false
-            ? null
-            : json["count"] == null
-                ? null
-                : json["count"],
-        total: json.containsKey("total") == false
-            ? null
-            : json["total"] == null
-                ? null
-                : json["total"],
-        pagination: json.containsKey("pagination") == false
-            ? null
-            : json["pagination"] == null
-                ? null
-                : Pagination.fromMap(json["pagination"]),
-        data: json.containsKey("data") == false
-            ? null
-            : json["data"] == null
-                ? null
-                : List<IncidentsDatum>.from(
-                    json["data"].map((x) => IncidentsDatum.fromMap(x))),
-      );
+    code: json["code"] == null ? null : json["code"],
+    message: json["message"] == null ? null : json["message"],
+    action: json["action"] == null ? null : json["action"],
+    data: json["data"] == null ? null : List<IncidentModel>.from(json["data"].map((x) => IncidentModel.fromMap(x))),
+  );
 
   Map<String, dynamic> toMap() => {
-        "success": success == null ? null : success,
-        "count": count == null ? null : count,
-        "total": total == null ? null : total,
-        "pagination": pagination == null ? null : pagination.toMap(),
-        "data": data == null
-            ? null
-            : List<dynamic>.from(data.map((x) => x.toMap())),
-      };
+    "code": code == null ? null : code,
+    "message": message == null ? null : message,
+    "action": action == null ? null : action,
+    "data": data == null ? null : List<dynamic>.from(data.map((x) => x.toMap())),
+  };
 
   @override
   BaseEntity toEntity() {
@@ -69,227 +45,80 @@ class IncidentsModel extends BaseModel {
   }
 }
 
-class SingleIncidentModel extends BaseModel {
-  SingleIncidentModel({
-    this.success,
-    this.data,
-  });
-
-  final bool success;
-  final IncidentsDatum data;
-
-  factory SingleIncidentModel.fromJson(String str) =>
-      SingleIncidentModel.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory SingleIncidentModel.fromMap(Map<String, dynamic> json) =>
-      SingleIncidentModel(
-        success: json.containsKey("success") == false
-            ? null
-            : json["success"] == null
-                ? null
-                : json["success"],
-        data: json.containsKey("data") == false
-            ? null
-            : json["data"] == null
-                ? null
-                : IncidentsDatum.fromMap(json["data"]),
-      );
-
-  Map<String, dynamic> toMap() => {
-        "success": success == null ? null : success,
-        "data": data == null ? null : data.toMap(),
-      };
-
-  @override
-  BaseEntity toEntity() {
-    // TODO: implement toEntity
-    throw UnimplementedError();
-  }
-}
-
-class UpdatedIncidentModel extends BaseModel {
-  UpdatedIncidentModel({
-    this.success,
-    this.message,
-    this.data,
-  });
-
-  final bool success;
-  final String message;
-  final IncidentsDatum data;
-
-  factory UpdatedIncidentModel.fromJson(String str) =>
-      UpdatedIncidentModel.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory UpdatedIncidentModel.fromMap(Map<String, dynamic> json) =>
-      UpdatedIncidentModel(
-        success: json.containsKey("success") == false
-            ? null
-            : json["success"] == null
-                ? null
-                : json["success"],
-        message: json.containsKey("message") == false
-            ? null
-            : json["message"] == null
-                ? null
-                : json["message"],
-        data: json.containsKey("data") == false
-            ? null
-            : json["data"] == null
-                ? null
-                : IncidentsDatum.fromMap(json["data"]),
-      );
-
-  Map<String, dynamic> toMap() => {
-        "success": success == null ? null : success,
-        "message": message == null ? null : message,
-        "data": data == null ? null : data.toMap(),
-      };
-
-  @override
-  BaseEntity toEntity() {
-    // TODO: implement toEntity
-    throw UnimplementedError();
-  }
-}
-
-class IncidentsDatum extends BaseModel {
-  IncidentsDatum({
-    this.suspects,
+class IncidentModel extends BaseModel {
+  IncidentModel({
     this.id,
-    this.incidentDesc,
-    this.imageCap,
-    this.imageMatch,
-    this.classification,
-    this.vehicleId,
-    this.dateRaise,
-    this.latitude,
+    this.publishedAt,
+    this.videoIds,
+    this.sensivitiy,
+    this.isWanted,
+    this.capturedPhotosIds,
+    this.personId,
     this.longitude,
-    this.videoRefId,
-    this.behavioralClass,
-    this.incidentType,
+    this.latitude,
+    this.dateRaise,
+    this.classification,
+    this.createdAt,
+    this.updatedAt,
     this.v,
+    this.incidentModelId,
   });
 
-  final List<int> suspects;
   final String id;
-  final String incidentDesc;
-  final String imageCap;
-  final String imageMatch;
-  final BehavioralClass classification;
-  final String vehicleId;
-  final String dateRaise;
-  final String latitude;
+  final DateTime publishedAt;
+  final VideoIds videoIds;
+  final double sensivitiy;
+  final bool isWanted;
+  final CapturedPhotosIds capturedPhotosIds;
+  final PersonId personId;
   final String longitude;
-  final String videoRefId;
-  final BehavioralClass behavioralClass;
-  final String incidentType;
+  final String latitude;
+  final DateTime dateRaise;
+  final String classification;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   final int v;
+  final String incidentModelId;
 
-  factory IncidentsDatum.fromJson(String str) =>
-      IncidentsDatum.fromMap(json.decode(str));
+  factory IncidentModel.fromJson(String str) => IncidentModel.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory IncidentsDatum.fromMap(Map<String, dynamic> json) => IncidentsDatum(
-        suspects: json.containsKey("suspects") == false
-            ? null
-            : json["suspects"] == null
-                ? null
-                : List<int>.from(json["suspects"].map((x) => x)),
-        id: json.containsKey("_id") == false
-            ? null
-            : json["_id"] == null
-                ? null
-                : json["_id"],
-        incidentDesc: json.containsKey("incidentDesc") == false
-            ? null
-            : json["incidentDesc"] == null
-                ? null
-                : json["incidentDesc"],
-        imageCap: json.containsKey("imageCap") == false
-            ? null
-            : json["imageCap"] == null
-                ? null
-                : json["imageCap"],
-        imageMatch: json.containsKey("imageMatch") == false
-            ? null
-            : json["imageMatch"] == null
-                ? null
-                : json["imageMatch"],
-        videoRefId: json.containsKey("video_refid") == false
-            ? null
-            : json["video_refid"] == null
-                ? null
-                : json["video_refid"],
-        classification: json.containsKey("classification") == false
-            ? null
-            : json["classification"] == null
-                ? null
-                : behavioralClassValues.map[json["classification"]],
-        vehicleId: json.containsKey("vehicle_id") == false
-            ? null
-            : json["vehicle_id"] == null
-                ? null
-                : json["vehicle_id"],
-        dateRaise: json.containsKey("dateRaise") == false
-            ? null
-            : json["dateRaise"] == null
-                ? null
-                : json["dateRaise"],
-        latitude: json.containsKey("latitude") == false
-            ? null
-            : json["latitude"] == null
-                ? null
-                : json["latitude"],
-        longitude: json.containsKey("longitude") == false
-            ? null
-            : json["longitude"] == null
-                ? null
-                : json["longitude"],
-        behavioralClass: json.containsKey("behaviorClass") == false
-            ? null
-            : json["behavioralClass"] == null
-                ? null
-                : behavioralClassValues.map[json["behavioralClass"]],
-        incidentType: json.containsKey("incidentType") == false
-            ? null
-            : json["incidentType"] == null
-                ? null
-                : json["incidentType"],
-        v: json.containsKey("__v") == false
-            ? null
-            : json["__v"] == null
-                ? null
-                : json["__v"],
-      );
+  factory IncidentModel.fromMap(Map<String, dynamic> json) => IncidentModel(
+    id: json["_id"] == null ? null : json["_id"],
+    publishedAt: json["published_at"] == null ? null : DateTime.parse(json["published_at"]),
+    videoIds: json["video_ids"] == null ? null : VideoIds.fromMap(json["video_ids"]),
+    sensivitiy: json["sensivitiy"] == null ? null : json["sensivitiy"].toDouble(),
+    isWanted: json["is_wanted"] == null ? null : json["is_wanted"],
+    capturedPhotosIds: json["captured_photos_ids"] == null ? null : CapturedPhotosIds.fromMap(json["captured_photos_ids"]),
+    personId: json["person_id"] == null ? null : PersonId.fromMap(json["person_id"]),
+    longitude: json["longitude"] == null ? null : json["longitude"],
+    latitude: json["latitude"] == null ? null : json["latitude"],
+    dateRaise: json["dateRaise"] == null ? null : DateTime.parse(json["dateRaise"]),
+    classification: json["classification"] == null ? null : json["classification"],
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+    v: json["__v"] == null ? null : json["__v"],
+    incidentModelId: json["id"] == null ? null : json["id"],
+  );
 
   Map<String, dynamic> toMap() => {
-        "suspects": suspects == null
-            ? null
-            : List<dynamic>.from(suspects.map((x) => x)),
-        "_id": id == null ? null : id,
-        "incidentDesc": incidentDesc == null ? null : incidentDesc,
-        "imageCap": imageCap == null ? null : imageCap,
-        "imageMatch": imageMatch == null ? null : imageMatch,
-        "video_refid": videoRefId == null ? null : videoRefId,
-        "classification": classification == null
-            ? null
-            : behavioralClassValues.reverse[classification],
-        "vehicle_id": vehicleId == null ? null : vehicleId,
-        "dateRaise": dateRaise == null ? null : dateRaise,
-        "latitude": latitude == null ? null : latitude,
-        "longitude": longitude == null ? null : longitude,
-        "behavioralClass": behavioralClass == null
-            ? null
-            : behavioralClassValues.reverse[behavioralClass],
-        "incidentType": incidentType == null ? null : incidentType,
-        "__v": v == null ? null : v,
-      };
+    "_id": id == null ? null : id,
+    "published_at": publishedAt == null ? null : publishedAt.toIso8601String(),
+    "video_ids": videoIds == null ? null : videoIds.toMap(),
+    "sensivitiy": sensivitiy == null ? null : sensivitiy,
+    "is_wanted": isWanted == null ? null : isWanted,
+    "captured_photos_ids": capturedPhotosIds == null ? null : capturedPhotosIds.toMap(),
+    "person_id": personId == null ? null : personId.toMap(),
+    "longitude": longitude == null ? null : longitude,
+    "latitude": latitude == null ? null : latitude,
+    "dateRaise": dateRaise == null ? null : "${dateRaise.year.toString().padLeft(4, '0')}-${dateRaise.month.toString().padLeft(2, '0')}-${dateRaise.day.toString().padLeft(2, '0')}",
+    "classification": classification == null ? null : classification,
+    "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
+    "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
+    "__v": v == null ? null : v,
+    "id": incidentModelId == null ? null : incidentModelId,
+  };
 
   @override
   BaseEntity toEntity() {
@@ -298,34 +127,24 @@ class IncidentsDatum extends BaseModel {
   }
 }
 
-enum BehavioralClass { ALPHA, DELTA, GAMMA, BETA }
-
-final behavioralClassValues = EnumValues({
-  "alpha": BehavioralClass.ALPHA,
-  "beta": BehavioralClass.BETA,
-  "delta": BehavioralClass.DELTA,
-  "gamma": BehavioralClass.GAMMA
-});
-
-class Pagination extends BaseModel {
-  Pagination({
-    this.next,
+class CapturedPhotosIds extends BaseModel{
+  CapturedPhotosIds({
+    this.capArr,
   });
 
-  final Next next;
+  final List<String> capArr;
 
-  factory Pagination.fromJson(String str) =>
-      Pagination.fromMap(json.decode(str));
+  factory CapturedPhotosIds.fromJson(String str) => CapturedPhotosIds.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Pagination.fromMap(Map<String, dynamic> json) => Pagination(
-        next: json["next"] == null ? null : Next.fromMap(json["next"]),
-      );
+  factory CapturedPhotosIds.fromMap(Map<String, dynamic> json) => CapturedPhotosIds(
+    capArr: json["capArr"] == null ? null : List<String>.from(json["capArr"].map((x) => x)),
+  );
 
   Map<String, dynamic> toMap() => {
-        "next": next == null ? null : next.toMap(),
-      };
+    "capArr": capArr == null ? null : List<dynamic>.from(capArr.map((x) => x)),
+  };
 
   @override
   BaseEntity toEntity() {
@@ -334,28 +153,24 @@ class Pagination extends BaseModel {
   }
 }
 
-class Next extends BaseModel {
-  Next({
-    this.page,
-    this.limit,
+class PersonId extends BaseModel{
+  PersonId({
+    this.perId,
   });
 
-  final int page;
-  final int limit;
+  final List<int> perId;
 
-  factory Next.fromJson(String str) => Next.fromMap(json.decode(str));
+  factory PersonId.fromJson(String str) => PersonId.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Next.fromMap(Map<String, dynamic> json) => Next(
-        page: json["page"] == null ? null : json["page"],
-        limit: json["limit"] == null ? null : json["limit"],
-      );
+  factory PersonId.fromMap(Map<String, dynamic> json) => PersonId(
+    perId: json["per_id"] == null ? null : List<int>.from(json["per_id"].map((x) => x)),
+  );
 
   Map<String, dynamic> toMap() => {
-        "page": page == null ? null : page,
-        "limit": limit == null ? null : limit,
-      };
+    "per_id": perId == null ? null : List<dynamic>.from(perId.map((x) => x)),
+  };
 
   @override
   BaseEntity toEntity() {
@@ -364,16 +179,30 @@ class Next extends BaseModel {
   }
 }
 
-class EnumValues<T> {
-  Map<String, T> map;
-  Map<T, String> reverseMap;
+class VideoIds extends BaseModel {
+  VideoIds({
+    this.vidArr,
+  });
 
-  EnumValues(this.map);
+  final List<String> vidArr;
 
-  Map<T, String> get reverse {
-    if (reverseMap == null) {
-      reverseMap = map.map((k, v) => new MapEntry(v, k));
-    }
-    return reverseMap;
+  factory VideoIds.fromJson(String str) => VideoIds.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory VideoIds.fromMap(Map<String, dynamic> json) => VideoIds(
+    vidArr: json["vidArr"] == null ? null : List<String>.from(json["vidArr"].map((x) => x)),
+  );
+
+  Map<String, dynamic> toMap() => {
+    "vidArr": vidArr == null ? null : List<dynamic>.from(vidArr.map((x) => x)),
+  };
+
+  @override
+  BaseEntity toEntity() {
+    // TODO: implement toEntity
+    throw UnimplementedError();
   }
 }
+
+

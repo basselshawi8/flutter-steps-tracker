@@ -36,7 +36,7 @@ class GetIncidentsSuccessState extends IncidentsState {
 }
 
 class GetSingleIncidentSuccessState extends IncidentsState {
-  final SingleIncidentModel incident;
+  final IncidentModel incident;
 
   const GetSingleIncidentSuccessState(this.incident);
 
@@ -45,7 +45,7 @@ class GetSingleIncidentSuccessState extends IncidentsState {
 }
 
 class DeleteIncidentSuccessState extends IncidentsState {
-  final UpdatedIncidentModel incident;
+  final IncidentModel incident;
 
   const DeleteIncidentSuccessState(this.incident);
 
@@ -54,7 +54,7 @@ class DeleteIncidentSuccessState extends IncidentsState {
 }
 
 class UpgradeIncidentSuccessState extends IncidentsState {
-  final UpdatedIncidentModel incident;
+  final IncidentModel incident;
 
   const UpgradeIncidentSuccessState(this.incident);
 

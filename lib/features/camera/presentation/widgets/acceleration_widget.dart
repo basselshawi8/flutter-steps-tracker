@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
@@ -13,7 +15,7 @@ class AccelerationWidget extends StatefulWidget {
 
 class _AccelerationWidgetState extends State<AccelerationWidget>
     with SingleTickerProviderStateMixin {
-  var wheelPosition = (83 - 15).h;
+  var wheelPosition = (140 - 35).h;
   AnimationController _controller;
   Animation _wheelBackAnimation;
 
@@ -41,21 +43,21 @@ class _AccelerationWidgetState extends State<AccelerationWidget>
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: 0,
-        left: 50.w,
+        top: 300,
+        left: 150.w,
         child: Container(
-          width: 80.w,
-          height: 166.h,
+          width: 100.w,
+          height: 280.h,
           child: Stack(
             children: [
               Positioned(
                 left: 15.w,
                 right: 15.w,
                 child: Container(
-                  width: 50.w,
-                  height: 166.h,
+                  width: 100.w,
+                  height: 280.h,
                   decoration: BoxDecoration(
-                      color: CoreStyle.operationBlackColor,
+                      color: CoreStyle.operationBlackColor.withOpacity(0.8),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                           color: CoreStyle.operationBorder2Color, width: 1.w),
@@ -63,12 +65,21 @@ class _AccelerationWidgetState extends State<AccelerationWidget>
                 ),
               ),
               Positioned(
-                left: 27.w,
+                left: 30.w,
                 top: 10.h,
                 child: Container(
-                  width: 25.5.w,
-                  height: 39.h,
+                  width: 40.w,
+                  height: 90.h,
                   child: Image.asset(IMG_UP_ARROWS),
+                ),
+              ),
+              Positioned(
+                left: 30.w,
+                bottom: 10.h,
+                child: Container(
+                  width: 40.w,
+                  height: 90.h,
+                  child: Transform.rotate(angle:pi, child: Image.asset(IMG_UP_ARROWS)),
                 ),
               ),
               Positioned(
@@ -77,34 +88,35 @@ class _AccelerationWidgetState extends State<AccelerationWidget>
                 child: GestureDetector(
                   onPanUpdate: (update) {
                     if (wheelPosition + update.delta.dy > 0.h &&
-                        wheelPosition + update.delta.dy < (166 - 45).h)
+                        wheelPosition + update.delta.dy < (280 - 70).h)
                       setState(() {
                         wheelPosition += update.delta.dy;
+                        print((wheelPosition - ((140 - 35).h))*200/(280 - 70).h);
                       });
                   },
                   onPanEnd: (end) {
 
                       _wheelBackAnimation = Tween<double>(
-                              begin: wheelPosition, end: (83 - 15).h)
+                              begin: wheelPosition, end: (140 - 35).h)
                           .animate(CurvedAnimation(
                               parent: _controller, curve: Curves.easeOut));
                       _controller.value = 0;
                       _controller.forward();
-                      wheelPosition = (83 - 15).h;
+                      wheelPosition = (140 - 35).h;
 
                   },
                   onPanCancel: () {
                     _wheelBackAnimation = Tween<double>(
-                        begin: wheelPosition, end: (83 - 15).h)
+                        begin: wheelPosition, end: (140 - 35).h)
                         .animate(CurvedAnimation(
                         parent: _controller, curve: Curves.easeOut));
                     _controller.value = 0;
                     _controller.forward();
-                    wheelPosition = (83 - 15).h;
+                    wheelPosition = (140 - 35).h;
                   },
                   child: Container(
-                    width: 80.w,
-                    height: 50.h,
+                    width: 100.w,
+                    height: 70.h,
                     child: Image.asset(IMG_SLIDER),
                   ),
                 ),

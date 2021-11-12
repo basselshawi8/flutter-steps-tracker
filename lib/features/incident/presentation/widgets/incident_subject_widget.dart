@@ -59,21 +59,21 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
         right: 400.w,
         child: Consumer<IncidentsChangeNotifier>(
           builder: (context, state, _) {
-            print("suspects");
-            print(state.currentIncident?.suspects?.length);
+
+
             if (state.currentIncident != null) {
               if (_incidentID != state.currentIncident.id) {
                 _isAsync = true;
                 _incidentsBloc.add(GetSubjects(
-                    SubjectsParam(ids: state.currentIncident.suspects)));
+                    SubjectsParam(ids: state.currentIncident.personId.perId)));
               }
 
               _incidentID = state.currentIncident.id;
-              incidentType = state.currentIncident.incidentType == "F"
+              incidentType = state.currentIncident.classification == "F"
                   ? "Facial Recognition"
                   : "Behavioral Analysis";
-              carID = state.currentIncident.vehicleId;
-              suspectLevel = state.currentIncident.incidentType;
+              carID = state.currentIncident.id;
+              suspectLevel = state.currentIncident.isWanted ? "Wanted" : "Not Wanted";
               location =
                   "${state.currentIncident.latitude},${state.currentIncident.longitude}";
             }
@@ -549,7 +549,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                           InkWell(
                             onTap: () {
                               if (state.currentIncident.classification ==
-                                  BehavioralClass.GAMMA) {
+                                  "gamma") {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                         content: Container(
@@ -559,7 +559,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                   ),
                                 )));
                               } else if (state.currentIncident.classification ==
-                                  BehavioralClass.DELTA) {
+                                  "delta") {
                                 _incidentsBloc.add(UpgradeIncident(
                                     UpdateIncidentParam(
                                         id: _incidentID,
@@ -568,7 +568,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                   _isAsync = true;
                                 });
                               } else if (state.currentIncident.classification ==
-                                  BehavioralClass.BETA) {
+                                  "beta") {
                                 _incidentsBloc.add(UpgradeIncident(
                                     UpdateIncidentParam(
                                         id: _incidentID,

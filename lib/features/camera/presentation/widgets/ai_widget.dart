@@ -7,10 +7,12 @@ import 'package:micropolis_test/main.dart';
 
 class ToggleWidget extends StatefulWidget {
   final String name;
+  final String image;
   final Function(bool) valueUpdated;
   final bool initialValue;
 
-  const ToggleWidget({Key key, this.name, this.valueUpdated, this.initialValue})
+  const ToggleWidget(
+      {Key key, this.name, this.valueUpdated, this.image, this.initialValue})
       : super(key: key);
 
   @override
@@ -24,7 +26,6 @@ class _ToggleWidgetState extends State<ToggleWidget>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation _backgroundColorAnimation;
-  Animation _thumbColorAnimation;
   Animation _thumbLocation;
   Animation _textLocation;
 
@@ -37,15 +38,11 @@ class _ToggleWidgetState extends State<ToggleWidget>
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
 
     _backgroundColorAnimation = ColorTween(
-            begin: CoreStyle.operationBorderColor,
-            end: CoreStyle.operationGreenContent)
+            begin: Color(0xFF313131), end: CoreStyle.operationGreenContent)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _thumbColorAnimation = ColorTween(
-            begin: CoreStyle.operationBorder2Color, end: CoreStyle.white)
+    _thumbLocation = Tween<double>(begin: 10.w, end: 85.w)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _thumbLocation = Tween<double>(begin: 10.w, end: 100.w)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _textLocation = Tween<double>(begin: 100.w, end: 16.w)
+    _textLocation = Tween<double>(begin: 105.w, end: 20.w)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     _controller.addListener(() {
       setState(() {});
@@ -81,37 +78,19 @@ class _ToggleWidgetState extends State<ToggleWidget>
       child: Container(
         decoration: BoxDecoration(
             color: _backgroundColorAnimation.value,
-            borderRadius: BorderRadius.circular(22.r)),
+            border: Border.all(color: Color(0xFF3E3E3E), width: 0.5.w),
+            borderRadius: BorderRadius.circular(16.r)),
         child: Stack(
           children: [
             Positioned(
               top: 5.h,
               left: _thumbLocation.value,
               child: Container(
-                height: 60.h,
-                width: 50.w,
+                height: 50.h,
+                width: 50.h,
                 decoration: BoxDecoration(
-                    color: _thumbColorAnimation.value,
-                    borderRadius: BorderRadius.circular(17.r)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: _val == false
-                          ? BoxDecoration(
-                              border: Border.all(
-                                  color: CoreStyle.White200, width: 4.w),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                            )
-                          : null,
-                      height: _val == false ? 30.w : 35.w,
-                      width: _val == false ? 30.w : 4.w,
-                      color:
-                          _val == false ? null : CoreStyle.operationBlack2Color,
-                    )
-                  ],
-                ),
+                    color: CoreStyle.white,
+                    borderRadius: BorderRadius.circular(16.r)),
               ),
             ),
             Positioned(
@@ -121,12 +100,11 @@ class _ToggleWidgetState extends State<ToggleWidget>
                 child: Container(
                   width: 40.w,
                   child: FittedBox(
-                    child: Text(
-                      widget.name,
-                      style: TextStyle(
-                          fontSize: 37.sp,
-                          color: CoreStyle.white,
-                          fontWeight: FontWeight.w600),
+                    child: Image.asset(
+                      widget.image,
+                      color: CoreStyle.white,
+                      width: 25.w,
+                      height: 25.w,
                     ),
                   ),
                 ))
@@ -176,14 +154,12 @@ class _AIWidgetState extends State<AIWidget> {
                 });
               },
               child: Container(
-                width: 440.w,
-                height: 77.h * 1.2,
+                width: 400.w,
+                height: 100.h * 1.2,
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 decoration: BoxDecoration(
                     color: CoreStyle.operationBlackColor,
-                    border: Border.all(
-                        color: CoreStyle.operationBorderColor, width: 2.h),
-                    borderRadius: BorderRadius.circular(30.r),
+                    borderRadius: BorderRadius.circular(34.r),
                     boxShadow: [
                       BoxShadow(
                           blurRadius: 40.r,
@@ -193,30 +169,63 @@ class _AIWidgetState extends State<AIWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 160.w,
-                      height: 70.h,
-                      child: ToggleWidget(
-                        name: "AI",
-                        valueUpdated: (val) {
-
-                          mqttHelper.publishAi(val);
-                        },
-                      ),
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Text(
+                          "AI Mode",
+                          style: TextStyle(
+                              color: Color(0xFF6E6E6E),
+                              fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Container(
+                          width: 160.w,
+                          height: 60.h,
+                          child: ToggleWidget(
+                            name: "AI Mode",
+                            image: IMG_AI_MODE,
+                            valueUpdated: (val) {
+                              mqttHelper.publishAi(val);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       width: 30.w,
                     ),
-                    Container(
-                      width: 160.w,
-                      height: 70.h,
-                      child: ToggleWidget(
-                        name: "RC",
-                        initialValue: true,
-                        valueUpdated: (val) {
-                          print(val);
-                        },
-                      ),
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Text(
+                          "RC Mode",
+                          style: TextStyle(
+                              color: Color(0xFF6E6E6E),
+                              fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(
+                          height: 8.h,
+                        ),
+                        Container(
+                          width: 160.w,
+                          height: 60.h,
+                          child: ToggleWidget(
+                            name: "RC Mode",
+                            image: IMG_RC_MODE,
+                            initialValue: true,
+                            valueUpdated: (val) {
+                              print(val);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -23,29 +23,29 @@ class IncidentsRemoteDataSource extends RemoteDataSource {
         cancelToken: params.cancelToken);
   }
 
-  Future<Either<BaseError, SingleIncidentModel>> getSingleIncident(
+  Future<Either<BaseError, IncidentModel>> getSingleIncident(
       SingleIncidentParam params) {
     return request(
-        converter: (json) => SingleIncidentModel.fromMap(json),
+        converter: (json) => IncidentModel.fromMap(json),
         method: HttpMethod.GET,
         url: "$API_GET_INCIDENT/${params.id}",
         cancelToken: params.cancelToken);
   }
 
-  Future<Either<BaseError, UpdatedIncidentModel>> upgradeIncident(
+  Future<Either<BaseError, IncidentModel>> upgradeIncident(
       UpdateIncidentParam params) {
     return request(
-        converter: (json) => UpdatedIncidentModel.fromMap(json),
+        converter: (json) => IncidentModel.fromMap(json),
         method: HttpMethod.PUT,
         url: "$API_GET_INCIDENT/${params.id}",
         data: params.toMap(),
         cancelToken: params.cancelToken);
   }
 
-  Future<Either<BaseError, UpdatedIncidentModel>> deleteIncident(
+  Future<Either<BaseError, IncidentModel>> deleteIncident(
       SingleIncidentParam params) {
     return request(
-        converter: (json) => UpdatedIncidentModel.fromMap(json),
+        converter: (json) => IncidentModel.fromMap(json),
         method: HttpMethod.DELETE,
         url: "$API_GET_INCIDENT/${params.id}",
         cancelToken: params.cancelToken);

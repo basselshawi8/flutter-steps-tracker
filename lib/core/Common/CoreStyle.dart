@@ -28,7 +28,7 @@ abstract class CoreStyle {
   static const Color operationBorder2Color = Color(0xFF707070);
   static const Color operationBorder3Color = Color(0xFF6E6E6E);
   static const Color operationGreenBorderColor = Color(0xFF02A76F);
-  static const Color operationShadowColor = Color(0xFF828282);
+  static Color operationShadowColor = Color(0xFF828282).withOpacity(0.3);
   static const Color operationShadow2Color = Color(0xFFD6D6D6);
   static const Color operationShadow3Color = Color(0xFF4F4F4F);
   static const Color operationGreenContent = Color(0xFF00CB85);

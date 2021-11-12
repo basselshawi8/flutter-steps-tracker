@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../main.dart';
 
-List<IncidentsDatum> incidentsList = [];
+List<IncidentModel> incidentsList = [];
 int _selectedItem = 0;
 
 class IncidentsListWidget extends StatefulWidget {
@@ -49,12 +49,10 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
       _selectedItem = 0;
     }
     print(widget.type);
-    _incidentsBloc.add(GetIncidents(IncidentsParam(
-        lookup: "classification:${widget.type}",
-        limit: 20,
-        page: _currentPage)));
+    _incidentsBloc.add(GetIncidents(
+        IncidentsParam(sort: "published_at", populate: ["\"vehicle\""])));
 
-    _controller.addListener(() {
+    /*_controller.addListener(() {
       if (_controller.position.atEdge) {
         if (_controller.position.pixels == 0) {
           // You're at the top.
@@ -68,7 +66,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
           }
         }
       }
-    });
+    });*/
     super.initState();
   }
 
@@ -158,21 +156,15 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                     builder: (context, state) {
                       print(state);
                       if (state is GetSingleIncidentSuccessState) {
-                        var typeToQuery = widget.type == "gamma"
-                            ? BehavioralClass.GAMMA
-                            : widget.type == "delta"
-                                ? BehavioralClass.DELTA
-                                : widget.type == "beta"
-                                    ? BehavioralClass.BETA
-                                    : BehavioralClass.ALPHA;
+                        var typeToQuery = widget.type;
 
-                        if (state.incident.data.classification == typeToQuery) {
+                        if (state.incident.classification == typeToQuery) {
                           if (incidentsList.firstWhere(
                                   (element) =>
-                                      element.id == state.incident.data.id,
+                                      element.id == state.incident.id,
                                   orElse: () => null) ==
                               null) {
-                            incidentsList.insert(0, state.incident.data);
+                            incidentsList.insert(0, state.incident);
                           }
                         }
                         return _refreshIncidents();
@@ -181,13 +173,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                         if (state.incidents.data.length < 20) {
                           _stopFetchingData = true;
                         }
-                        var typeToQuery = widget.type == "gamma"
-                            ? BehavioralClass.GAMMA
-                            : widget.type == "delta"
-                                ? BehavioralClass.DELTA
-                                : widget.type == "beta"
-                                    ? BehavioralClass.BETA
-                                    : BehavioralClass.ALPHA;
+                        var typeToQuery = widget.type;
 
                         var pinned = Provider.of<IncidentsChangeNotifier>(
                                 context,
@@ -275,10 +261,8 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
             _currentPage = 0;
             incidentsList.clear();
             _stopFetchingData = false;
-            _incidentsBloc.add(GetIncidents(IncidentsParam(
-                lookup: "classification:${widget.type}",
-                limit: 20,
-                page: _currentPage)));
+            _incidentsBloc.add(GetIncidents(
+                IncidentsParam(sort: "published_at", populate: ["\"vehicle\""])));
           }
           return ListView.builder(
             controller: _controller,
@@ -289,15 +273,16 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                     height: 80.h,
                     child: Center(child: CircularProgressIndicator()));
               }
-              var isPinned = Provider.of<IncidentsChangeNotifier>(context,
-                              listen: false)
-                          .incidents
-                          .firstWhere(
-                              (element) => element.id == incidentsList[index].id,
-                              orElse: () => null) !=
-                      null
-                  ? true
-                  : false;
+              var isPinned =
+                  Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                              .incidents
+                              .firstWhere(
+                                  (element) =>
+                                      element.id == incidentsList[index].id,
+                                  orElse: () => null) !=
+                          null
+                      ? true
+                      : false;
 
               return GestureDetector(
                 onTap: () {
@@ -305,10 +290,10 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget> {
                 },
                 child: IncidentItemWidget(
                   suspectPercentage: min((index + 1) * 10, 100),
-                  incidentName: incidentsList[index].incidentDesc,
+                  incidentName: incidentsList[index].id,
                   incidentID: incidentsList[index].id,
-                  incidentLetter: incidentsList[index].incidentType,
-                  incidentAction: incidentsList[index].vehicleId,
+                  incidentLetter: incidentsList[index].classification,
+                  incidentAction: incidentsList[index].incidentModelId,
                   isPinned: isPinned,
                   isSelected: index == _selectedItem ? true : false,
                   pinnedPressed: () {

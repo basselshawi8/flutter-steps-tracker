@@ -77,15 +77,15 @@ class _PinnedListWidgetState extends State<PinnedListWidget>
             child: Consumer<IncidentsChangeNotifier>(
               builder: (context, state, _) {
                 if (state.incidents.length > 0) {
-                  texts = state.incidents.map((e) => e.incidentDesc).toList();
+                  texts = state.incidents.map((e) => e.classification).toList();
                 }
 
                 return ListView.builder(
                   itemBuilder: (context, index) {
                     Uint8List bytes;
                     if (state.incidents.length > 0 && index > 0) {
-                      bytes = base64Decode(state.incidents[index-1].imageCap
-                          .split("data:image/png;base64,")[1]);
+                      bytes = base64Decode(state.incidents[index-1]?.capturedPhotosIds?.capArr?.first
+                          ?.split("data:image/png;base64,")[1]);
                     }
                     return index == 0
                         ? SizedBox(
@@ -98,7 +98,7 @@ class _PinnedListWidgetState extends State<PinnedListWidget>
                                   .currentIncident = state.incidents[index - 1];
 
                               Navigator.of(context).pushNamed(
-                                  "${IncidentsScreen.routeName}?type=${behavioralClassValues.reverse[state.incidents[index - 1].classification]}",
+                                  "${IncidentsScreen.routeName}?type=${state.incidents[index - 1].classification}",
                                   arguments: {
                                     "location": LatLng(40.7831, -73.9712)
                                   });

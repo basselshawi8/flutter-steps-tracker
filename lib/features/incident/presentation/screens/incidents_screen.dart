@@ -103,14 +103,14 @@ class _IncidentsScreenState extends State<IncidentsScreen>
 
             String imageCapDecoded = null;
             String imageMathcDecoded = null;
-            if (state?.currentIncident?.imageCap != null) {
+            if (state?.currentIncident?.capturedPhotosIds?.capArr != null) {
               imageCapDecoded =
-                  "http://94.206.14.42:5000/incident/image/${state.currentIncident.imageCap}";
+                  "http://94.206.14.42:5000/incident/image/${state.currentIncident?.capturedPhotosIds?.capArr[0]}";
             }
 
-            if (state?.currentIncident?.imageMatch != null) {
+            if (state?.currentIncident?.capturedPhotosIds?.capArr != null) {
               imageMathcDecoded =
-                  "http://94.206.14.42:5000/incident/image/${state.currentIncident.imageMatch}";
+                  "http://94.206.14.42:5000/incident/image/${state.currentIncident?.capturedPhotosIds?.capArr[1]}";
             }
 
             return Container(
@@ -133,7 +133,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                       )),
                   if (imageMathcDecoded != null &&
                       imageCapDecoded != null &&
-                      state?.currentIncident?.videoRefId == null)
+                      state?.currentIncident?.videoIds?.vidArr?.isEmpty == true)
                     Positioned(
                         top: 25.h,
                         left: 30.w,
@@ -148,7 +148,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                         )),
                   if (imageMathcDecoded != null &&
                       imageCapDecoded != null &&
-                      state?.currentIncident?.videoRefId == null)
+                      state?.currentIncident?.videoIds?.vidArr?.isEmpty == true)
                     Positioned(
                         top: 25.h,
                         left: 300.w,
@@ -165,10 +165,10 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                     type: widget.type,
                   ),
                   IncidentSubjectWidget(),
-                  if (state?.currentIncident?.videoRefId != null)
+                  if (state?.currentIncident?.videoIds?.vidArr?.isEmpty == false)
                     BehaviorVideoWidget(
                       videoURL:
-                          "${API_OPERATION_BASE}incident/behavioral/${state.currentIncident.videoRefId}",
+                          "${API_OPERATION_BASE}incident/behavioral/${state.currentIncident.videoIds.vidArr.first ?? ""}",
                     ),
                   IncidentActionsWidget(
                     incidentID: state?.currentIncident?.id ?? "",

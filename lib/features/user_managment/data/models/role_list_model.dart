@@ -7,7 +7,6 @@ import 'dart:convert';
 
 import 'package:micropolis_test/core/entities/base_entity.dart';
 import 'package:micropolis_test/core/models/BaseModel.dart';
-import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
 
 class RoleListModel extends BaseModel{
   RoleListModel({
@@ -93,3 +92,59 @@ class RoleData extends BaseModel{
   }
 }
 
+class Pagination extends BaseModel {
+  Pagination({
+    this.next,
+  });
+
+  final Next next;
+
+  factory Pagination.fromJson(String str) =>
+      Pagination.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory Pagination.fromMap(Map<String, dynamic> json) => Pagination(
+    next: json["next"] == null ? null : Next.fromMap(json["next"]),
+  );
+
+  Map<String, dynamic> toMap() => {
+    "next": next == null ? null : next.toMap(),
+  };
+
+  @override
+  BaseEntity toEntity() {
+    // TODO: implement toEntity
+    throw UnimplementedError();
+  }
+}
+
+class Next extends BaseModel {
+  Next({
+    this.page,
+    this.limit,
+  });
+
+  final int page;
+  final int limit;
+
+  factory Next.fromJson(String str) => Next.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory Next.fromMap(Map<String, dynamic> json) => Next(
+    page: json["page"] == null ? null : json["page"],
+    limit: json["limit"] == null ? null : json["limit"],
+  );
+
+  Map<String, dynamic> toMap() => {
+    "page": page == null ? null : page,
+    "limit": limit == null ? null : limit,
+  };
+
+  @override
+  BaseEntity toEntity() {
+    // TODO: implement toEntity
+    throw UnimplementedError();
+  }
+}

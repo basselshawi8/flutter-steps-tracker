@@ -76,11 +76,11 @@ class IncidentsListBloc extends Bloc<IncidentsEvent, IncidentsState> {
           await IncidentsRemoteDataSource().getSingleIncident(event.param);
       if (remote.isRight()) {
         var result = Result(
-            data: (remote as Right<BaseError, SingleIncidentModel>).value);
+            data: (remote as Right<BaseError, IncidentModel>).value);
         yield GetSingleIncidentSuccessState(result.data);
       } else {
         var error = Result(
-            error: (remote as Left<BaseError, SingleIncidentModel>).value);
+            error: (remote as Left<BaseError, IncidentModel>).value);
         yield GetIncidentFailureState(
             error: error.error,
             callback: () {
@@ -94,11 +94,11 @@ class IncidentsListBloc extends Bloc<IncidentsEvent, IncidentsState> {
           await IncidentsRemoteDataSource().upgradeIncident(event.param);
       if (remote.isRight()) {
         var result = Result(
-            data: (remote as Right<BaseError, UpdatedIncidentModel>).value);
+            data: (remote as Right<BaseError, IncidentModel>).value);
         yield UpgradeIncidentSuccessState(result.data);
       } else {
         var error = Result(
-            error: (remote as Left<BaseError, UpdatedIncidentModel>).value);
+            error: (remote as Left<BaseError, IncidentModel>).value);
         yield GetIncidentFailureState(
             error: error.error,
             callback: () {
@@ -113,11 +113,11 @@ class IncidentsListBloc extends Bloc<IncidentsEvent, IncidentsState> {
       await IncidentsRemoteDataSource().deleteIncident(event.param);
       if (remote.isRight()) {
         var result = Result(
-            data: (remote as Right<BaseError, UpdatedIncidentModel>).value);
+            data: (remote as Right<BaseError, IncidentModel>).value);
         yield DeleteIncidentSuccessState(result.data);
       } else {
         var error = Result(
-            error: (remote as Left<BaseError, UpdatedIncidentModel>).value);
+            error: (remote as Left<BaseError, IncidentModel>).value);
         yield GetIncidentFailureState(
             error: error.error,
             callback: () {

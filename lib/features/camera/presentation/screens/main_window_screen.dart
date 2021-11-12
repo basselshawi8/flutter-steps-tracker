@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/features/camera/data/params/incident_param.dart';
 import 'package:micropolis_test/features/camera/presentation/bloc/incident_bloc.dart';
 import 'package:micropolis_test/features/camera/presentation/bloc/incident_event.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/acceleration_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_widget.dart';
@@ -16,8 +18,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_container_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/mini_map_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_list_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_widget.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/vehicle_detail_image.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/wheel_widget.dart';
 import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -33,7 +38,7 @@ class MainWindowScreen extends StatefulWidget {
 
 class _MainWindowScreenState extends State<MainWindowScreen>
     with SingleTickerProviderStateMixin {
-  var urls = ['xavier_1/camerastream', 'xavier_2/camerastream'];
+  var urls = ['m2/camerastream', 'm2/camerastream'];
   AnimationController _animationController;
   Animation _incidentsPanelAnimationMain;
   Animation _incidentsPanelAnimationSub;
@@ -129,12 +134,15 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                                 setState(() {});
                               },
                             ),
-                            MainNavigationWidget(),
+                            MiniMapWidget(location: LatLng(23.4,53.8),),
+                            AccelerationWidget(),
                             CameraDirectionWidget(),
+                            WheelWidget(),
                             IncidentsWidget(),
                             AIWidget(),
                             PinnedListWidget(),
                             PinnedWidget(),
+                            VehicleDetailWidget(speed: "24",battery: 60,),
                             Positioned(
                                 right: 60.w,
                                 top: 30.h,

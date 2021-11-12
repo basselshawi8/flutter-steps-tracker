@@ -5,14 +5,16 @@ import 'dart:typed_data';
 import 'package:micropolis_test/features/user_managment/data/models/create_behavioral_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_facial_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_human_detection_model.dart';
-import 'package:mqtt_client/mqtt_browser_client.dart';
+//import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 class MqttHelper {
   static final MqttHelper _singleton = MqttHelper._internal();
 
-  final client = MqttBrowserClient('ws://94.206.14.42:9509/', '');
+
+  final client = MqttServerClient.withPort("ws://94.206.14.42", "frontEndClientIdentifier", 9509);
+  //final client = MqttBrowserClient.withPort("ws://94.206.14.42", "frontEndClientIdentifier", 9509);
 
   Stream dataReceived;
   Stream locationReceived;
@@ -28,6 +30,7 @@ class MqttHelper {
   var pubHumanTopic = 'xavier_1/human_control';
 
   factory MqttHelper() {
+
     return _singleton;
   }
 
@@ -43,7 +46,7 @@ class MqttHelper {
 
     client.onDisconnected = onDisconnected;
     client.port = 9509;
-
+    client.useWebSocket=true;
     /// If you intend to use a keep alive you must set it here otherwise keep alive will be disabled.
     client.keepAlivePeriod = 20;
 
@@ -110,7 +113,7 @@ class MqttHelper {
 
     /// Ok, lets try a subscription
     print('EXAMPLE::Subscribing to the test/lol topic');
-    const topic = 'xavier_1/camerastream'; // Not a wildcard topic
+    const topic = 'm2/camerastream'; // Not a wildcard topic
     client.subscribe(topic, MqttQos.atLeastOnce);
 
     const topicIncident = 'xavier_1/incident'; // Not a wildcard topic
@@ -140,16 +143,16 @@ class MqttHelper {
       }
 
       //print("received data");
-      // print(
-      //    'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+       //print(
+         // 'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
     });
 
     /// If needed you can listen for published messages that have completed the publishing
     /// handshake which is Qos dependant. Any message received on this stream has completed its
     /// publishing handshake with the broker.
     client.published.listen((MqttPublishMessage message) {
-      print(
-          'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
+     // print(
+       //   'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
     });
 
     client.subscribe(pubTopic, MqttQos.atLeastOnce);
