@@ -68,6 +68,8 @@ const IMG_AI_MODE= 'assets/images/png/aiMode.png';
 const IMG_VEHICLE= 'assets/images/png/vehicle.png';
 const IMG_BATTERY= 'assets/images/png/battery.png';
 const IMG_STOP= 'assets/images/png/stop.png';
+const IMG_FREE_MODE= 'assets/images/png/freeMode.png';
+const IMG_THREE_SIXTY_MODE= 'assets/images/png/360Mode.png';
 
 const IMG_USER1 = 'assets/images/png/user1.png';
 const IMG_USER2 = 'assets/images/png/user2.png';

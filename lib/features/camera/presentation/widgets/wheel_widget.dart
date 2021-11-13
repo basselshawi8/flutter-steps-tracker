@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/main.dart';
+import 'package:micropolis_test/mqtt_helper.dart';
 import 'dart:math';
 import 'direction_widget.dart';
 
@@ -52,8 +54,8 @@ class _WheelWidgetState extends State<WheelWidget>
         }
 
         return Positioned(
-            top: 500.h + offset.dx,
-            right: 1300.w + offset.dy,
+            bottom: 32.h,
+            right: 50.w,
             child: Transform.rotate(
               angle: _animationController.isAnimating == true
                   ? _rotationAnimate.value
@@ -71,6 +73,13 @@ class _WheelWidgetState extends State<WheelWidget>
                     var deltaX = details.localPosition.dx - 150.w;
                     var deltaY = details.localPosition.dy - 150.w;
                     _angle = atan2(deltaY, deltaX) - _startPanAngle;
+                    if (_angle < -0.3) {
+                      mqttHelper.publishRobotDirection(RobotDirection.Left);
+                    }
+                    else if (_angle > 0.3 && _angle < 1.5) {
+                      mqttHelper.publishRobotDirection(RobotDirection.Right);
+                    }
+
                   });
                 },
                 onPanEnd: (details) {
@@ -80,6 +89,7 @@ class _WheelWidgetState extends State<WheelWidget>
                           parent: _animationController, curve: Curves.easeIn));
                   _animationController.forward();
                   _angle = 0;
+                  mqttHelper.publishRobotDirection(RobotDirection.Forward);
                 },
                 onPanCancel: () {
                   _animationController.reset();
@@ -88,6 +98,7 @@ class _WheelWidgetState extends State<WheelWidget>
                           parent: _animationController, curve: Curves.easeIn));
                   _animationController.forward();
                   _angle = 0;
+                  mqttHelper.publishRobotDirection(RobotDirection.Forward);
                 },
                 child: Container(
                   width: 300.w,

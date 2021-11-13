@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:provider/provider.dart';
 
 class MiniMapWidget extends StatefulWidget {
   final LatLng location;
@@ -52,8 +54,10 @@ class _MiniMapWidgetState extends State<MiniMapWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: 450.h,
-        left: 700.w,
+        bottom:Provider.of<ActionsChangeNotifier>(context)
+            .rcMode ==
+        true ? 370.h : 22.h,
+        left: 30.w,
         child: Container(
           width: isMini == true ? 200.w : 700.w,
           height: isMini == true ? 200.w : 600.w,
@@ -80,6 +84,7 @@ class _MiniMapWidgetState extends State<MiniMapWidget> {
                         return new GoogleMap(
                           onMapCreated: _onMapCreated,
                           compassEnabled: false,
+                          zoomControlsEnabled: false,
                           zoomGesturesEnabled: false,
                           myLocationButtonEnabled: false,
                           initialCameraPosition: new CameraPosition(

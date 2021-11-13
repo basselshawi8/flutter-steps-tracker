@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
+import 'package:micropolis_test/mqtt_helper.dart';
+
+import '../../../../main.dart';
 
 class VehicleDetailWidget extends StatefulWidget {
   final String speed;
@@ -20,8 +23,8 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: 300.h,
-        left: 250.w,
+        bottom: 12.h,
+        left: 1920.w / 2 - 450.w / 2,
         child: Container(
           width: 450.w,
           height: 120.h,
@@ -42,7 +45,9 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          mqttHelper.publishMotionMode(MotionModes.Stop);
+                        },
                         child: Container(
                           width: 130.w,
                           decoration: BoxDecoration(
@@ -64,19 +69,35 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(height: 12.h,),
+                            SizedBox(
+                              height: 12.h,
+                            ),
                             Image.asset(
                               IMG_BATTERY,
                               width: 60.w,
-
                             ),
-                            SizedBox(height: 8.h,),
-                            Text(
-                              "${widget.battery}%",
-                              style: TextStyle(
-                                  color: CoreStyle.white.withOpacity(0.3),
-                                  fontFamily: CoreStyle.fontWithWeight(
-                                      FontWeight.w400)),
+                            SizedBox(
+                              height: 8.h,
+                            ),
+                            StreamBuilder(
+                              stream: mqttHelper.batteryReceived,
+                              builder: (context,snapshot){
+                                var localBattery = "0";
+                                if (snapshot.hasData) {
+                                  localBattery = snapshot.data;
+                                }
+                                else {
+                                  localBattery = "${widget.battery}";
+                                }
+                                return Text(
+                                  "$localBattery%",
+                                  style: TextStyle(
+                                      color: CoreStyle.white.withOpacity(0.3),
+                                      fontFamily: CoreStyle.fontWithWeight(
+                                          FontWeight.w400)),
+                                );
+                              },
+
                             )
                           ],
                         ),
@@ -99,14 +120,25 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
                         SizedBox(
                           height: 20.h,
                         ),
-                        Text(
-                          widget.speed ?? "0",
-                          style: TextStyle(
-                              fontFamily: "Digital",
-                              fontStyle: FontStyle.italic,
-                              fontSize: 60.sp,
-                              fontWeight: FontWeight.w300,
-                              color: Color(0xFF01A56D)),
+                        StreamBuilder(
+                          stream: mqttHelper.accelerationReceived,
+                          builder: (context, snapshot) {
+                            var localSpeed = "0";
+                            if (snapshot.hasData) {
+                              localSpeed = snapshot.data;
+                            } else {
+                              localSpeed = widget.speed;
+                            }
+                            return Text(
+                              localSpeed,
+                              style: TextStyle(
+                                  fontFamily: "Digital",
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 60.sp,
+                                  fontWeight: FontWeight.w300,
+                                  color: Color(0xFF01A56D)),
+                            );
+                          },
                         ),
                         SizedBox(
                           height: 8.h,

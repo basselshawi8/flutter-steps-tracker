@@ -15,6 +15,7 @@ import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.d
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/driving_mode_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_container_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
@@ -134,16 +135,31 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                                 setState(() {});
                               },
                             ),
-                            MiniMapWidget(location: LatLng(23.4,53.8),),
-                            AccelerationWidget(),
+                            MiniMapWidget(
+                              location: LatLng(23.4, 53.8),
+                            ),
+                            if (Provider.of<ActionsChangeNotifier>(context)
+                                    .rcMode ==
+                                true)
+                              AccelerationWidget(),
                             CameraDirectionWidget(),
-                            WheelWidget(),
+                            if (Provider.of<ActionsChangeNotifier>(context)
+                                    .rcMode ==
+                                true)
+                              WheelWidget(),
+                            if (Provider.of<ActionsChangeNotifier>(context)
+                                .rcMode ==
+                                true)
+                              DrivingModeWidget(),
                             IncidentsWidget(),
                             AIWidget(),
                             PinnedListWidget(),
                             PinnedWidget(),
-                            VehicleDetailWidget(speed: "24",battery: 60,),
-                            Positioned(
+                            VehicleDetailWidget(
+                              speed: "24",
+                              battery: 60,
+                            ),
+                            /*Positioned(
                                 right: 60.w,
                                 top: 30.h,
                                 child: InkWell(
@@ -180,7 +196,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                                           )
                                         ],
                                       )),
-                                )),
+                                )),*/
                             Positioned(
                                 top: 110.h,
                                 left: 20.w,

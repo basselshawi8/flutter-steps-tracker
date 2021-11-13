@@ -5,48 +5,87 @@ import 'dart:typed_data';
 import 'package:micropolis_test/features/user_managment/data/models/create_behavioral_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_facial_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_human_detection_model.dart';
+
 //import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
+enum MotionModes { FreeMode, ThreeSixtyMode, Stop }
+
+enum RobotDirection { Forward, Back, Right, Left }
+
 class MqttHelper {
   static final MqttHelper _singleton = MqttHelper._internal();
 
+  final client = MqttServerClient.withPort(
+      "ws://94.206.14.42", "frontEndClientIdentifier", 9509);
 
-  final client = MqttServerClient.withPort("ws://94.206.14.42", "frontEndClientIdentifier", 9509);
   //final client = MqttBrowserClient.withPort("ws://94.206.14.42", "frontEndClientIdentifier", 9509);
 
   Stream dataReceived;
   Stream locationReceived;
   Stream incidentReceived;
+  Stream batteryReceived;
+  Stream accelerationReceived;
+
   StreamController _streamController;
   StreamController _streamLocationController;
   StreamController _streamIncidnetController;
 
-  var pubTopic = 'xavier_1/control';
+  StreamController _streamBatteryController;
+  StreamController _streamCurrentAccelerationController;
 
-  var pubBehaviorTopic = 'xavier_1/behavioral_control';
-  var pubFacialTopic = 'xavier_1/facial_control';
-  var pubHumanTopic = 'xavier_1/human_control';
+  var pubTopic = 'm2/control';
+
+  var pubBehaviorTopic = 'm2/behavioral_control';
+  var pubFacialTopic = 'm2/facial_control';
+  var pubHumanTopic = 'm2/human_control';
+
+  var pubMotionMode = 'm2/motion_mode';
+  var pubRobotDirection = 'm2/robot_direction';
+  var pubRobotAcceleration = 'm2/robot_acceleration';
+
+  var batteryTopic = "m2/batt";
+  var currentAccelerationTopic = "m2/curracc";
+
+  var vehiclePrefix = "m2";
 
   factory MqttHelper() {
-
     return _singleton;
   }
 
   initConnection() async {
+    batteryTopic = "$vehiclePrefix/batt";
+    currentAccelerationTopic = "$vehiclePrefix/curracc";
+    pubTopic = '$vehiclePrefix/control';
+
+    pubBehaviorTopic = '$vehiclePrefix/behavioral_control';
+    pubFacialTopic = '$vehiclePrefix/facial_control';
+    pubHumanTopic = '$vehiclePrefix/human_control';
+
+    pubMotionMode = '$vehiclePrefix/motion_mode';
+    pubRobotDirection = '$vehiclePrefix/robot_direction';
+    pubRobotAcceleration = '$vehiclePrefix/robot_acceleration';
+
     _streamController = StreamController<dynamic>();
     _streamLocationController = StreamController<dynamic>();
     _streamIncidnetController = StreamController<dynamic>();
+    _streamBatteryController = StreamController<dynamic>();
+    _streamCurrentAccelerationController = StreamController<dynamic>();
+
     dataReceived = _streamController.stream.asBroadcastStream();
     locationReceived = _streamLocationController.stream.asBroadcastStream();
     incidentReceived = _streamIncidnetController.stream.asBroadcastStream();
+    batteryReceived = _streamBatteryController.stream.asBroadcastStream();
+    accelerationReceived =
+        _streamCurrentAccelerationController.stream.asBroadcastStream();
 
     client.logging(on: false);
 
     client.onDisconnected = onDisconnected;
     client.port = 9509;
-    client.useWebSocket=true;
+    client.useWebSocket = true;
+
     /// If you intend to use a keep alive you must set it here otherwise keep alive will be disabled.
     client.keepAlivePeriod = 20;
 
@@ -71,8 +110,8 @@ class MqttHelper {
     /// client identifier, any supplied username/password and clean session,
     /// an example of a specific one below.
     final connMess = MqttConnectMessage()
-        .withClientIdentifier('op' +
-            (DateTime.now().millisecondsSinceEpoch / 1000).toString())
+        .withClientIdentifier(
+            'op' + (DateTime.now().millisecondsSinceEpoch / 1000).toString())
         .withWillTopic(
             'willtopic') // If you set this you must set a will message
         .withWillMessage('My Will message')
@@ -113,10 +152,10 @@ class MqttHelper {
 
     /// Ok, lets try a subscription
     print('EXAMPLE::Subscribing to the test/lol topic');
-    const topic = 'm2/camerastream'; // Not a wildcard topic
+    var topic = '$vehiclePrefix/camerastream'; // Not a wildcard topic
     client.subscribe(topic, MqttQos.atLeastOnce);
 
-    const topicIncident = 'xavier_1/incident'; // Not a wildcard topic
+    var topicIncident = '$vehiclePrefix/incident'; // Not a wildcard topic
     client.subscribe(topicIncident, MqttQos.atLeastOnce);
 
     /// The client has a change notifier object(see the Observable class) which we then listen to to get
@@ -140,25 +179,37 @@ class MqttHelper {
         _streamController.add({"${c[0].topic}": base64Decode(pt)});
       } else if (c[0].topic == topicIncident) {
         _streamIncidnetController.add({"${c[0].topic}": json.decode(pt)});
+      } else if (c[0].topic == batteryTopic) {
+        _streamBatteryController.add({"${c[0].topic}": pt});
+      } else if (c[0].topic == currentAccelerationTopic) {
+        _streamCurrentAccelerationController.add({"${c[0].topic}": pt});
       }
 
       //print("received data");
-       //print(
-         // 'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+      //print(
+      // 'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
     });
 
     /// If needed you can listen for published messages that have completed the publishing
     /// handshake which is Qos dependant. Any message received on this stream has completed its
     /// publishing handshake with the broker.
     client.published.listen((MqttPublishMessage message) {
-     // print(
-       //   'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
+      // print(
+      //   'EXAMPLE::Published notification:: topic is ${message.variableHeader.topicName}, with Qos ${message.header.qos}');
     });
 
     client.subscribe(pubTopic, MqttQos.atLeastOnce);
+
     client.subscribe(pubBehaviorTopic, MqttQos.atLeastOnce);
     client.subscribe(pubFacialTopic, MqttQos.atLeastOnce);
     client.subscribe(pubHumanTopic, MqttQos.atLeastOnce);
+
+    client.subscribe(pubMotionMode, MqttQos.atLeastOnce);
+    client.subscribe(pubRobotDirection, MqttQos.atLeastOnce);
+    client.subscribe(pubRobotAcceleration, MqttQos.atLeastOnce);
+
+    client.subscribe(batteryTopic, MqttQos.atLeastOnce);
+    client.subscribe(currentAccelerationTopic, MqttQos.atLeastOnce);
 
     /// Publish it
     print('EXAMPLE::Publishing our topic');
@@ -188,6 +239,56 @@ class MqttHelper {
     var payloadMap = json.encode({"AI_status": value});
     builder.addString(payloadMap);
     client.publishMessage(pubTopic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishMotionMode(MotionModes value) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap = "";
+    switch (value) {
+      case MotionModes.FreeMode:
+        payloadMap = "q";
+        break;
+      case MotionModes.ThreeSixtyMode:
+        payloadMap = "w";
+        break;
+      case MotionModes.Stop:
+        payloadMap = "e";
+        break;
+      default:
+        break;
+    }
+    builder.addString(payloadMap);
+    client.publishMessage(pubMotionMode, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishRobotDirection(RobotDirection value) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap = "";
+    switch (value) {
+      case RobotDirection.Forward:
+        payloadMap = "f";
+        break;
+      case RobotDirection.Back:
+        payloadMap = "b";
+        break;
+      case RobotDirection.Left:
+        payloadMap = "l";
+        break;
+      case RobotDirection.Right:
+        payloadMap = "r";
+        break;
+      default:
+        break;
+    }
+    builder.addString(payloadMap);
+    client.publishMessage(pubRobotDirection, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishRobotAcceleration(int value) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap = "$value";
+    builder.addString(payloadMap);
+    client.publishMessage(pubRobotAcceleration, MqttQos.atLeastOnce, builder.payload);
   }
 
   void publishHuman(bool value, CreateHumanDetectionModel model) {
