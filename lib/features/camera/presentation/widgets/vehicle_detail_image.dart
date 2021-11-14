@@ -7,7 +7,7 @@ import 'package:micropolis_test/mqtt_helper.dart';
 import '../../../../main.dart';
 
 class VehicleDetailWidget extends StatefulWidget {
-  final String speed;
+  final int speed;
   final int battery;
 
   const VehicleDetailWidget({Key key, this.speed, this.battery})
@@ -82,12 +82,12 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
                             StreamBuilder(
                               stream: mqttHelper.batteryReceived,
                               builder: (context,snapshot){
-                                var localBattery = "0";
+                                var localBattery = 0;
                                 if (snapshot.hasData) {
                                   localBattery = snapshot.data;
                                 }
                                 else {
-                                  localBattery = "${widget.battery}";
+                                  localBattery = widget.battery;
                                 }
                                 return Text(
                                   "$localBattery%",
@@ -123,14 +123,14 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
                         StreamBuilder(
                           stream: mqttHelper.accelerationReceived,
                           builder: (context, snapshot) {
-                            var localSpeed = "0";
+                            var localSpeed = 0;
                             if (snapshot.hasData) {
                               localSpeed = snapshot.data;
                             } else {
                               localSpeed = widget.speed;
                             }
                             return Text(
-                              localSpeed,
+                              "$localSpeed",
                               style: TextStyle(
                                   fontFamily: "Digital",
                                   fontStyle: FontStyle.italic,

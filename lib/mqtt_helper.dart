@@ -50,6 +50,8 @@ class MqttHelper {
 
   var vehiclePrefix = "m2";
 
+  var testDate = DateTime.now();
+
   factory MqttHelper() {
     return _singleton;
   }
@@ -94,6 +96,8 @@ class MqttHelper {
 
     /// Add the successful connection callback
     client.onConnected = onConnected;
+
+
 
     /// Add a subscribed callback, there is also an unsubscribed callback if you need it.
     /// You can add these before connection or change them dynamically after connection if
@@ -177,15 +181,17 @@ class MqttHelper {
 
       if (c[0].topic == topic) {
         _streamController.add({"${c[0].topic}": base64Decode(pt)});
+        //print((DateTime.now().millisecondsSinceEpoch - this.testDate.millisecondsSinceEpoch)~/1000);
+        //this.testDate = DateTime.now();
+
       } else if (c[0].topic == topicIncident) {
         _streamIncidnetController.add({"${c[0].topic}": json.decode(pt)});
       } else if (c[0].topic == batteryTopic) {
-        _streamBatteryController.add({"${c[0].topic}": pt});
+        _streamBatteryController.add({"${c[0].topic}": json.decode(pt)["battery"]});
       } else if (c[0].topic == currentAccelerationTopic) {
-        _streamCurrentAccelerationController.add({"${c[0].topic}": pt});
+        _streamCurrentAccelerationController.add({"${c[0].topic}": json.decode(pt)["accel"]});
       }
 
-      //print("received data");
       //print(
       // 'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
     });
@@ -246,13 +252,13 @@ class MqttHelper {
     var payloadMap = "";
     switch (value) {
       case MotionModes.FreeMode:
-        payloadMap = "q";
+        payloadMap = json.encode({"motion": "q"});
         break;
       case MotionModes.ThreeSixtyMode:
-        payloadMap = "w";
+        payloadMap = json.encode({"motion": "w"});
         break;
       case MotionModes.Stop:
-        payloadMap = "e";
+        payloadMap = json.encode({"motion": "e"});
         break;
       default:
         break;
@@ -266,29 +272,31 @@ class MqttHelper {
     var payloadMap = "";
     switch (value) {
       case RobotDirection.Forward:
-        payloadMap = "f";
+        payloadMap = json.encode({"dir": "f"});
         break;
       case RobotDirection.Back:
-        payloadMap = "b";
+        payloadMap = json.encode({"dir": "b"});
         break;
       case RobotDirection.Left:
-        payloadMap = "l";
+        payloadMap = json.encode({"dir": "l"});
         break;
       case RobotDirection.Right:
-        payloadMap = "r";
+        payloadMap = json.encode({"dir": "r"});
         break;
       default:
         break;
     }
     builder.addString(payloadMap);
-    client.publishMessage(pubRobotDirection, MqttQos.atLeastOnce, builder.payload);
+    client.publishMessage(
+        pubRobotDirection, MqttQos.atLeastOnce, builder.payload);
   }
 
   void publishRobotAcceleration(int value) {
     final builder = MqttClientPayloadBuilder();
-    var payloadMap = "$value";
+    var payloadMap = json.encode({"accel": "$value"});
     builder.addString(payloadMap);
-    client.publishMessage(pubRobotAcceleration, MqttQos.atLeastOnce, builder.payload);
+    client.publishMessage(
+        pubRobotAcceleration, MqttQos.atLeastOnce, builder.payload);
   }
 
   void publishHuman(bool value, CreateHumanDetectionModel model) {

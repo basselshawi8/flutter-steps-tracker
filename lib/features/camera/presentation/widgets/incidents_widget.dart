@@ -46,7 +46,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: 0,
+        top: 30.h,
         right: 32.w,
         child: Consumer<IncidentsChangeNotifier>(
           builder: (context, state, _) {
@@ -96,6 +96,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                   color: Color.fromARGB(255, 83, 83, 83),
                                   width: 50.w,
                                 ),
+                                SizedBox(width:12.w),
                                 BlocBuilder<IncidentsListBloc, IncidentsState>(
                                   buildWhen: (prev, current) {
                                     return prev != current;
@@ -116,7 +117,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                             "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
                                             style: TextStyle(
                                                 color: CoreStyle.white,
-                                                fontSize: 20.sp),
+                                                fontSize: 10.sp),
                                           ),
                                         ),
                                       );
@@ -174,6 +175,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                   color: Color.fromARGB(255, 83, 83, 83),
                                   width: 50.w,
                                 ),
+                                SizedBox(width:12.w),
                                 BlocBuilder<IncidentsListBloc, IncidentsState>(
                                   buildWhen: (prev, current) {
                                     return prev != current;
@@ -194,7 +196,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                             "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
                                             style: TextStyle(
                                                 color: CoreStyle.white,
-                                                fontSize: 20.sp),
+                                                fontSize: 10.sp),
                                           ),
                                         ),
                                       );
@@ -249,6 +251,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                   width: 50.w,
                                   color: Color.fromARGB(255, 83, 83, 83),
                                 ),
+                                SizedBox(width: 12.w,),
                                 BlocBuilder<IncidentsListBloc, IncidentsState>(
                                   buildWhen: (prev, current) {
                                     return prev != current;
@@ -268,7 +271,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                             "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
                                             style: TextStyle(
                                                 color: CoreStyle.white,
-                                                fontSize: 20.sp),
+                                                fontSize: 10.sp),
                                           ),
                                         ),
                                       );
