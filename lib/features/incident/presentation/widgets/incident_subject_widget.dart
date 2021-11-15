@@ -29,7 +29,6 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
   var carID = "DPNP Mono 208";
   var idType = "Passport";
   var idNo = "44322DFG113";
-  var nationality = "Russian";
   var location = "Dubai";
   var suspectLevel = "E";
   var criminalResult = "Wanted";
@@ -53,10 +52,10 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: 0,
+        top: 80.h,
         left: 1920.w - 800.w,
         bottom: 0,
-        right: 400.w,
+        right: 170.w,
         child: Consumer<IncidentsChangeNotifier>(
           builder: (context, state, _) {
 
@@ -91,7 +90,6 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                           "${state.subjects.data.first.name} ${state.subjects.data.first.surname}";
                       idType = state.subjects.data.first.idType;
                       idNo = state.subjects.data.first.idNo;
-                      nationality = state.subjects.data.first.nationality;
                     }
                     _isAsync = false;
                   });
@@ -285,14 +283,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                           fontWeight: FontWeight.w200,
                                           fontSize: 14.sp,
                                         )),
-                                    Text(
-                                      nationality,
-                                      style: TextStyle(
-                                          color:
-                                              CoreStyle.operationLightTextColor,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 18.sp),
-                                    ),
+
                                     SizedBox(
                                       height: 5.h,
                                     ),
@@ -321,7 +312,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                           fontSize: 14.sp,
                                         )),
                                     Text(
-                                      state?.currentIncident?.dateRaise ?? "",
+                                      state?.currentIncident?.dateRaise?.toIso8601String() ?? "",
                                       style: TextStyle(
                                           color:
                                               CoreStyle.operationLightTextColor,

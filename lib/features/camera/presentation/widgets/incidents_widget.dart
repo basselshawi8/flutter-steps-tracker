@@ -84,7 +84,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     child: Container(
                       width: 70.h,
                       height: 85.h,
-
+                      color: Colors.transparent,
                       child: Stack(
                         children: [
                           Positioned.fill(
@@ -96,7 +96,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                   color: Color.fromARGB(255, 83, 83, 83),
                                   width: 50.w,
                                 ),
-                                SizedBox(width:12.w),
+                                SizedBox(width: 12.w),
                                 BlocBuilder<IncidentsListBloc, IncidentsState>(
                                   buildWhen: (prev, current) {
                                     return prev != current;
@@ -126,7 +126,9 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                         width: 20.w,
                                         height: 20.w,
                                         child: Center(
-                                          child: CircularProgressIndicator(strokeWidth: 2,),
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
                                         ),
                                       );
                                     }
@@ -140,7 +142,6 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                               left: 10.w,
                               right: 10.w,
                               child: Container(
-
                                 height: 20.h,
                                 decoration: BoxDecoration(
                                     color: Color(0xFFBD5CF0),
@@ -163,7 +164,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     child: Container(
                       width: 70.h,
                       height: 85.h,
-
+                      color: Colors.transparent,
                       child: Stack(
                         children: [
                           Positioned.fill(
@@ -175,7 +176,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                   color: Color.fromARGB(255, 83, 83, 83),
                                   width: 50.w,
                                 ),
-                                SizedBox(width:12.w),
+                                SizedBox(width: 12.w),
                                 BlocBuilder<IncidentsListBloc, IncidentsState>(
                                   buildWhen: (prev, current) {
                                     return prev != current;
@@ -183,7 +184,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                   builder: (context, state) {
                                     if (state
                                         is GetIncidentsClassificationSuccessState) {
-                                      var classifications = state.classifications.data
+                                      var classifications = state
+                                          .classifications.data
                                           .where((element) =>
                                               element.id.classification
                                                   .toLowerCase()
@@ -205,7 +207,9 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                         width: 20.w,
                                         height: 20.w,
                                         child: Center(
-                                          child: CircularProgressIndicator(strokeWidth: 2,),
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
                                         ),
                                       );
                                     }
@@ -219,7 +223,6 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                               left: 10.w,
                               right: 10.w,
                               child: Container(
-
                                 height: 20.h,
                                 decoration: BoxDecoration(
                                     color: Color(0xFFF0AC5C),
@@ -240,6 +243,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                     child: Container(
                       width: 70.h,
                       height: 85.h,
+                      color: Colors.transparent,
                       child: Stack(
                         children: [
                           Positioned.fill(
@@ -251,7 +255,9 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                   width: 50.w,
                                   color: Color.fromARGB(255, 83, 83, 83),
                                 ),
-                                SizedBox(width: 12.w,),
+                                SizedBox(
+                                  width: 12.w,
+                                ),
                                 BlocBuilder<IncidentsListBloc, IncidentsState>(
                                   buildWhen: (prev, current) {
                                     return prev != current;
@@ -259,7 +265,8 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                   builder: (context, state) {
                                     if (state
                                         is GetIncidentsClassificationSuccessState) {
-                                      var classifications = state.classifications.data
+                                      var classifications = state
+                                          .classifications.data
                                           .where((element) =>
                                               element.id.classification
                                                   .toLowerCase()
@@ -280,7 +287,9 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                                         width: 20.w,
                                         height: 20.w,
                                         child: Center(
-                                          child: CircularProgressIndicator(strokeWidth: 2,),
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
                                         ),
                                       );
                                     }
@@ -294,7 +303,6 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
                               left: 10.w,
                               right: 10.w,
                               child: Container(
-
                                 height: 20.h,
                                 decoration: BoxDecoration(
                                     color: Color(0xFFF05C5C),

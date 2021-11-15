@@ -14,6 +14,10 @@ class IncidentsChangeNotifier extends ChangeNotifier {
 
   String _newIncidentID;
 
+  int _currentIncidentType = -1;
+
+  int get currentIncidentType => _currentIncidentType;
+
   String get newIncidentID => _newIncidentID;
 
   bool get showSubjectData => _showSubjectData;
@@ -54,6 +58,11 @@ class IncidentsChangeNotifier extends ChangeNotifier {
 
   set currentIncident(IncidentModel val) {
     _currentIncident = val;
+    notifyListeners();
+  }
+
+  set currentIncidentType(int val) {
+    _currentIncidentType = val;
     notifyListeners();
   }
 

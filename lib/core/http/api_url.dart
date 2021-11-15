@@ -10,7 +10,7 @@ const API_MENUS = "/api/v1/menus/restaurant";
 
 const API_GET_INCIDENT = "incidents";
 const API_GET_INCIDENT_CLASSIFICATION = "incidents/classificationincident";
-const API_GET_SUBJECTS = "subject/getManySubject";
+const API_GET_SUBJECTS = "subjects/manysubject";
 
 const API_CREATE_POLYGON = "sensitivelocation";
 const API_GET_REGIONS = "regions";

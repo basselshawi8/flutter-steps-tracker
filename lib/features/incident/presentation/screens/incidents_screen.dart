@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/http/api_url.dart';
 import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/behavior_video_widget.dart';
+import 'package:micropolis_test/features/incident/presentation/widgets/incident_top_bar.dart';
 import 'package:micropolis_test/features/incident/presentation/widgets/suspect_data_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -85,100 +86,100 @@ class _IncidentsScreenState extends State<IncidentsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Consumer<IncidentsChangeNotifier>(
-          builder: (context, state, _) {
-            if (state.currentIncident != null) {
-              var stateLocation = LatLng(
-                  double.tryParse(state.currentIncident.latitude),
-                  double.tryParse(state.currentIncident.longitude));
-              if (_locations.first != stateLocation) {
-                _controller
-                    ?.animateCamera(CameraUpdate.newLatLng(stateLocation));
-                _locations.clear();
-                _locations.add(stateLocation);
-                _buildMarkers();
-              }
+      body: Consumer<IncidentsChangeNotifier>(
+        builder: (context, state, _) {
+          if (state.currentIncident != null) {
+            var stateLocation = LatLng(
+                double.tryParse(state.currentIncident.latitude),
+                double.tryParse(state.currentIncident.longitude));
+            if (_locations.first != stateLocation) {
+              _controller?.animateCamera(CameraUpdate.newLatLng(stateLocation));
+              _locations.clear();
+              _locations.add(stateLocation);
+              _buildMarkers();
             }
+          }
 
-            String imageCapDecoded = null;
-            String imageMathcDecoded = null;
-            if (state?.currentIncident?.capturedPhotosIds?.capArr != null) {
-              imageCapDecoded =
-                  "http://94.206.14.42:5000/incident/image/${state.currentIncident?.capturedPhotosIds?.capArr[0]}";
-            }
+          String imageCapDecoded = null;
+          String imageMathcDecoded = null;
+          if (state?.currentIncident?.capturedPhotosIds?.capArr != null) {
+            imageCapDecoded =
+                "http://94.206.14.42:5000/incident/image/${state.currentIncident?.capturedPhotosIds?.capArr[0]}";
+          }
 
-            if (state?.currentIncident?.capturedPhotosIds?.capArr != null) {
-              imageMathcDecoded =
-                  "http://94.206.14.42:5000/incident/image/${state.currentIncident?.capturedPhotosIds?.capArr[1]}";
-            }
+          if (state?.currentIncident?.capturedPhotosIds?.capArr != null) {
+            imageMathcDecoded =
+                "http://94.206.14.42:5000/incident/image/${state.currentIncident?.capturedPhotosIds?.capArr[1]}";
+          }
 
-            return Container(
-              width: double.maxFinite,
-              height: double.maxFinite,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 800.w,
-                      child: GoogleMap(
-                        onMapCreated: _onMapCreated,
-                        initialCameraPosition: CameraPosition(
-                          target: localLocation,
-                          zoom: 12,
+          return Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                    top: 80.h,
+                    left: 0,
+                    bottom: 0,
+                    right: 800.w,
+                    child: GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: CameraPosition(
+                        target: localLocation,
+                        zoom: 12,
+                      ),
+                      markers: _markers.values.toSet(),
+                    )),
+                if (imageMathcDecoded != null &&
+                    imageCapDecoded != null &&
+                    state?.currentIncident?.videoIds?.vidArr?.isEmpty == true)
+                  Positioned(
+                      top: 25.h + 80.h,
+                      left: 30.w,
+                      child: ClipRRect(
+                        child: Image.network(
+                          imageCapDecoded,
+                          width: 250.w,
+                          height: 250.w,
+                          fit: BoxFit.cover,
                         ),
-                        markers: _markers.values.toSet(),
+                        borderRadius: BorderRadius.all(Radius.circular(8.r)),
                       )),
-                  if (imageMathcDecoded != null &&
-                      imageCapDecoded != null &&
-                      state?.currentIncident?.videoIds?.vidArr?.isEmpty == true)
-                    Positioned(
-                        top: 25.h,
-                        left: 30.w,
-                        child: ClipRRect(
-                          child: Image.network(
-                            imageCapDecoded,
-                            width: 250.w,
-                            height: 250.w,
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                        )),
-                  if (imageMathcDecoded != null &&
-                      imageCapDecoded != null &&
-                      state?.currentIncident?.videoIds?.vidArr?.isEmpty == true)
-                    Positioned(
-                        top: 25.h,
-                        left: 300.w,
-                        child: ClipRRect(
-                          child: Image.network(
-                            imageMathcDecoded,
-                            width: 250.w,
-                            height: 250.w,
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                        )),
-                  IncidentsListWidget(
-                    type: widget.type,
+                if (imageMathcDecoded != null &&
+                    imageCapDecoded != null &&
+                    state?.currentIncident?.videoIds?.vidArr?.isEmpty == true)
+                  Positioned(
+                      top: 25.h + 80.h,
+                      left: 300.w,
+                      child: ClipRRect(
+                        child: Image.network(
+                          imageMathcDecoded,
+                          width: 250.w,
+                          height: 250.w,
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                      )),
+                IncidentSubjectWidget(),
+                IncidentsListWidget(
+                  type: widget.type,
+                ),
+                if (state?.currentIncident?.videoIds?.vidArr?.isEmpty == false)
+                  BehaviorVideoWidget(
+                    videoURL:
+                        "$API_OPERATION_BASE${state.currentIncident.videoIds.vidArr.first ?? ""}",
                   ),
-                  IncidentSubjectWidget(),
-                  if (state?.currentIncident?.videoIds?.vidArr?.isEmpty == false)
-                    BehaviorVideoWidget(
-                      videoURL:
-                          "${API_OPERATION_BASE}incident/behavioral/${state.currentIncident.videoIds.vidArr.first ?? ""}",
-                    ),
-                  IncidentActionsWidget(
-                    incidentID: state?.currentIncident?.id ?? "",
-                  ),
-                  if (state.showSubjectData == true) SuspectDataWidget()
-                ],
-              ),
-            );
-          },
-        ),
+                IncidentActionsWidget(
+                  incidentID: state?.currentIncident?.id ?? "",
+                ),
+                if (state.showSubjectData == true) SuspectDataWidget(),
+                IncidentsTopBar(
+                  type: widget.type,
+                )
+              ],
+            ),
+          );
+        },
       ),
       backgroundColor: Colors.black,
     );

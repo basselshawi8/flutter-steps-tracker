@@ -45,15 +45,17 @@ class IncidentsModel extends BaseModel{
   }
 }
 
-class IncidentModel extends BaseModel {
+class IncidentModel extends BaseModel{
   IncidentModel({
+    this.isWanted,
+    this.sensivitiy,
+    this.behaviorAnalysisClassification,
     this.id,
     this.publishedAt,
     this.videoIds,
-    this.sensivitiy,
-    this.isWanted,
     this.capturedPhotosIds,
     this.personId,
+    this.percentageMap,
     this.longitude,
     this.latitude,
     this.dateRaise,
@@ -61,16 +63,18 @@ class IncidentModel extends BaseModel {
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.incidentModelId,
+    this.datumId,
   });
 
+  final bool isWanted;
+  final double sensivitiy;
+  final String behaviorAnalysisClassification;
   final String id;
   final DateTime publishedAt;
   final VideoIds videoIds;
-  final double sensivitiy;
-  final bool isWanted;
   final CapturedPhotosIds capturedPhotosIds;
   final PersonId personId;
+  final int percentageMap;
   final String longitude;
   final String latitude;
   final DateTime dateRaise;
@@ -78,20 +82,22 @@ class IncidentModel extends BaseModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int v;
-  final String incidentModelId;
+  final String datumId;
 
   factory IncidentModel.fromJson(String str) => IncidentModel.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
   factory IncidentModel.fromMap(Map<String, dynamic> json) => IncidentModel(
+    isWanted: json["is_wanted"] == null ? null : json["is_wanted"],
+    sensivitiy: json["sensivitiy"] == null ? null : json["sensivitiy"].toDouble(),
+    behaviorAnalysisClassification: json["behavior_analysis_classification"] == null ? null : json["behavior_analysis_classification"],
     id: json["_id"] == null ? null : json["_id"],
     publishedAt: json["published_at"] == null ? null : DateTime.parse(json["published_at"]),
     videoIds: json["video_ids"] == null ? null : VideoIds.fromMap(json["video_ids"]),
-    sensivitiy: json["sensivitiy"] == null ? null : json["sensivitiy"].toDouble(),
-    isWanted: json["is_wanted"] == null ? null : json["is_wanted"],
     capturedPhotosIds: json["captured_photos_ids"] == null ? null : CapturedPhotosIds.fromMap(json["captured_photos_ids"]),
     personId: json["person_id"] == null ? null : PersonId.fromMap(json["person_id"]),
+    percentageMap: json["percentageMap"] == null ? null : json["percentageMap"],
     longitude: json["longitude"] == null ? null : json["longitude"],
     latitude: json["latitude"] == null ? null : json["latitude"],
     dateRaise: json["dateRaise"] == null ? null : DateTime.parse(json["dateRaise"]),
@@ -99,17 +105,19 @@ class IncidentModel extends BaseModel {
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"] == null ? null : json["__v"],
-    incidentModelId: json["id"] == null ? null : json["id"],
+    datumId: json["id"] == null ? null : json["id"],
   );
 
   Map<String, dynamic> toMap() => {
+    "is_wanted": isWanted == null ? null : isWanted,
+    "sensivitiy": sensivitiy == null ? null : sensivitiy,
+    "behavior_analysis_classification": behaviorAnalysisClassification == null ? null : behaviorAnalysisClassification,
     "_id": id == null ? null : id,
     "published_at": publishedAt == null ? null : publishedAt.toIso8601String(),
     "video_ids": videoIds == null ? null : videoIds.toMap(),
-    "sensivitiy": sensivitiy == null ? null : sensivitiy,
-    "is_wanted": isWanted == null ? null : isWanted,
     "captured_photos_ids": capturedPhotosIds == null ? null : capturedPhotosIds.toMap(),
     "person_id": personId == null ? null : personId.toMap(),
+    "percentageMap": percentageMap == null ? null : percentageMap,
     "longitude": longitude == null ? null : longitude,
     "latitude": latitude == null ? null : latitude,
     "dateRaise": dateRaise == null ? null : "${dateRaise.year.toString().padLeft(4, '0')}-${dateRaise.month.toString().padLeft(2, '0')}-${dateRaise.day.toString().padLeft(2, '0')}",
@@ -117,7 +125,7 @@ class IncidentModel extends BaseModel {
     "createdAt": createdAt == null ? null : createdAt.toIso8601String(),
     "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
     "__v": v == null ? null : v,
-    "id": incidentModelId == null ? null : incidentModelId,
+    "id": datumId == null ? null : datumId,
   };
 
   @override
@@ -127,7 +135,7 @@ class IncidentModel extends BaseModel {
   }
 }
 
-class CapturedPhotosIds extends BaseModel{
+class CapturedPhotosIds extends BaseModel {
   CapturedPhotosIds({
     this.capArr,
   });
@@ -179,7 +187,7 @@ class PersonId extends BaseModel{
   }
 }
 
-class VideoIds extends BaseModel {
+class VideoIds extends BaseModel{
   VideoIds({
     this.vidArr,
   });
@@ -204,5 +212,3 @@ class VideoIds extends BaseModel {
     throw UnimplementedError();
   }
 }
-
-

@@ -55,7 +55,7 @@ class _BehaviorVideoWidgetState extends State<BehaviorVideoWidget> {
   Widget build(BuildContext context) {
     return Positioned(
         left: 50.w,
-        top: 50.h,
+        top: 50.h + 80.h,
         child: FutureBuilder(
           future: _initializeVideoPlayerFuture,
           builder: (context, snapshot) {

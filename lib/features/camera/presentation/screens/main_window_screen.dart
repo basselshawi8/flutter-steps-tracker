@@ -20,6 +20,7 @@ import 'package:micropolis_test/features/camera/presentation/widgets/incidents_c
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/main_navigation_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/mini_map_widget.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/ngrok_textfield.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_list_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/pinned_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/vehicle_detail_image.dart';
@@ -154,6 +155,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                           AIWidget(),
                           PinnedListWidget(),
                           PinnedWidget(),
+                          NgrokWidget(),
                           VehicleDetailWidget(
                             speed: 24,
                             battery: 60,

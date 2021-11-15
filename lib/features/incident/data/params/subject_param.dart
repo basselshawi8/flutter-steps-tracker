@@ -10,6 +10,6 @@ class SubjectsParam extends BaseParams {
   String toJson() => json.encode(toMap());
 
   Map<String, dynamic> toMap() => {
-        "subjectsId": this.ids,
+        "subjects": this.ids,
       };
 }

@@ -84,32 +84,7 @@ class _SuspectDataWidgetState extends State<SuspectDataWidget> {
                         Text("Gender", style: styleTitle),
                         Text("${suspect.gender}", style: styleContent),
                         SizedBox(height: 12.h),
-                        Text("Residence Status", style: styleTitle),
-                        Text("${suspect.residenceStatus}", style: styleContent),
-                        SizedBox(height: 24.h),
-                        if (suspect.criminalRecords.length != 0)
-                          Text("Criminal Records",
-                              style: TextStyle(
-                                  color: CoreStyle.white,
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.w800)),
-                        for (var cri in suspect.criminalRecords) ...[
-                          Text("Crime Type", style: styleTitle),
-                          Text("${cri.crimType}", style: styleContent),
-                          SizedBox(height: 12.h),
-                          Text("Crime Description", style: styleTitle),
-                          Text("${cri.crimDesc}", style: styleContent),
-                          SizedBox(height: 12.h),
-                          Text("Crime Status", style: styleTitle),
-                          Text("${cri.crimStatus}", style: styleContent),
-                          SizedBox(height: 12.h),
-                          Text("Crime Wanted", style: styleTitle),
-                          Text("${cri.isWanted}", style: styleContent),
-                          SizedBox(height: 12.h),
-                          Text("Crime Notes", style: styleTitle),
-                          Text("${cri.crimNote}", style: styleContent),
-                          SizedBox(height: 36.h),
-                        ],
+
                       ],
                     ],
                   ),
@@ -141,25 +116,7 @@ class _SuspectDataWidgetState extends State<SuspectDataWidget> {
                       SizedBox(
                         width: 24.w,
                       ),
-                      InkWell(
-                        onTap: () {
-                          if (_index <
-                              Provider.of<IncidentsChangeNotifier>(context,
-                                          listen: false)
-                                      .suspects
-                                      .count -
-                                  1) {
-                            setState(() {
-                              _index += 1;
-                            });
-                          }
-                        },
-                        child: Icon(
-                          Icons.chevron_right,
-                          color: CoreStyle.white,
-                          size: 50.w,
-                        ),
-                      ),
+
                     ],
                   ),
                 ),
