@@ -83,6 +83,7 @@ const IMG_GAMMA = 'assets/images/png/gamma.png';
 const IMG_DELTA = 'assets/images/png/delta.png';
 const IMG_BETA = 'assets/images/png/beta.png';
 const IMG_PIN = 'assets/images/png/pin.png';
+const IMG_PARK = 'assets/images/png/park.png';
 
 const IMG_DOG = 'assets/images/png/dog.png';
 const IMG_DRONE = 'assets/images/png/drone.png';

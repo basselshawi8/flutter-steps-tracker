@@ -10,6 +10,7 @@ import 'package:micropolis_test/features/camera/data/params/incident_param.dart'
 import 'package:micropolis_test/features/camera/presentation/bloc/incident_bloc.dart';
 import 'package:micropolis_test/features/camera/presentation/bloc/incident_event.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/acceleration_m1_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/acceleration_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
@@ -26,6 +27,7 @@ import 'package:micropolis_test/features/camera/presentation/widgets/pinned_widg
 import 'package:micropolis_test/features/camera/presentation/widgets/vehicle_detail_image.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/wheel_widget.dart';
 import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.dart';
+import 'package:micropolis_test/main.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -40,11 +42,12 @@ class MainWindowScreen extends StatefulWidget {
 
 class _MainWindowScreenState extends State<MainWindowScreen>
     with SingleTickerProviderStateMixin {
-  var urls = ['m2/camerastream', 'm2/camerastream'];
+  var urls = ['m2/camerastream', 'm1/camerastream'];
   AnimationController _animationController;
   Animation _incidentsPanelAnimationMain;
   Animation _incidentsPanelAnimationSub;
   var _firstState = true;
+  var _currentCar = "m1";
 
   WebSocketChannel _incidentsChannel;
 
@@ -76,6 +79,18 @@ class _MainWindowScreenState extends State<MainWindowScreen>
     });
 
     super.initState();
+  }
+
+  _changeCar() {
+    if (_currentCar == "m2") {
+      _currentCar = "m1";
+      urls = ['m1/camerastream', 'm2/camerastream'];
+    } else {
+      _currentCar = "m2";
+      urls = ['m2/camerastream', 'm1/camerastream'];
+    }
+    mqttHelper.vehiclePrefix = _currentCar;
+    mqttHelper.initConnection();
   }
 
   @override
@@ -131,7 +146,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                             isMini: true,
                             url: urls[1],
                             switchCamera: () {
-                              urls = urls.reversed.toList();
+                              _changeCar();
                               setState(() {});
                             },
                           ),
@@ -139,16 +154,22 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                             location: LatLng(23.4, 53.8),
                           ),
                           if (Provider.of<ActionsChangeNotifier>(context)
-                                  .rcMode ==
-                              true)
+                                      .rcMode ==
+                                  true &&
+                              _currentCar == "m2")
                             AccelerationWidget(),
+                          if (Provider.of<ActionsChangeNotifier>(context)
+                                      .rcMode ==
+                                  true &&
+                              _currentCar == "m1")
+                            AccelerationM1Widget(),
                           CameraDirectionWidget(),
                           if (Provider.of<ActionsChangeNotifier>(context)
                                   .rcMode ==
                               true)
                             WheelWidget(),
                           if (Provider.of<ActionsChangeNotifier>(context)
-                              .rcMode ==
+                                  .rcMode ==
                               true)
                             DrivingModeWidget(),
                           IncidentsWidget(),
