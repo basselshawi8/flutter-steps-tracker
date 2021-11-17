@@ -20,6 +20,8 @@ class VehicleDetailWidget extends StatefulWidget {
 }
 
 class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
+  var _emergencyBreak = false;
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -46,12 +48,28 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _emergencyBreak = !_emergencyBreak;
                           mqttHelper.publishMotionMode(MotionModes.Stop);
+                          setState(() {});
                         },
                         child: Container(
                           width: 130.w,
                           decoration: BoxDecoration(
-                              color: Color(0xFFFF2750),
+                              color: _emergencyBreak == false
+                                  ? Color(0xFFFF2750)
+                                  : null,
+                              boxShadow: _emergencyBreak == true
+                                  ? [
+                                      BoxShadow(
+                                        color: Color(0x00000041),
+                                      ),
+                                      BoxShadow(
+                                        color: Color(0xFFFF2750),
+                                        spreadRadius: -1.0,
+                                        blurRadius: 3.0,
+                                      )
+                                    ]
+                                  : null,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20.r),
                                   bottomLeft: Radius.circular(20.r))),
@@ -81,12 +99,11 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
                             ),
                             StreamBuilder(
                               stream: mqttHelper.batteryReceived,
-                              builder: (context,snapshot){
+                              builder: (context, snapshot) {
                                 var localBattery = 0;
                                 if (snapshot.hasData) {
                                   localBattery = snapshot.data;
-                                }
-                                else {
+                                } else {
                                   localBattery = widget.battery;
                                 }
                                 return Text(
@@ -97,7 +114,6 @@ class _VehicleDetailWidgetState extends State<VehicleDetailWidget> {
                                           FontWeight.w400)),
                                 );
                               },
-
                             )
                           ],
                         ),

@@ -10,6 +10,7 @@ import 'package:micropolis_test/features/camera/data/params/incident_param.dart'
 import 'package:micropolis_test/features/camera/presentation/bloc/incident_bloc.dart';
 import 'package:micropolis_test/features/camera/presentation/bloc/incident_event.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/VehicleSelector.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/acceleration_m1_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/acceleration_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.dart';
@@ -47,7 +48,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
   Animation _incidentsPanelAnimationMain;
   Animation _incidentsPanelAnimationSub;
   var _firstState = true;
-  var _currentCar = "m1";
+  var _currentCar = "m2";
 
   WebSocketChannel _incidentsChannel;
 
@@ -91,6 +92,9 @@ class _MainWindowScreenState extends State<MainWindowScreen>
     }
     mqttHelper.vehiclePrefix = _currentCar;
     mqttHelper.initConnection();
+    setState(() {
+
+    });
   }
 
   @override
@@ -177,6 +181,11 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                           PinnedListWidget(),
                           PinnedWidget(),
                           NgrokWidget(),
+                          VehicleSelector(
+                            valueChanged: (val) {
+                              _changeCar();
+                            },
+                          ),
                           VehicleDetailWidget(
                             speed: 24,
                             battery: 60,

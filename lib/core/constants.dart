@@ -85,6 +85,11 @@ const IMG_BETA = 'assets/images/png/beta.png';
 const IMG_PIN = 'assets/images/png/pin.png';
 const IMG_PARK = 'assets/images/png/park.png';
 
+const IMG_M1_SELECTED = 'assets/images/png/m1Selected.png';
+const IMG_M1_UNSELECTED = 'assets/images/png/m1UnSelected.png';
+const IMG_M2_SELECTED = 'assets/images/png/m2Selected.png';
+const IMG_M2_UNSELECTED = 'assets/images/png/m2UnSelected.png';
+
 const IMG_DOG = 'assets/images/png/dog.png';
 const IMG_DRONE = 'assets/images/png/drone.png';
 const IMG_LIVE = 'assets/images/png/live.png';
