@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:micropolis_test/main.dart';
 import 'package:provider/provider.dart';
 
 class MiniMapWidget extends StatefulWidget {
@@ -23,6 +24,7 @@ class _MiniMapWidgetState extends State<MiniMapWidget> {
   final Map<String, Marker> _markers = {};
   var isMini = true;
   var zoomLevel = 11.0;
+  LatLng _currentLocation;
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     var _darkMapStyle = await rootBundle.loadString(MAP_DARK_STYLE);
@@ -31,32 +33,32 @@ class _MiniMapWidgetState extends State<MiniMapWidget> {
   }
 
   Future<void> _redrawMarkers() async {
-    _markers.clear();
-
     var icon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration.empty, IMG_VEHICLE);
+    if (_markers.isNotEmpty) _markers.clear();
     final marker = Marker(
-        markerId: MarkerId("robot 1"),
-        position: widget.location,
+        markerId: MarkerId("m2"),
+        position: _currentLocation,
         infoWindow: InfoWindow(
-          title: "robot 1",
-          snippet: "robot 1 position",
+          title: "m2",
+          snippet: "m2 position",
         ),
         icon: icon);
-    _markers["robot 1"] = marker;
+    _markers["m2"] = marker;
   }
 
   @override
   void initState() {
+    _currentLocation = widget.location;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        bottom:Provider.of<ActionsChangeNotifier>(context)
-            .rcMode ==
-        true ? 370.h : 22.h,
+        bottom: Provider.of<ActionsChangeNotifier>(context).rcMode == true
+            ? 370.h
+            : 22.h,
         left: 30.w,
         child: Container(
           width: isMini == true ? 200.w : 700.w,
@@ -81,23 +83,62 @@ class _MiniMapWidgetState extends State<MiniMapWidget> {
                     child: FutureBuilder(
                       future: _redrawMarkers(),
                       builder: (context, snapshot) {
-                        return new GoogleMap(
-                          onMapCreated: _onMapCreated,
-                          compassEnabled: false,
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: false,
-                          myLocationButtonEnabled: false,
-                          initialCameraPosition: new CameraPosition(
-                            target: widget.location ?? LatLng(33, 33),
-                            zoom: zoomLevel,
-                          ),
-                          markers: _markers?.values?.toSet(),
+                        return StreamBuilder(
+                          stream: mqttHelper.locationReceived,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData && snapshot.data is LatLng) {
+                              var coordinate = snapshot.data as LatLng;
+                              _currentLocation = coordinate;
+                              _redrawMarkers();
+
+                              _controller.animateCamera(
+                                  CameraUpdate.newLatLngZoom(
+                                      coordinate, zoomLevel));
+                            }
+                            return new GoogleMap(
+                              onMapCreated: _onMapCreated,
+                              compassEnabled: false,
+                              zoomControlsEnabled: false,
+                              zoomGesturesEnabled: false,
+                              myLocationButtonEnabled: false,
+                              initialCameraPosition: new CameraPosition(
+                                target: _currentLocation ?? LatLng(33, 33),
+                                zoom: zoomLevel,
+                              ),
+                              markers: _markers?.values?.toSet(),
+                            );
+                          },
                         );
                       },
                     ),
                   ),
                 ),
               ),
+              if (isMini == false)
+                Positioned(
+                    top: 24.w,
+                    left: 24.w,
+                    child: Container(
+                      height: 70.h,
+                      width: 300.w,
+                      padding: EdgeInsets.only(right: 30.w),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.w),
+                          color: Color(0xff00CB85)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            mqttHelper.vehiclePrefix.toUpperCase(),
+                            style: TextStyle(
+                                color: CoreStyle.white,
+                                fontFamily:
+                                    CoreStyle.fontWithWeight(FontWeight.w400),
+                                fontSize: 38.sp),
+                          )
+                        ],
+                      ),
+                    )),
               Positioned.fill(child: GestureDetector(onTap: () {
                 setState(() {
                   isMini = !isMini;

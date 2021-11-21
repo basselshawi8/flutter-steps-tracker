@@ -63,13 +63,13 @@ const IMG_WHEEL = 'assets/images/png/wheel.png';
 const IMG_WHEEL_2 = 'assets/images/png/wheel2.png';
 const IMG_CAMERA_MOVEMENT = 'assets/images/png/camera_moving.png';
 const IMG_WHEEL_GREY = 'assets/images/png/wheel_grey.png';
-const IMG_RC_MODE= 'assets/images/png/rcMode.png';
-const IMG_AI_MODE= 'assets/images/png/aiMode.png';
-const IMG_VEHICLE= 'assets/images/png/vehicle.png';
-const IMG_BATTERY= 'assets/images/png/battery.png';
-const IMG_STOP= 'assets/images/png/stop.png';
-const IMG_FREE_MODE= 'assets/images/png/freeMode.png';
-const IMG_THREE_SIXTY_MODE= 'assets/images/png/360Mode.png';
+const IMG_RC_MODE = 'assets/images/png/rcMode.png';
+const IMG_AI_MODE = 'assets/images/png/aiMode.png';
+const IMG_VEHICLE = 'assets/images/png/vehicle.png';
+const IMG_BATTERY = 'assets/images/png/battery.png';
+const IMG_STOP = 'assets/images/png/stop.png';
+const IMG_FREE_MODE = 'assets/images/png/freeMode.png';
+const IMG_THREE_SIXTY_MODE = 'assets/images/png/360Mode.png';
 
 const IMG_USER1 = 'assets/images/png/user1.png';
 const IMG_USER2 = 'assets/images/png/user2.png';
@@ -97,7 +97,12 @@ const IMG_POLICE_CAR = 'assets/images/png/policeCar.png';
 const IMG_INCIDENT_PIN = 'assets/images/png/incidentPin.png';
 const IMG_DUBAI_POLICE = 'assets/images/png/dubaiPolice.png';
 const IMG_POLICE_LOGO = 'assets/images/png/policeLogo.png';
-const IMG_STEER_WHEEL= 'assets/images/png/stearWheel.png';
+const IMG_STEER_WHEEL = 'assets/images/png/stearWheel.png';
+const IMG_M2_VEHICLE = 'assets/images/png/m2Vehicle.png';
+const IMG_M1_VEHICLE = 'assets/images/png/m1Vehicle.png';
+
+const IMG_M2_ANIMATION = 'assets/images/png/m2Animation.png';
+const IMG_M1_ANIMATION = 'assets/images/png/m1Animation.png';
 
 //map styles
 

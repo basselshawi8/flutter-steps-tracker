@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/features/camera/presentation/notifiers/actions_change_notifier.dart';
+import 'package:micropolis_test/main.dart';
+import 'package:micropolis_test/mqtt_helper.dart';
 import 'package:provider/provider.dart';
-
+import 'dart:async';
 import 'direction_widget.dart';
 
 class CameraDirectionWidget extends StatefulWidget {
@@ -19,35 +23,46 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
   var _currentDirection = Directions.none;
   var offset = Offset(0, 0);
   var firstFetch = false;
+  int _currentAccumValue = 10;
+  Timer _accumTimer;
   Future<Offset> futureOffset;
 
   @override
   void initState() {
     futureOffset = SpUtil.getOffset(POSITION_CAMERA_DIRECTION_WIDGET);
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _accumTimer?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: futureOffset,
-      builder: (context,snapshot){
-
-        if (snapshot.hasData&&firstFetch == false) {
+      builder: (context, snapshot) {
+        if (snapshot.hasData && firstFetch == false) {
           firstFetch = true;
-          offset =  (snapshot.data as Offset);
+          offset = (snapshot.data as Offset);
         }
 
         return Positioned(
             bottom: Provider.of<ActionsChangeNotifier>(context).rcMode == false
-                ? 0 : 270.h,
+                ? 0
+                : 270.h,
             right: 20.w,
             child: Transform.scale(
               scale: 1.4,
               child: GestureDetector(
                 onPanUpdate: (details) {
                   setState(() {
-                    offset = offset.translate(details.delta.dy, -details.delta.dx);
+                    offset =
+                        offset.translate(details.delta.dy, -details.delta.dx);
                     SpUtil.putOffset(POSITION_CAMERA_DIRECTION_WIDGET, offset);
                   });
                 },
@@ -77,29 +92,54 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
                             var height = constraints.maxHeight;
                             return GestureDetector(
                               onTapDown: (details) {
-                                print(
-                                    "x: ${details.localPosition.dx} y:${details.localPosition.dy}");
-                                print("x: ${width} y:${height}");
+                                _accumTimer?.cancel();
+                                _accumTimer = Timer.periodic(
+                                    Duration(seconds: 1), (timer) {
+                                  _currentAccumValue += 10;
+                                  _currentAccumValue =
+                                      min(_currentAccumValue, 100);
+                                  if (details.localPosition.dy < height / 3.5) {
+                                    _currentDirection = Directions.top;
+                                  } else if (details.localPosition.dx <
+                                      width / 3.5) {
+                                    _currentDirection = Directions.left;
+                                  } else if (details.localPosition.dx >
+                                      width * 0.65) {
+                                    _currentDirection = Directions.right;
+                                  } else if (details.localPosition.dy >
+                                      height * 0.65) {
+                                    _currentDirection = Directions.bottom;
+                                  } else {
+                                    _currentDirection = Directions.none;
+                                  }
+
+                                  _sendDirectionToMqtt();
+                                });
                                 if (details.localPosition.dy < height / 3.5) {
                                   _currentDirection = Directions.top;
-                                } else if (details.localPosition.dx < width / 3.5) {
+                                } else if (details.localPosition.dx <
+                                    width / 3.5) {
                                   _currentDirection = Directions.left;
-                                } else if (details.localPosition.dx > width * 0.65) {
+                                } else if (details.localPosition.dx >
+                                    width * 0.65) {
                                   _currentDirection = Directions.right;
-                                } else if (details.localPosition.dy > height * 0.65) {
+                                } else if (details.localPosition.dy >
+                                    height * 0.65) {
                                   _currentDirection = Directions.bottom;
                                 } else {
                                   _currentDirection = Directions.none;
                                 }
-                                print(_currentDirection);
+                                _sendDirectionToMqtt();
                               },
                               onTapUp: (details) {
                                 _currentDirection = Directions.none;
-                                print(_currentDirection);
+                                _accumTimer?.cancel();
+                                _currentAccumValue = 10;
                               },
                               onTapCancel: () {
                                 _currentDirection = Directions.none;
-                                print(_currentDirection);
+                                _accumTimer?.cancel();
+                                _currentAccumValue = 10;
                               },
                             );
                           },
@@ -109,14 +149,32 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
                         bottom: 70.w,
                         left: 60.w,
                         child: GestureDetector(
-
-                          onTap: () {
-                            print("minus");
+                          onTapDown: (details) {
+                            _accumTimer =
+                                Timer.periodic(Duration(seconds: 1), (timer) {
+                              _currentAccumValue += 10;
+                              _currentAccumValue = min(_currentAccumValue, 100);
+                              mqttHelper.publishCameraZoom(
+                                  _currentAccumValue, CameraMovement.ZoomOut);
+                            });
+                            mqttHelper.publishCameraZoom(
+                                _currentAccumValue, CameraMovement.ZoomOut);
+                          },
+                          onTapUp: (details) {
+                            _currentDirection = Directions.none;
+                            _accumTimer?.cancel();
+                            _currentAccumValue = 10;
+                          },
+                          onTapCancel: () {
+                            _currentDirection = Directions.none;
+                            _accumTimer?.cancel();
+                            _currentAccumValue = 10;
                           },
                           child: Container(
                             decoration: BoxDecoration(
                                 color: CoreStyle.operationBlack2Color,
-                                borderRadius: BorderRadius.all(Radius.circular(14)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(14)),
                                 boxShadow: [
                                   BoxShadow(
                                       color: CoreStyle.operationShadowColor,
@@ -144,13 +202,32 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
                         bottom: 70.w,
                         right: 60.w,
                         child: GestureDetector(
-                          onTap: () {
-                            print("plus");
+                          onTapDown: (details) {
+                            _accumTimer =
+                                Timer.periodic(Duration(seconds: 1), (timer) {
+                              _currentAccumValue += 10;
+                              _currentAccumValue = min(_currentAccumValue, 100);
+                              mqttHelper.publishCameraZoom(
+                                  _currentAccumValue, CameraMovement.ZoomIn);
+                            });
+                            mqttHelper.publishCameraZoom(
+                                _currentAccumValue, CameraMovement.ZoomIn);
+                          },
+                          onTapUp: (details) {
+                            _currentDirection = Directions.none;
+                            _accumTimer?.cancel();
+                            _currentAccumValue = 10;
+                          },
+                          onTapCancel: () {
+                            _currentDirection = Directions.none;
+                            _accumTimer?.cancel();
+                            _currentAccumValue = 10;
                           },
                           child: Container(
                             decoration: BoxDecoration(
                                 color: CoreStyle.operationBlack2Color,
-                                borderRadius: BorderRadius.all(Radius.circular(14)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(14)),
                                 boxShadow: [
                                   BoxShadow(
                                       color: CoreStyle.operationShadowColor,
@@ -166,29 +243,31 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
                                 children: [
                                   Positioned.fill(
                                       child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
-                                            Container(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 16.w,
-                                              ),
-                                              color: CoreStyle.operationBorder2Color,
-                                              height: 4.h,
-                                            )
-                                          ])),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 16.w,
+                                          ),
+                                          color:
+                                              CoreStyle.operationBorder2Color,
+                                          height: 4.h,
+                                        )
+                                      ])),
                                   Positioned.fill(
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 16.w,
-                                            ),
-                                            color: CoreStyle.operationBorder2Color,
-                                            width: 4.h,
-                                          ),
-                                        ],
-                                      ))
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 16.w,
+                                        ),
+                                        color: CoreStyle.operationBorder2Color,
+                                        width: 4.h,
+                                      ),
+                                    ],
+                                  ))
                                 ],
                               ),
                             ),
@@ -201,8 +280,19 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
               ),
             ));
       },
-
     );
+  }
+
+  _sendDirectionToMqtt() {
+    if (_currentDirection == Directions.left) {
+      mqttHelper.publishCameraPan(_currentAccumValue, CameraMovement.Left);
+    } else if (_currentDirection == Directions.right) {
+      mqttHelper.publishCameraPan(_currentAccumValue, CameraMovement.Right);
+    } else if (_currentDirection == Directions.top) {
+      mqttHelper.publishCameraTilt(_currentAccumValue, CameraMovement.Up);
+    } else if (_currentDirection == Directions.bottom) {
+      mqttHelper.publishCameraTilt(_currentAccumValue, CameraMovement.Down);
+    }
   }
 }
 /*Row(

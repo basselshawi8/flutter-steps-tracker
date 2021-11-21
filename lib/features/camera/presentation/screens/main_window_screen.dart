@@ -17,6 +17,7 @@ import 'package:micropolis_test/features/camera/presentation/widgets/ai_widget.d
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_direction_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/camera_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:micropolis_test/features/camera/presentation/widgets/change_vehicle_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/driving_mode_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_container_widget.dart';
 import 'package:micropolis_test/features/camera/presentation/widgets/incidents_widget.dart';
@@ -31,6 +32,7 @@ import 'package:micropolis_test/features/map/presentation/screen/polygon_drawer.
 import 'package:micropolis_test/main.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'dart:async';
 
 class MainWindowScreen extends StatefulWidget {
   static const routeName = '/mainWindow';
@@ -90,166 +92,185 @@ class _MainWindowScreenState extends State<MainWindowScreen>
       _currentCar = "m2";
       urls = ['m2/camerastream', 'm1/camerastream'];
     }
-    mqttHelper.vehiclePrefix = _currentCar;
-    mqttHelper.initConnection();
-    setState(() {
 
+    Provider.of<ActionsChangeNotifier>(context, listen: false)
+        .showChangeVehicle = true;
+
+    Future.delayed(Duration(seconds: 3)).then((value) =>
+        Provider.of<ActionsChangeNotifier>(context, listen: false)
+            .showChangeVehicle = false);
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      mqttHelper.vehiclePrefix = _currentCar;
+      mqttHelper.initConnection();
+      setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder(
-          stream: _incidentsChannel.stream,
-          builder: (context, snapshot) {
-            print(snapshot.data);
-            if (snapshot.hasData == true &&
-                json.decode(snapshot.data) is Map<String, dynamic>) {
-              var id = json.decode(snapshot.data["id"]);
-              BlocProvider.of<IncidentsBloc>(context)
-                  .add(GetIncident(IncidentParam(incidentID: id), null));
-            }
-            print(snapshot?.data);
-            return Consumer<ActionsChangeNotifier>(
-              builder: (context, state, _) {
-                if (_firstState == false) {
-                  if (state.showIncidentsPanel == false) {
-                    _animationController.reverse();
-                  } else {
-                    _animationController.forward();
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Scaffold(
+            body: StreamBuilder(
+                stream: _incidentsChannel.stream,
+                builder: (context, snapshot) {
+                  print(snapshot.data);
+                  if (snapshot.hasData == true &&
+                      json.decode(snapshot.data) is Map<String, dynamic>) {
+                    var id = json.decode(snapshot.data["id"]);
+                    BlocProvider.of<IncidentsBloc>(context)
+                        .add(GetIncident(IncidentParam(incidentID: id), null));
                   }
-                }
-                _firstState = false;
-                return Stack(
-                  children: [
-                    Positioned(
-                        left: _incidentsPanelAnimationSub.value,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        child: Container(
-                          color: CoreStyle.operationBlackColor,
-                          child: IncidentsContainerWidget(),
-                        )),
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      right: _incidentsPanelAnimationMain.value,
-                      bottom: 0,
-                      child: Stack(
+                  print(snapshot?.data);
+                  return Consumer<ActionsChangeNotifier>(
+                    builder: (context, state, _) {
+                      if (_firstState == false) {
+                        if (state.showIncidentsPanel == false) {
+                          _animationController.reverse();
+                        } else {
+                          _animationController.forward();
+                        }
+                      }
+                      _firstState = false;
+                      return Stack(
                         children: [
-                          CameraWidget(
-                            position: Offset(0, 0),
-                            size: Size(1920.w, 1080.h),
-                            url: urls[0],
-                          ),
-                          CameraWidget(
-                            position: Offset(32, 32),
-                            size: Size(217.h, 217.h),
-                            isMini: true,
-                            url: urls[1],
-                            switchCamera: () {
-                              _changeCar();
-                              setState(() {});
-                            },
-                          ),
-                          MiniMapWidget(
-                            location: LatLng(23.4, 53.8),
-                          ),
-                          if (Provider.of<ActionsChangeNotifier>(context)
-                                      .rcMode ==
-                                  true &&
-                              _currentCar == "m2")
-                            AccelerationWidget(),
-                          if (Provider.of<ActionsChangeNotifier>(context)
-                                      .rcMode ==
-                                  true &&
-                              _currentCar == "m1")
-                            AccelerationM1Widget(),
-                          CameraDirectionWidget(),
-                          if (Provider.of<ActionsChangeNotifier>(context)
-                                  .rcMode ==
-                              true)
-                            WheelWidget(),
-                          if (Provider.of<ActionsChangeNotifier>(context)
-                                  .rcMode ==
-                              true)
-                            DrivingModeWidget(),
-                          IncidentsWidget(),
-                          AIWidget(),
-                          PinnedListWidget(),
-                          PinnedWidget(),
-                          NgrokWidget(),
-                          VehicleSelector(
-                            valueChanged: (val) {
-                              _changeCar();
-                            },
-                          ),
-                          VehicleDetailWidget(
-                            speed: 24,
-                            battery: 60,
-                          ),
-                          /*Positioned(
-                              right: 60.w,
-                              top: 30.h,
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .pushNamed(PolygonDrawer.routeName);
-                                },
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                child: Container(
-                                    width: 220.w,
-                                    height: 40.h,
-                                    decoration: BoxDecoration(
-                                        color: CoreStyle.operationBlackColor
-                                            .withOpacity(0.77),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          IMG_ROBOT,
-                                          width: 35.w,
-                                        ),
-                                        SizedBox(
-                                          width: 20.w,
-                                        ),
-                                        Text(
-                                          "DPAP Grand",
-                                          style: TextStyle(
-                                              color: CoreStyle.white,
-                                              fontSize: 20.sp),
-                                        )
-                                      ],
-                                    )),
-                              )),*/
                           Positioned(
-                              top: 110.h,
-                              left: 20.w,
-                              child: InkWell(
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  color: CoreStyle.white,
-                                  size: 60.w,
+                              left: _incidentsPanelAnimationSub.value,
+                              right: 0,
+                              top: 0,
+                              bottom: 0,
+                              child: Container(
+                                color: CoreStyle.operationBlackColor,
+                                child: IncidentsContainerWidget(),
+                              )),
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            right: _incidentsPanelAnimationMain.value,
+                            bottom: 0,
+                            child: Stack(
+                              children: [
+                                CameraWidget(
+                                  position: Offset(0, 0),
+                                  size: Size(1920.w, 1080.h),
+                                  url: urls[0],
                                 ),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ))
+                                CameraWidget(
+                                  position: Offset(32, 32),
+                                  size: Size(217.h, 217.h),
+                                  isMini: true,
+                                  url: urls[1],
+                                  switchCamera: () {
+                                    _changeCar();
+                                    setState(() {});
+                                  },
+                                ),
+                                MiniMapWidget(
+                                  location: LatLng(23.4, 53.8),
+                                ),
+                                if (Provider.of<ActionsChangeNotifier>(context)
+                                            .rcMode ==
+                                        true &&
+                                    _currentCar == "m2")
+                                  AccelerationWidget(),
+                                if (Provider.of<ActionsChangeNotifier>(context)
+                                            .rcMode ==
+                                        true &&
+                                    _currentCar == "m1")
+                                  AccelerationM1Widget(),
+                                CameraDirectionWidget(),
+                                if (Provider.of<ActionsChangeNotifier>(context)
+                                        .rcMode ==
+                                    true)
+                                  WheelWidget(),
+                                if (Provider.of<ActionsChangeNotifier>(context)
+                                        .rcMode ==
+                                    true)
+                                  DrivingModeWidget(),
+                                IncidentsWidget(),
+                                AIWidget(),
+                                PinnedListWidget(),
+                                PinnedWidget(),
+                                NgrokWidget(),
+                                VehicleSelector(
+                                  valueChanged: (val) {
+                                    _changeCar();
+                                  },
+                                ),
+                                VehicleDetailWidget(
+                                  speed: 24,
+                                  battery: 60,
+                                ),
+                                /*Positioned(
+                                    right: 60.w,
+                                    top: 30.h,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .pushNamed(PolygonDrawer.routeName);
+                                      },
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      child: Container(
+                                          width: 220.w,
+                                          height: 40.h,
+                                          decoration: BoxDecoration(
+                                              color: CoreStyle.operationBlackColor
+                                                  .withOpacity(0.77),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                IMG_ROBOT,
+                                                width: 35.w,
+                                              ),
+                                              SizedBox(
+                                                width: 20.w,
+                                              ),
+                                              Text(
+                                                "DPAP Grand",
+                                                style: TextStyle(
+                                                    color: CoreStyle.white,
+                                                    fontSize: 20.sp),
+                                              )
+                                            ],
+                                          )),
+                                    )),*/
+                                Positioned(
+                                    top: 110.h,
+                                    left: 20.w,
+                                    child: InkWell(
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: CoreStyle.white,
+                                        size: 60.w,
+                                      ),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ))
+                              ],
+                            ),
+                          ),
                         ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-          }),
-      backgroundColor: Colors.black,
+                      );
+                    },
+                  );
+                }),
+            backgroundColor: Colors.black,
+          ),
+        ),
+        if (Provider.of<ActionsChangeNotifier>(context)
+            .showChangeVehicle)
+          ChangeVehicleWidget(
+            vehicle: _currentCar,
+          ),
+      ],
     );
   }
 }

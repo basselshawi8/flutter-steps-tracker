@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_behavioral_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_facial_model.dart';
 import 'package:micropolis_test/features/user_managment/data/models/create_human_detection_model.dart';
@@ -13,6 +14,8 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 enum MotionModes { FreeMode, ThreeSixtyMode, Stop }
 
 enum RobotDirection { Forward, Back, Right, Left }
+
+enum CameraMovement { Up, Down, Right, Left, ZoomIn, ZoomOut }
 
 class MqttHelper {
   static final MqttHelper _singleton = MqttHelper._internal();
@@ -48,6 +51,12 @@ class MqttHelper {
   var batteryTopic = "m2/batt";
   var currentAccelerationTopic = "m2/curracc";
 
+  var cameraTitleTopic = "m2/tilting";
+  var cameraPanTopic = "m2/panning";
+  var cameraZoomTopic = "m2/zooming";
+
+  var locationTopic = "m2/currloc";
+
   var vehiclePrefix = "m2";
 
   var testDate = DateTime.now();
@@ -68,6 +77,12 @@ class MqttHelper {
     pubMotionMode = '$vehiclePrefix/motion_mode';
     pubRobotDirection = '$vehiclePrefix/robot_direction';
     pubRobotAcceleration = '$vehiclePrefix/robot_acceleration';
+
+    cameraTitleTopic = '$vehiclePrefix/tilting';
+    cameraPanTopic = '$vehiclePrefix/panning';
+    cameraZoomTopic = '$vehiclePrefix/zooming';
+
+    locationTopic = "$vehiclePrefix/currloc";
 
     _streamController = StreamController<dynamic>();
     _streamLocationController = StreamController<dynamic>();
@@ -96,8 +111,6 @@ class MqttHelper {
 
     /// Add the successful connection callback
     client.onConnected = onConnected;
-
-
 
     /// Add a subscribed callback, there is also an unsubscribed callback if you need it.
     /// You can add these before connection or change them dynamically after connection if
@@ -187,9 +200,16 @@ class MqttHelper {
       } else if (c[0].topic == topicIncident) {
         _streamIncidnetController.add({"${c[0].topic}": json.decode(pt)});
       } else if (c[0].topic == batteryTopic) {
-        _streamBatteryController.add({"${c[0].topic}": json.decode(pt)["battery"]});
+        _streamBatteryController
+            .add({"${c[0].topic}": json.decode(pt)["battery"]});
       } else if (c[0].topic == currentAccelerationTopic) {
-        _streamCurrentAccelerationController.add({"${c[0].topic}": json.decode(pt)["accel"]});
+        _streamCurrentAccelerationController
+            .add({"${c[0].topic}": json.decode(pt)["accel"]});
+      } else if (c[0].topic == locationTopic) {
+        print("location reveived");
+        print(json.decode(pt));
+        _streamLocationController.add(
+            LatLng(json.decode(pt)["latitude"], json.decode(pt)["longitude"]));
       }
 
       //print(
@@ -214,8 +234,14 @@ class MqttHelper {
     client.subscribe(pubRobotDirection, MqttQos.atLeastOnce);
     client.subscribe(pubRobotAcceleration, MqttQos.atLeastOnce);
 
+    client.subscribe(cameraPanTopic, MqttQos.atLeastOnce);
+    client.subscribe(cameraTitleTopic, MqttQos.atLeastOnce);
+    client.subscribe(cameraZoomTopic, MqttQos.atLeastOnce);
+
     client.subscribe(batteryTopic, MqttQos.atLeastOnce);
     client.subscribe(currentAccelerationTopic, MqttQos.atLeastOnce);
+
+    client.subscribe(locationTopic, MqttQos.atLeastOnce);
 
     /// Publish it
     print('EXAMPLE::Publishing our topic');
@@ -306,6 +332,38 @@ class MqttHelper {
     print("human");
     builder.addString(payloadMap);
     client.publishMessage(pubHumanTopic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishCameraTilt(int value, CameraMovement movement) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap = movement == CameraMovement.Up
+        ? json.encode({"move_up": value})
+        : json.encode({"move_down": value});
+    builder.addString(payloadMap);
+    print(payloadMap.toString());
+    client.publishMessage(
+        cameraTitleTopic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishCameraPan(int value, CameraMovement movement) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap = movement == CameraMovement.Right
+        ? json.encode({"move_right": value})
+        : json.encode({"move_left": value});
+    print(payloadMap.toString());
+    builder.addString(payloadMap);
+    client.publishMessage(cameraPanTopic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void publishCameraZoom(int value, CameraMovement movement) {
+    final builder = MqttClientPayloadBuilder();
+    var payloadMap = movement == CameraMovement.ZoomIn
+        ? json.encode({"zoom_in": value})
+        : json.encode({"zoom_out": value});
+    print(payloadMap.toString());
+    builder.addString(payloadMap);
+    client.publishMessage(
+        cameraZoomTopic, MqttQos.atLeastOnce, builder.payload);
   }
 
   void publishFacial(bool value, CreateFacialModel model) {
