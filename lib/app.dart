@@ -14,6 +14,7 @@ import 'features/camera/presentation/bloc/incident_bloc.dart';
 import 'features/camera/presentation/notifiers/actions_change_notifier.dart';
 import 'features/camera/presentation/screens/main_window_screen.dart';
 import 'features/incident/presentation/bloc/incident_bloc.dart';
+import 'features/incident/presentation/widgets/incident_top_bar.dart';
 import 'features/map/presentation/bloc/map_bloc.dart';
 import 'features/map/presentation/screen/polygon_drawer.dart';
 import 'features/restaurants/presentation/bloc/restaurants_bloc.dart';

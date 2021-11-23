@@ -24,7 +24,7 @@ class _NgrokWidgetState extends State<NgrokWidget> {
   Widget build(BuildContext context) {
     return Positioned(
         right: 20.w,
-        top: 300.h,
+        top: 250.h,
         child: GestureDetector(
           onTap: () {
             mqttHelper.initConnection();

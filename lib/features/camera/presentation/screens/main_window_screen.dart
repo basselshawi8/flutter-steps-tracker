@@ -136,7 +136,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                       _firstState = false;
                       return Stack(
                         children: [
-                          Positioned(
+                          /*Positioned(
                               left: _incidentsPanelAnimationSub.value,
                               right: 0,
                               top: 0,
@@ -144,7 +144,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                               child: Container(
                                 color: CoreStyle.operationBlackColor,
                                 child: IncidentsContainerWidget(),
-                              )),
+                              )),*/
                           Positioned(
                             left: 0,
                             top: 0,
@@ -241,7 +241,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                                             ],
                                           )),
                                     )),*/
-                                Positioned(
+                                /*Positioned(
                                     top: 110.h,
                                     left: 20.w,
                                     child: InkWell(
@@ -253,7 +253,7 @@ class _MainWindowScreenState extends State<MainWindowScreen>
                                       onTap: () {
                                         Navigator.of(context).pop();
                                       },
-                                    ))
+                                    ))*/
                               ],
                             ),
                           ),

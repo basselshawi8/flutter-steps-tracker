@@ -123,7 +123,7 @@ class _PinnedWidgetState extends State<PinnedWidget>
                     builder: (context, state, _) {
                       return Text(
                         state.incidents == null || state.incidents.length == 0
-                            ? "4"
+                            ? "0"
                             : state.incidents.length.toString(),
                         textAlign: TextAlign.center,
                         style: TextStyle(

@@ -5,7 +5,7 @@ import 'package:micropolis_test/core/params/base_params.dart';
 class IncidentsParam extends BaseParams {
 
   final String sort;
-  final List<String> populate;
+  final String populate;
 
   IncidentsParam(
       {this.sort, this.populate, cancelToken})

@@ -42,9 +42,9 @@ class _ToggleWidgetState extends State<ToggleWidget>
     _backgroundColorAnimation = ColorTween(
             begin: Color(0xFF313131), end: CoreStyle.operationGreenContent)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _thumbLocation = Tween<double>(begin: 10.w, end: 85.w)
+    _thumbLocation = Tween<double>(begin: 15.w, end: 110.w)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _textLocation = Tween<double>(begin: 105.w, end: 20.w)
+    _textLocation = Tween<double>(begin: 110.w, end: 15.w)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     _controller.addListener(() {
       setState(() {});
@@ -81,15 +81,15 @@ class _ToggleWidgetState extends State<ToggleWidget>
         decoration: BoxDecoration(
             color: _backgroundColorAnimation.value,
             border: Border.all(color: Color(0xFF3E3E3E), width: 0.5.w),
-            borderRadius: BorderRadius.circular(16.r)),
+            borderRadius: BorderRadius.circular(12.r)),
         child: Stack(
           children: [
             Positioned(
-              top: 5.h,
+              top: 10.w,
               left: _thumbLocation.value,
               child: Container(
-                height: 50.h,
-                width: 50.h,
+                height: 40.w,
+                width: 40.w,
                 decoration: BoxDecoration(
                     color: CoreStyle.white,
                     borderRadius: BorderRadius.circular(16.r)),
@@ -100,7 +100,7 @@ class _ToggleWidgetState extends State<ToggleWidget>
                 bottom: 5.h,
                 left: _textLocation.value,
                 child: Container(
-                  width: 40.w,
+                  width: 35.w,
                   child: FittedBox(
                     child: Image.asset(
                       widget.image,
@@ -146,103 +146,112 @@ class _AIWidgetState extends State<AIWidget> {
         }
         return Positioned(
             bottom: Provider.of<ActionsChangeNotifier>(context).rcMode == false
-                ? 310.h
-                : 580.h,
-            right: 0.w,
-            child: Transform.scale(
-              scale: 0.875,
-              child: GestureDetector(
-                onPanUpdate: (details) {
-                  setState(() {
-                    offset =
-                        offset.translate(-details.delta.dy, details.delta.dx);
-                    SpUtil.putOffset(POSITION_AI_WIDGET, offset);
-                  });
-                },
-                child: Container(
-                  width: 400.w,
-                  height: 100.h * 1.2,
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  decoration: BoxDecoration(
-                      color: CoreStyle.operationBlackColor,
-                      borderRadius: BorderRadius.circular(34.r),
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 40.r,
-                            offset: Offset(0, 10.h),
-                            color: CoreStyle.operationShadowColor)
-                      ]),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          SizedBox(
-                            height: 8.h,
-                          ),
-                          Text(
+                ? 355.h
+                : 625.h,
+            right: 20.w,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  offset =
+                      offset.translate(-details.delta.dy, details.delta.dx);
+                  SpUtil.putOffset(POSITION_AI_WIDGET, offset);
+                });
+              },
+              child: Container(
+                width: 400.w,
+                height: 120.w,
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                decoration: BoxDecoration(
+                    color: CoreStyle.operationBlackColor,
+                    borderRadius: BorderRadius.circular(34.r),
+                    boxShadow: [
+                      BoxShadow(
+                          blurRadius: 10.r,
+                          offset: Offset(0, 5.h),
+                          color: CoreStyle.operationShadowColor)
+                    ]),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 8.w,
+                        ),
+                        Expanded(
+                          child: Text(
                             "AI Mode",
                             style: TextStyle(
                                 color: Color(0xFF6E6E6E),
+                                fontSize: 20.sp,
                                 fontWeight: FontWeight.w600),
                           ),
-                          SizedBox(
-                            height: 8.h,
+                        ),
+                        SizedBox(
+                          height: 8.w,
+                        ),
+                        Container(
+                          width: 160.w,
+                          height: 60.w,
+                          child: ToggleWidget(
+                            name: "AI Mode",
+                            image: IMG_AI_MODE,
+                            valueUpdated: (val) {
+                              mqttHelper.publishAi(val);
+                            },
                           ),
-                          Container(
-                            width: 160.w,
-                            height: 60.h,
-                            child: ToggleWidget(
-                              name: "AI Mode",
-                              image: IMG_AI_MODE,
-                              valueUpdated: (val) {
-                                mqttHelper.publishAi(val);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 30.w,
-                      ),
-                      Column(
-                        children: [
-                          SizedBox(
-                            height: 8.h,
-                          ),
-                          Text(
+                        ),
+                        SizedBox(
+                          height: 8.w,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 30.w,
+                    ),
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 8.w,
+                        ),
+                        Expanded(
+                          child: Text(
                             "RC Mode",
                             style: TextStyle(
                                 color: Color(0xFF6E6E6E),
+                                fontSize: 20.sp,
                                 fontWeight: FontWeight.w600),
                           ),
-                          SizedBox(
-                            height: 8.h,
-                          ),
-                          Container(
-                            width: 160.w,
-                            height: 60.h,
-                            child: ToggleWidget(
-                              name: "RC Mode",
-                              image: IMG_RC_MODE,
-                              initialValue: Provider.of<ActionsChangeNotifier>(
+                        ),
+                        SizedBox(
+                          height: 8.w,
+                        ),
+                        Container(
+                          width: 160.w,
+                          height: 60.w,
+                          child: ToggleWidget(
+                            name: "RC Mode",
+                            image: IMG_RC_MODE,
+                            initialValue: Provider.of<ActionsChangeNotifier>(
+                                    context,
+                                    listen: false)
+                                .rcMode,
+                            valueUpdated: (val) {
+                              Provider.of<ActionsChangeNotifier>(context,
+                                      listen: false)
+                                  .rcMode = !Provider.of<ActionsChangeNotifier>(
                                       context,
                                       listen: false)
-                                  .rcMode,
-                              valueUpdated: (val) {
-                                Provider.of<ActionsChangeNotifier>(context,
-                                            listen: false)
-                                        .rcMode =
-                                    !Provider.of<ActionsChangeNotifier>(context,
-                                            listen: false)
-                                        .rcMode;
-                              },
-                            ),
+                                  .rcMode;
+                            },
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                        SizedBox(
+                          height: 8.w,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ));

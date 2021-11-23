@@ -72,14 +72,21 @@ class _WheelWidgetState extends State<WheelWidget>
                     //SpUtil.putOffset(POSITION_WHEEL_WIDGET, offset);
                     var deltaX = details.localPosition.dx - 150.w;
                     var deltaY = details.localPosition.dy - 150.w;
-                    _angle = atan2(deltaY, deltaX) - _startPanAngle;
+                    var delta = atan2(deltaY, deltaX) - _startPanAngle;
+                    delta = delta.abs() > 1 ? (0.007 * delta.sign) : delta;
+
+                    if (_angle + delta > 3.14 || _angle + delta < -3.14) {
+                      return;
+                    }
+                    _angle += delta;
+
+                    _startPanAngle = atan2(deltaY, deltaX);
+
                     if (_angle < -0.3) {
                       mqttHelper.publishRobotDirection(RobotDirection.Left);
-                    }
-                    else if (_angle > 0.3 && _angle < 1.5) {
+                    } else if (_angle > 0.3 && _angle < 1.5) {
                       mqttHelper.publishRobotDirection(RobotDirection.Right);
                     }
-
                   });
                 },
                 onPanEnd: (details) {
@@ -101,11 +108,11 @@ class _WheelWidgetState extends State<WheelWidget>
                   mqttHelper.publishRobotDirection(RobotDirection.Forward);
                 },
                 child: Container(
-                  width: 300.w,
-                  height: 300.w,
+                  width: 270.h,
+                  height: 270.h,
                   decoration: BoxDecoration(
                       color: Color(0xFF1D1D1D).withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(150.w),
+                      borderRadius: BorderRadius.circular(135.h),
                       border: Border.all(color: Color(0xFF6E6E6E), width: 1.w)),
                   child: Stack(
                     children: [
@@ -113,12 +120,12 @@ class _WheelWidgetState extends State<WheelWidget>
                         child: Image.asset(IMG_STEER_WHEEL),
                       ),
                       Transform.translate(
-                        offset: Offset(0,5.h),
+                        offset: Offset(0, 7.h),
                         child: Center(
                           child: Image.asset(
                             IMG_WHEEL_2,
-                            width: 190.w,
-                            height: 190.w,
+                            width: 175.h,
+                            height: 175.h,
                           ),
                         ),
                       )

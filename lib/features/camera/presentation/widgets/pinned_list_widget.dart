@@ -22,15 +22,7 @@ class _PinnedListWidgetState extends State<PinnedListWidget>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation _moveAnimation;
-  var texts = [
-    "Robbery Susp.",
-    "Robbery Susp.",
-    "Robbery Susp.",
-    "Robbery Susp.",
-    "Robbery Susp.",
-    "Robbery Susp.",
-    "Robbery Susp."
-  ];
+  var texts = [];
 
   @override
   void initState() {
@@ -70,8 +62,8 @@ class _PinnedListWidgetState extends State<PinnedListWidget>
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                      blurRadius: 50.r,
-                      offset: Offset(0, 23.h),
+                      blurRadius: 20.r,
+                      offset: Offset(0, 5.h),
                       color: CoreStyle.operationShadowColor)
                 ]),
             child: Consumer<IncidentsChangeNotifier>(
@@ -82,11 +74,6 @@ class _PinnedListWidgetState extends State<PinnedListWidget>
 
                 return ListView.builder(
                   itemBuilder: (context, index) {
-                    Uint8List bytes;
-                    if (state.incidents.length > 0 && index > 0) {
-                      bytes = base64Decode(state.incidents[index-1]?.capturedPhotosIds?.capArr?.first
-                          ?.split("data:image/png;base64,")[1]);
-                    }
                     return index == 0
                         ? SizedBox(
                             width: 20.w,
@@ -114,9 +101,14 @@ class _PinnedListWidgetState extends State<PinnedListWidget>
                                     color: CoreStyle.operationBlack3Color,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: bytes != null
-                                      ? Image.memory(
-                                          bytes,
+                                  child: state
+                                              .currentIncident
+                                              ?.capturedPhotosIds
+                                              ?.capArr
+                                              ?.isNotEmpty ==
+                                          true
+                                      ? Image.network(
+                                          "http://94.206.14.42:5003/aifile/incidentimage/${state.currentIncident?.capturedPhotosIds?.capArr[0]}",
                                           width: 120.w,
                                           height: 120.w,
                                           fit: BoxFit.cover,

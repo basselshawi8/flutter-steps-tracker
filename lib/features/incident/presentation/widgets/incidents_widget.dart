@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,9 +21,12 @@ import 'package:provider/provider.dart';
 import 'package:geocoding/geocoding.dart';
 import '../../../../main.dart';
 import '../../../../service_locator.dart';
+import 'incident_top_bar.dart';
 
 List<IncidentModel> incidentsList = [];
 int _selectedItem = 0;
+
+Map<LatLng, Map<String, dynamic>> localPlaces = {};
 
 class IncidentsListWidget extends StatefulWidget {
   final String type;
@@ -50,6 +54,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
   AnimationController _animationController;
   Animation _drawerAnimation;
   var _type = "";
+  var _cancelToken = CancelToken();
 
   @override
   void initState() {
@@ -60,7 +65,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
     }
 
     _incidentsBloc.add(GetIncidents(
-        IncidentsParam(sort: "published_at", populate: ["\"vehicle\""])));
+        IncidentsParam(sort: "published_at", populate: "[\"vehicle\"]")));
 
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));
@@ -92,6 +97,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
 
   @override
   void dispose() {
+    _cancelToken.cancel();
     _incidentsBloc.close();
     _animationController.removeListener(() {});
 
@@ -117,17 +123,17 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
               _type = "beta";
               incidentsList.clear();
               _incidentsBloc.add(GetIncidents(IncidentsParam(
-                  sort: "published_at", populate: ["\"vehicle\""])));
+                  sort: "published_at", populate: "[\"vehicle\"]")));
             } else if (state.currentIncidentType == 1 && _type != "delta") {
               _type = "delta";
               incidentsList.clear();
               _incidentsBloc.add(GetIncidents(IncidentsParam(
-                  sort: "published_at", populate: ["\"vehicle\""])));
+                  sort: "published_at", populate: "[\"vehicle\"]")));
             } else if (state.currentIncidentType == 2 && _type != "gamma") {
               _type = "gamma";
               incidentsList.clear();
               _incidentsBloc.add(GetIncidents(IncidentsParam(
-                  sort: "published_at", populate: ["\"vehicle\""])));
+                  sort: "published_at", populate: "[\"vehicle\"]")));
             }
 
             return StreamBuilder(
@@ -140,18 +146,20 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                       .values
                       .first as Map<String, dynamic>;
                   var id = data["body"]["incident_id"];
+                  _incidentsBloc.add(GetIncidents(IncidentsParam(
+                      sort: "published_at", populate: "[\"vehicle\"]")));
+
                   if (id != null) {
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Container(
-                        height: 40.h,
+                        height: 60.h,
+                        width: 300.w,
                         child: Center(
                           child: Text("New incident\n${data["title"]}"),
                         ),
                       )));
                     });
-                    _incidentsBloc
-                        .add(GetSingleIncident(SingleIncidentParam(id: id)));
                   }
                 }
                 return Container(
@@ -236,26 +244,19 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                           bloc: _incidentsBloc,
                           builder: (context, state) {
                             print(state);
-                            if (state is GetSingleIncidentSuccessState) {
+                            if (state is GetIncidentsSuccessState) {
+                              print(state.incidents.data.length);
+
+                              incidentsList.clear();
                               var typeToQuery = _type;
 
-                              if (state.incident.classification ==
-                                  typeToQuery) {
-                                if (incidentsList.firstWhere(
-                                        (element) =>
-                                            element.id == state.incident.id,
-                                        orElse: () => null) ==
-                                    null) {
-                                  incidentsList.insert(0, state.incident);
-                                }
-                              }
-                              return _refreshIncidents();
-                            } else if (state is GetIncidentsSuccessState) {
-                              print(state.incidents.data.length);
-                              if (state.incidents.data.length < 20) {
-                                _stopFetchingData = true;
-                              }
-                              var typeToQuery = _type;
+                              var incidents = state.incidents.data
+                                  .where((element) =>
+                                      element.classification == typeToQuery)
+                                  .toList()
+                                  .reversed;
+
+                              incidentsList.addAll(incidents);
 
                               var pinned = Provider.of<IncidentsChangeNotifier>(
                                       context,
@@ -271,21 +272,14 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                                 }
                               }
 
-                              var incidents = state.incidents.data
-                                  .where((element) =>
-                                      element.classification == typeToQuery)
-                                  .toList();
-
-                              for (var inc in incidents) {
-                                if (incidentsList.firstWhere(
-                                        (element) => element.id == inc.id,
-                                        orElse: () => null) ==
-                                    null) {
-                                  incidentsList.add(inc);
-                                }
-                              }
-
                               return _refreshIncidents();
+                            } else if (state is GetIncidentsWaitingState) {
+                              return Container(
+                                width: 60.w,
+                                height: 60.w,
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              );
                             } else {
                               return incidentsList.length > 0
                                   ? fullSize == true &&
@@ -293,9 +287,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                                               false
                                       ? _buildIncidentsContent(true)
                                       : _buildIncidentsContentSmall(true)
-                                  : Center(
-                                      child: CircularProgressIndicator(),
-                                    );
+                                  : Container();
                             }
                           },
                         )
@@ -354,16 +346,16 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
             incidentsList.clear();
             _stopFetchingData = false;
             _incidentsBloc.add(GetIncidents(IncidentsParam(
-                sort: "published_at", populate: ["\"vehicle\""])));
+                sort: "published_at", populate: "[\"vehicle\"]")));
           }
           return ListView.builder(
             controller: _controller,
             itemBuilder: (context, index) {
               if (index == incidentsList.length) {
                 return Container(
-                    width: double.maxFinite,
-                    height: 80.h,
-                    child: Center(child: CircularProgressIndicator()));
+                  width: double.maxFinite,
+                  height: 80.h,
+                );
               }
               var isPinned =
                   Provider.of<IncidentsChangeNotifier>(context, listen: false)
@@ -381,7 +373,8 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                   _loadData(index);
                 },
                 child: IncidentItemWidget(
-                  suspectPercentage: incidentsList[index].percentageMap,
+                  suspectPercentage:
+                      (incidentsList[index].percentageMap * 100).ceil(),
                   incidentName: incidentsList[index].id,
                   incidentID: incidentsList[index].id,
                   incidentLetter: incidentsList[index].classification,
@@ -428,16 +421,16 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
             incidentsList.clear();
             _stopFetchingData = false;
             _incidentsBloc.add(GetIncidents(IncidentsParam(
-                sort: "published_at", populate: ["\"vehicle\""])));
+                sort: "published_at", populate: "[\"vehicle\"]")));
           }
           return ListView.builder(
             controller: _controller,
             itemBuilder: (context, index) {
               if (index == incidentsList.length) {
                 return Container(
-                    width: double.maxFinite,
-                    height: 80.h,
-                    child: Center(child: CircularProgressIndicator()));
+                  width: double.maxFinite,
+                  height: 80.h,
+                );
               }
               var isPinned =
                   Provider.of<IncidentsChangeNotifier>(context, listen: false)
@@ -455,15 +448,16 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                   _loadData(index);
                 },
                 child: IncidentItemWidget(
-                  suspectPercentage: incidentsList[index].percentageMap,
+                  suspectPercentage:
+                      (incidentsList[index].percentageMap * 100).ceil(),
                   incidentName: incidentsList[index].id,
                   incidentID: incidentsList[index].id,
                   incidentLetter: incidentsList[index].classification,
                   incidentAction:
                       incidentsList[index].behaviorAnalysisClassification,
                   location: LatLng(
-                      double.tryParse(incidentsList[index].latitude),
-                      double.tryParse(incidentsList[index].longitude)),
+                      double.tryParse(incidentsList[index].latitude) ?? 0,
+                      double.tryParse(incidentsList[index].longitude) ?? 0),
                   isPinned: isPinned,
                   isSelected: index == _selectedItem ? true : false,
                   pinnedPressed: () {
@@ -537,14 +531,19 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
     super.initState();
   }
 
-  _getLocation() async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(52.2165157, 6.9437819);
-    if (placemarks != null && placemarks.isNotEmpty) {
-      setState(() {
-        _locality = placemarks?.first?.locality;
-        _name = placemarks?.first?.name;
-      });
+  Future<void> _getLocation() async {
+    if (localPlaces[widget.location] != null) {
+      Map<String, dynamic> res = localPlaces[widget.location];
+      _locality = res["locality"];
+      _name = res["name"];
+    } else {
+      List<Placemark> placeMarks = await placemarkFromCoordinates(
+          widget?.location?.latitude ?? 0, widget?.location?.longitude ?? 0);
+      if (placeMarks != null && placeMarks.isNotEmpty) {
+        _locality = placeMarks?.first?.locality;
+        _name = placeMarks?.first?.name;
+        localPlaces[widget.location] = {"locality": _locality, "name": _name};
+      }
     }
   }
 
@@ -557,23 +556,121 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.small == null || widget.small == false) {
-      return Row(
-        children: [
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 30.w),
-              margin: EdgeInsets.symmetric(horizontal: 24.w),
-              height: 90.h,
-              decoration: BoxDecoration(
-                color: widget.isSelected == true
-                    ? Color(0xFF212121)
-                    : Color(0xFF212121).withOpacity(0.4),
-                borderRadius: BorderRadius.all(Radius.circular(30.r)),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 30.w),
+                margin: EdgeInsets.symmetric(horizontal: 24.w),
+                height: 90.h,
+                decoration: BoxDecoration(
+                  color: widget.isSelected == true
+                      ? Color(0xFF212121)
+                      : Color(0xFF212121).withOpacity(0.4),
+                  borderRadius: BorderRadius.all(Radius.circular(30.r)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                        width: 70.w,
+                        height: 70.w,
+                        decoration: BoxDecoration(
+                            color: widget.isSelected == false
+                                ? CoreStyle.white.withOpacity(0.06)
+                                : CoreStyle.operationGreenContent,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(35.w))),
+                        child: Icon(
+                          Icons.pin_drop,
+                          color: Colors.white,
+                          size: 35.w,
+                        )),
+                    FutureBuilder(
+                      future: _getLocation(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Container(
+                            height: 20.h,
+                            width: 20.h,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        } else
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (_locality != null)
+                                Text(
+                                  _locality,
+                                  style: TextStyle(
+                                      color: Color(0xFFEAEAEA),
+                                      fontFamily: CoreStyle.fontWithWeight(
+                                        FontWeight.w500,
+                                      ),
+                                      fontSize: 26.sp),
+                                ),
+                              if (_name != null)
+                                Text(_name,
+                                    style: TextStyle(
+                                        color:
+                                            Color(0xFFEAEAEA).withOpacity(0.6),
+                                        fontFamily: CoreStyle.fontWithWeight(
+                                          FontWeight.w400,
+                                        ),
+                                        fontSize: 22.sp))
+                            ],
+                          );
+                      },
+                    ),
+                    InkWell(
+                      onTap: () {
+                        widget.pinnedPressed();
+                      },
+                      child: Container(
+                          width: 54.w,
+                          height: 54.w,
+                          padding: EdgeInsets.all(15.w),
+                          decoration: BoxDecoration(
+                              color: _isPinned == false
+                                  ? CoreStyle.operationPinBlackColor
+                                  : CoreStyle.operationGreenContent,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12.r))),
+                          child: Image.asset(
+                            IMG_PIN,
+                            color: Color(0xFF898989),
+                          )),
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 20.w,
+            ),
+            Expanded(
+              child: Container(
+                height: 90.h,
+                decoration: BoxDecoration(
+                  color: CoreStyle.operationIncidentItemListBlackColor,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30.r),
+                      bottomLeft: Radius.circular(30.r)),
+                ),
+                child: Center(
+                  child: Container(
                       width: 70.w,
                       height: 70.w,
                       decoration: BoxDecoration(
@@ -587,88 +684,11 @@ class _IncidentItemWidgetState extends State<IncidentItemWidget> {
                         color: Colors.white,
                         size: 35.w,
                       )),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (_locality != null)
-                        Text(
-                          _locality,
-                          style: TextStyle(
-                              color: Color(0xFFEAEAEA),
-                              fontFamily: CoreStyle.fontWithWeight(
-                                FontWeight.w500,
-                              ),
-                              fontSize: 26.sp),
-                        ),
-                      if (_name != null)
-                        Text(_name,
-                            style: TextStyle(
-                                color: Color(0xFFEAEAEA).withOpacity(0.6),
-                                fontFamily: CoreStyle.fontWithWeight(
-                                  FontWeight.w400,
-                                ),
-                                fontSize: 22.sp))
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () {
-                      widget.pinnedPressed();
-                    },
-                    child: Container(
-                        width: 54.w,
-                        height: 54.w,
-                        padding: EdgeInsets.all(15.w),
-                        decoration: BoxDecoration(
-                            color: _isPinned == false
-                                ? CoreStyle.operationPinBlackColor
-                                : CoreStyle.operationGreenContent,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.r))),
-                        child: Image.asset(
-                          IMG_PIN,
-                          color: Color(0xFF898989),
-                        )),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
-      );
-    } else {
-      return Row(
-        children: [
-          SizedBox(
-            width: 20.w,
-          ),
-          Expanded(
-            child: Container(
-              height: 90.h,
-              decoration: BoxDecoration(
-                color: CoreStyle.operationIncidentItemListBlackColor,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30.r),
-                    bottomLeft: Radius.circular(30.r)),
-              ),
-              child: Center(
-                child: Container(
-                    width: 70.w,
-                    height: 70.w,
-                    decoration: BoxDecoration(
-                        color: widget.isSelected == false
-                            ? CoreStyle.white.withOpacity(0.06)
-                            : CoreStyle.operationGreenContent,
-                        borderRadius: BorderRadius.all(Radius.circular(35.w))),
-                    child: Icon(
-                      Icons.pin_drop,
-                      color: Colors.white,
-                      size: 35.w,
-                    )),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       );
     }
   }

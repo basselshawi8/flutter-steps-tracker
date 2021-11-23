@@ -112,42 +112,7 @@ class _CameraWidgetState extends State<CameraWidget> {
               ),
             ),
           ),
-          SizedBox(
-            height: 20.h,
-          ),
-          SizedBox(
-            height: 40.h,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  widget?.switchCamera();
-                },
-                highlightColor: Colors.transparent,
-                splashColor: CoreStyle.primaryTheme,
-                child: Container(
-                  width: widget.size.width,
-                  decoration: BoxDecoration(
-                      color: CoreStyle.operationBlackColor,
-                      border: Border.all(
-                          color: CoreStyle.operationBorderColor, width: 2.w),
-                      borderRadius: BorderRadius.circular(13),
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 40.r,
-                            offset: Offset(0, 10.h),
-                            color: CoreStyle.operationShadowColor)
-                      ]),
-                  child: Center(
-                    child: Text(
-                      "Switch",
-                      style: TextStyle(color: CoreStyle.white, fontSize: 22.sp),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+
         ],
       );
     } else {

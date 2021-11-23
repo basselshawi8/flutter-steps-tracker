@@ -44,6 +44,8 @@ class MqttHelper {
   var pubFacialTopic = 'm2/facial_control';
   var pubHumanTopic = 'm2/human_control';
 
+  var stopTopic = 'm2/stopmove';
+
   var pubMotionMode = 'm2/motion_mode';
   var pubRobotDirection = 'm2/robot_direction';
   var pubRobotAcceleration = 'm2/robot_acceleration';
@@ -66,6 +68,8 @@ class MqttHelper {
   }
 
   initConnection() async {
+    client.disconnect();
+
     batteryTopic = "$vehiclePrefix/batt";
     currentAccelerationTopic = "$vehiclePrefix/curracc";
     pubTopic = '$vehiclePrefix/control';
@@ -84,19 +88,22 @@ class MqttHelper {
 
     locationTopic = "$vehiclePrefix/currloc";
 
-    _streamController = StreamController<dynamic>();
-    _streamLocationController = StreamController<dynamic>();
-    _streamIncidnetController = StreamController<dynamic>();
-    _streamBatteryController = StreamController<dynamic>();
-    _streamCurrentAccelerationController = StreamController<dynamic>();
+    stopTopic = "$vehiclePrefix/stopmove";
 
-    dataReceived = _streamController.stream.asBroadcastStream();
-    locationReceived = _streamLocationController.stream.asBroadcastStream();
-    incidentReceived = _streamIncidnetController.stream.asBroadcastStream();
-    batteryReceived = _streamBatteryController.stream.asBroadcastStream();
-    accelerationReceived =
-        _streamCurrentAccelerationController.stream.asBroadcastStream();
+    if (_streamController == null) {
+      _streamController = StreamController<dynamic>();
+      _streamLocationController = StreamController<dynamic>();
+      _streamIncidnetController = StreamController<dynamic>();
+      _streamBatteryController = StreamController<dynamic>();
+      _streamCurrentAccelerationController = StreamController<dynamic>();
 
+      dataReceived = _streamController.stream.asBroadcastStream();
+      locationReceived = _streamLocationController.stream.asBroadcastStream();
+      incidentReceived = _streamIncidnetController.stream.asBroadcastStream();
+      batteryReceived = _streamBatteryController.stream.asBroadcastStream();
+      accelerationReceived =
+          _streamCurrentAccelerationController.stream.asBroadcastStream();
+    }
     client.logging(on: false);
 
     client.onDisconnected = onDisconnected;
@@ -137,7 +144,8 @@ class MqttHelper {
     print('EXAMPLE::Mosquitto client connecting....');
     client.connectionMessage = connMess;
 
-    connect();
+    if (client.connectionStatus.state != MqttConnectionState.connecting)
+      connect();
   }
 
   void connect() async {
@@ -240,6 +248,8 @@ class MqttHelper {
 
     client.subscribe(batteryTopic, MqttQos.atLeastOnce);
     client.subscribe(currentAccelerationTopic, MqttQos.atLeastOnce);
+
+    client.subscribe(stopTopic, MqttQos.atLeastOnce);
 
     client.subscribe(locationTopic, MqttQos.atLeastOnce);
 
@@ -374,6 +384,11 @@ class MqttHelper {
     client.publishMessage(pubFacialTopic, MqttQos.atLeastOnce, builder.payload);
   }
 
+  void publishStop() {
+    final builder = MqttClientPayloadBuilder();
+    client.publishMessage(stopTopic, MqttQos.atLeastOnce, builder.payload);
+  }
+
   void publishBehavior(bool value, CreateBehavioralModel model) {
     final builder = MqttClientPayloadBuilder();
     var payloadMap =
@@ -394,7 +409,9 @@ class MqttHelper {
         MqttDisconnectionOrigin.solicited) {
       print('EXAMPLE::OnDisconnected callback is solicited, this is correct');
     }
-    connect();
+
+    if (client.connectionStatus.state != MqttConnectionState.connecting)
+      connect();
   }
 
   /// The successful connect callback

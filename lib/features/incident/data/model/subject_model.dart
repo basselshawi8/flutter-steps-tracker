@@ -46,6 +46,7 @@ class SubjectModel extends BaseModel{
     this.idType,
     this.gender,
     this.residenceType,
+    this.isWanted,
     this.id,
     this.subjectId,
     this.name,
@@ -57,12 +58,14 @@ class SubjectModel extends BaseModel{
     this.updatedAt,
     this.v,
     this.nationality,
+    this.trafficViolations,
     this.datumId,
   });
 
   final String idType;
   final String gender;
   final String residenceType;
+  final bool isWanted;
   final String id;
   final String subjectId;
   final String name;
@@ -74,6 +77,7 @@ class SubjectModel extends BaseModel{
   final DateTime updatedAt;
   final int v;
   final Nationality nationality;
+  final List<dynamic> trafficViolations;
   final String datumId;
 
   factory SubjectModel.fromJson(String str) => SubjectModel.fromMap(json.decode(str));
@@ -84,6 +88,7 @@ class SubjectModel extends BaseModel{
     idType: json["id_type"] == null ? null : json["id_type"],
     gender: json["gender"] == null ? null : json["gender"],
     residenceType: json["residenceType"] == null ? null : json["residenceType"],
+    isWanted: json["Is_Wanted"] == null ? null : json["Is_Wanted"],
     id: json["_id"] == null ? null : json["_id"],
     subjectId: json["subject_id"] == null ? null : json["subject_id"],
     name: json["name"] == null ? null : json["name"],
@@ -95,6 +100,7 @@ class SubjectModel extends BaseModel{
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"] == null ? null : json["__v"],
     nationality: json["nationality"] == null ? null : Nationality.fromMap(json["nationality"]),
+    trafficViolations: json["traffic_violations"] == null ? null : List<dynamic>.from(json["traffic_violations"].map((x) => x)),
     datumId: json["id"] == null ? null : json["id"],
   );
 
@@ -102,6 +108,7 @@ class SubjectModel extends BaseModel{
     "id_type": idType == null ? null : idType,
     "gender": gender == null ? null : gender,
     "residenceType": residenceType == null ? null : residenceType,
+    "Is_Wanted": isWanted == null ? null : isWanted,
     "_id": id == null ? null : id,
     "subject_id": subjectId == null ? null : subjectId,
     "name": name == null ? null : name,
@@ -113,6 +120,7 @@ class SubjectModel extends BaseModel{
     "updatedAt": updatedAt == null ? null : updatedAt.toIso8601String(),
     "__v": v == null ? null : v,
     "nationality": nationality == null ? null : nationality.toMap(),
+    "traffic_violations": trafficViolations == null ? null : List<dynamic>.from(trafficViolations.map((x) => x)),
     "id": datumId == null ? null : datumId,
   };
 

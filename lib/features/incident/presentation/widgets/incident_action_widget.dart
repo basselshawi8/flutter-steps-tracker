@@ -140,52 +140,7 @@ class _IncidentActionsWidgetState extends State<IncidentActionsWidget> {
                 ],
               ),
             ),
-            BlocListener(
-              bloc: _incidentBloc,
-              listener: (context, state) {
 
-                if (state is DeleteIncidentSuccessState) {
-
-                  setState(() {
-                    _isAsync = false;
-                  });
-                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    Provider.of<IncidentsChangeNotifier>(context, listen: false)
-                        .updateHomeIncidentClassifications = true;
-                  });
-                } else if (state is GetIncidentFailureState) {
-                  setState(() {
-                    _isAsync = false;
-                  });
-                }
-              },
-              child: InkWell(
-                onTap: () {
-
-                  setState(() {
-                    _isAsync = true;
-                  });
-                  _incidentBloc.add(DeleteIncident(
-                      SingleIncidentParam(id: widget.incidentID)));
-                },
-                child: Container(
-                  height: 50.h,
-                  width: 170.w,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7.r),
-                      color: CoreStyle.operationRose2Color),
-                  child: Center(
-                    child: Text(
-                      "Dismiss",
-                      style: TextStyle(
-                          color: CoreStyle.operationLightTextColor,
-                          fontSize: 19.sp,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),

@@ -65,7 +65,7 @@ class IncidentsRemoteDataSource extends RemoteDataSource {
         converter: (json) => SubjectsModel.fromMap(json),
         method: HttpMethod.POST,
         url: API_GET_SUBJECTS,
-        dataString: params.toJson(),
+        data: params.toMap(),
         cancelToken: params.cancelToken);
   }
 }

@@ -37,6 +37,7 @@ class _BehaviorVideoWidgetState extends State<BehaviorVideoWidget> {
   }
 
   _configureCamera() {
+
     _controller = VideoPlayerController.network(widget.videoURL ?? _videoURL);
 
     _initializeVideoPlayerFuture = _controller.initialize();
@@ -54,8 +55,8 @@ class _BehaviorVideoWidgetState extends State<BehaviorVideoWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        left: 50.w,
-        top: 50.h + 80.h,
+        left: 600.w,
+        top: 105.h,
         child: FutureBuilder(
           future: _initializeVideoPlayerFuture,
           builder: (context, snapshot) {

@@ -33,7 +33,7 @@ class _DrivingModeWidgetState extends State<DrivingModeWidget> {
   Widget build(BuildContext context) {
     return Positioned(
         bottom: 50.h,
-        right: 400.w,
+        right: 270.h + 50.w + 50.w,
         child: Column(
           children: [
             GestureDetector(

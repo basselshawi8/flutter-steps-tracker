@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:micropolis_test/features/incident/data/model/incidents_model.dart';
+import 'package:micropolis_test/features/incident/data/params/single_incident_param.dart';
 import 'package:micropolis_test/features/incident/data/params/subject_param.dart';
 import 'package:micropolis_test/features/incident/data/params/update_incident_param.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_bloc.dart';
@@ -13,6 +16,7 @@ import 'package:micropolis_test/features/incident/presentation/notifiers/inciden
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'dashed_circle.dart';
+import 'package:geocoding/geocoding.dart';
 
 class IncidentSubjectWidget extends StatefulWidget {
   @override
@@ -27,9 +31,10 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
   var incidentType = "Facial Recognition";
   var incidentAction = "Kidnapping";
   var carID = "DPNP Mono 208";
-  var idType = "Passport";
+  var idType = "Pjassport";
   var idNo = "44322DFG113";
-  var location = "Dubai";
+  Future<String> location;
+  var nationality = "";
   var suspectLevel = "E";
   var criminalResult = "Wanted";
   var _incidentID = "";
@@ -49,6 +54,16 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
     super.dispose();
   }
 
+  Future<String> _getLocation(String lat, String long) async {
+    List<Placemark> placeMarks = await placemarkFromCoordinates(
+        double.tryParse(lat), double.tryParse(long));
+    if (placeMarks != null && placeMarks.isNotEmpty) {
+      return "${placeMarks?.first?.locality}\n${placeMarks?.first?.name}";
+    } else {
+      return "";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -58,8 +73,6 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
         right: 170.w,
         child: Consumer<IncidentsChangeNotifier>(
           builder: (context, state, _) {
-
-
             if (state.currentIncident != null) {
               if (_incidentID != state.currentIncident.id) {
                 _isAsync = true;
@@ -71,10 +84,12 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
               incidentType = state.currentIncident.classification == "F"
                   ? "Facial Recognition"
                   : "Behavioral Analysis";
-              carID = state.currentIncident.id;
-              suspectLevel = state.currentIncident.isWanted ? "Wanted" : "Not Wanted";
-              location =
-                  "${state.currentIncident.latitude},${state.currentIncident.longitude}";
+              carID =
+                  state.currentIncident.vehicle.vehicleVehicleId.toUpperCase();
+              suspectLevel =
+                  state.currentIncident.isWanted ? "Wanted" : "Not Wanted";
+              location = _getLocation(state.currentIncident.latitude,
+                  state.currentIncident.longitude);
             }
             return BlocListener<IncidentsListBloc, IncidentsState>(
               bloc: _incidentsBloc,
@@ -88,7 +103,9 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                     if (state.subjects.data.length > 0) {
                       name =
                           "${state.subjects.data.first.name} ${state.subjects.data.first.surname}";
-                      idType = state.subjects.data.first.idType;
+                      idType = state.subjects.data.first.idType.toUpperCase();
+                      nationality =
+                          state.subjects.data.first.nationality.nationality;
                       idNo = state.subjects.data.first.idNo;
                     }
                     _isAsync = false;
@@ -108,7 +125,7 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
               child: ModalProgressHUD(
                 inAsyncCall: _isAsync,
                 child: Container(
-                  color: Color.fromARGB(255, 20, 20, 20),
+                  color: Color(0xF141313),
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24.w),
                     child: Column(
@@ -122,82 +139,118 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                             style: TextStyle(
                                 color: CoreStyle.operationLightTextColor
                                     .withOpacity(0.6),
-                                fontWeight: FontWeight.w200,
-                                fontSize: 15.sp),
+                                fontFamily:
+                                    CoreStyle.fontWithWeight(FontWeight.w400),
+                                fontSize: 20.sp),
                           ),
                           Text(
                             name,
                             style: TextStyle(
                                 color: CoreStyle.operationLightTextColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 24.sp),
+                                fontFamily:
+                                    CoreStyle.fontWithWeight(FontWeight.w600),
+                                fontSize: 25.sp),
                           ),
                           SizedBox(
                             height: 10.h,
                           ),
                           Container(
                             width: double.maxFinite,
+                            padding: EdgeInsets.symmetric(horizontal: 24.w),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12.r),
                                 color: Color.fromARGB(255, 25, 25, 25)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(
-                                  height: 20.h,
-                                ),
-                                DashedCircle(
-                                  dashes: 12,
-                                  gapSize: 10,
-                                  strokeWidth: 20,
-                                  value: 63,
-                                  color: CoreStyle.operationRedColor,
-                                  child: Container(
-                                      width: 120.w,
-                                      height: 120.w,
-                                      child: Center(
-                                          child: Text(
-                                        "${62}",
-                                        style:
-                                            TextStyle(color: CoreStyle.white),
-                                      ))),
-                                ),
-                                SizedBox(
-                                  height: 20.h,
-                                ),
-                                Text(
-                                  incidentType,
-                                  style: TextStyle(
-                                      color: CoreStyle.operationLightTextColor
-                                          .withOpacity(0.4),
-                                      fontWeight: FontWeight.w200,
-                                      fontSize: 14.sp),
-                                ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                Container(
-                                  height: 40.h,
-                                  width: double.maxFinite,
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 12.w),
-                                  decoration: BoxDecoration(
-                                      color: CoreStyle
-                                          .operationIncidentItemListBlackColor,
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: Center(
-                                    child: Text(
-                                      incidentAction,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    DashedCircle(
+                                      dashes: 12,
+                                      gapSize: 10,
+                                      strokeWidth: 30,
+                                      value: ((state?.currentIncident
+                                                      ?.sensivitiy ??
+                                                  0) *
+                                              100)
+                                          .ceil(),
+                                      color: CoreStyle.operationRedColor,
+                                      child: Container(
+                                          width: 120.w,
+                                          height: 120.w,
+                                          child: Center(
+                                              child: Text(
+                                            "${((state?.currentIncident?.sensivitiy ?? 0) * 100).ceil()}",
+                                            style: TextStyle(
+                                                color: CoreStyle.white),
+                                          ))),
+                                    ),
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    Text(
+                                      "Area Sensitivity",
                                       style: TextStyle(
                                           color:
                                               CoreStyle.operationLightTextColor,
-                                          fontWeight: FontWeight.w300,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w400),
                                           fontSize: 20.sp),
                                     ),
-                                  ),
+                                    SizedBox(
+                                      height: 10.h,
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(
-                                  height: 10.h,
+                                  width: 48.w,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    DashedCircle(
+                                      dashes: 12,
+                                      gapSize: 10,
+                                      strokeWidth: 30,
+                                      value: ((state?.currentIncident
+                                                      ?.percentageMap ??
+                                                  0) *
+                                              100)
+                                          .ceil(),
+                                      color: CoreStyle.operationRedColor,
+                                      child: Container(
+                                          width: 120.w,
+                                          height: 120.w,
+                                          child: Center(
+                                              child: Text(
+                                            "${((state?.currentIncident?.percentageMap ?? 0) * 100).ceil()}",
+                                            style: TextStyle(
+                                                color: CoreStyle.white),
+                                          ))),
+                                    ),
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    Text(
+                                      "Percentage Map",
+                                      style: TextStyle(
+                                          color:
+                                              CoreStyle.operationLightTextColor,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w400),
+                                          fontSize: 20.sp),
+                                    ),
+                                    SizedBox(
+                                      height: 10.h,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -223,101 +276,145 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                           color: CoreStyle
                                               .operationLightTextColor
                                               .withOpacity(0.4),
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 14.sp,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w400),
+                                          fontSize: 20.sp,
                                         )),
                                     Text(
                                       carID,
                                       style: TextStyle(
                                           color:
                                               CoreStyle.operationLightTextColor,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 18.sp),
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w600),
+                                          fontSize: 24.sp),
                                     ),
                                     SizedBox(
-                                      height: 5.h,
+                                      height: 12.h,
                                     ),
                                     Text("ID Type",
                                         style: TextStyle(
                                           color: CoreStyle
                                               .operationLightTextColor
                                               .withOpacity(0.4),
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 14.sp,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w400),
+                                          fontSize: 20.sp,
                                         )),
                                     Text(
                                       idType,
                                       style: TextStyle(
                                           color:
                                               CoreStyle.operationLightTextColor,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 18.sp),
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w600),
+                                          fontSize: 24.sp),
                                     ),
                                     SizedBox(
-                                      height: 5.h,
+                                      height: 12.h,
                                     ),
                                     Text("ID No",
                                         style: TextStyle(
                                           color: CoreStyle
                                               .operationLightTextColor
                                               .withOpacity(0.4),
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 14.sp,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w400),
+                                          fontSize: 20.sp,
                                         )),
                                     Text(
                                       idNo,
                                       style: TextStyle(
                                           color:
                                               CoreStyle.operationLightTextColor,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 18.sp),
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w600),
+                                          fontSize: 24.sp),
                                     ),
                                     SizedBox(
-                                      height: 5.h,
+                                      height: 12.h,
                                     ),
                                     Text("Nationality",
                                         style: TextStyle(
                                           color: CoreStyle
                                               .operationLightTextColor
                                               .withOpacity(0.4),
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 14.sp,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w400),
+                                          fontSize: 20.sp,
                                         )),
-
+                                    Text(
+                                      nationality,
+                                      style: TextStyle(
+                                          color:
+                                              CoreStyle.operationLightTextColor,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w600),
+                                          fontSize: 24.sp),
+                                    ),
                                     SizedBox(
-                                      height: 5.h,
+                                      height: 12.h,
                                     ),
                                     Text("Location",
                                         style: TextStyle(
                                           color: CoreStyle
                                               .operationLightTextColor
                                               .withOpacity(0.4),
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 14.sp,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w400),
+                                          fontSize: 20.sp,
                                         )),
-                                    Text(
-                                      location,
-                                      style: TextStyle(
-                                          color:
-                                              CoreStyle.operationLightTextColor,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 18.sp),
+                                    FutureBuilder(
+                                      future: location,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return Container(
+                                            width: 50.w,
+                                            height: 50.w,
+                                            child: Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          return Text(
+                                            snapshot.data,
+                                            style: TextStyle(
+                                                color: CoreStyle
+                                                    .operationLightTextColor,
+                                                fontFamily:
+                                                    CoreStyle.fontWithWeight(
+                                                        FontWeight.w600),
+                                                fontSize: 24.sp),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      },
+                                    ),
+                                    SizedBox(
+                                      height: 12.h,
                                     ),
                                     Text("Date Raised",
                                         style: TextStyle(
                                           color: CoreStyle
                                               .operationLightTextColor
                                               .withOpacity(0.4),
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 14.sp,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w400),
+                                          fontSize: 20.sp,
                                         )),
                                     Text(
-                                      state?.currentIncident?.dateRaise?.toIso8601String() ?? "",
+                                      state?.currentIncident?.createdAt
+                                              ?.toIso8601String() ??
+                                          "",
                                       style: TextStyle(
                                           color:
                                               CoreStyle.operationLightTextColor,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 18.sp),
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w600),
+                                          fontSize: 24.sp),
                                     )
                                   ],
                                 ),
@@ -346,11 +443,13 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                               color: CoreStyle
                                                   .operationLightTextColor
                                                   .withOpacity(0.4),
-                                              fontWeight: FontWeight.w200,
-                                              fontSize: 14.sp,
+                                              fontFamily:
+                                                  CoreStyle.fontWithWeight(
+                                                      FontWeight.w400),
+                                              fontSize: 20.sp,
                                             )),
                                         Container(
-                                          width: 40.w,
+                                          width: 70.w,
                                           height: 25.h,
                                           decoration: BoxDecoration(
                                               color:
@@ -359,18 +458,20 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                                   Radius.circular(4.r))),
                                           child: Center(
                                             child: Text(
-                                              suspectLevel,
+                                              "E",
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontWeight: FontWeight.w200,
-                                                  fontSize: 15.sp),
+                                                  fontFamily:
+                                                      CoreStyle.fontWithWeight(
+                                                          FontWeight.w500),
+                                                  fontSize: 24.sp),
                                             ),
                                           ),
                                         )
                                       ],
                                     ),
                                     SizedBox(
-                                      height: 5.h,
+                                      height: 10.h,
                                     ),
                                     Row(
                                       mainAxisAlignment:
@@ -381,12 +482,14 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                               color: CoreStyle
                                                   .operationLightTextColor
                                                   .withOpacity(0.4),
-                                              fontWeight: FontWeight.w200,
-                                              fontSize: 14.sp,
+                                              fontFamily:
+                                                  CoreStyle.fontWithWeight(
+                                                      FontWeight.w400),
+                                              fontSize: 20.sp,
                                             )),
                                         Container(
-                                          width: 80.w,
-                                          height: 25.h,
+                                          width: 110.w,
+                                          height: 30.h,
                                           decoration: BoxDecoration(
                                               color:
                                                   CoreStyle.operationDashColor,
@@ -394,11 +497,13 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                                   Radius.circular(4.r))),
                                           child: Center(
                                             child: Text(
-                                              criminalResult,
+                                              suspectLevel,
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontWeight: FontWeight.w200,
-                                                  fontSize: 15.sp),
+                                                  fontFamily:
+                                                      CoreStyle.fontWithWeight(
+                                                          FontWeight.w600),
+                                                  fontSize: 20.sp),
                                             ),
                                           ),
                                         )
@@ -453,14 +558,17 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                   });
                                 },
                                 child: Container(
-                                  height: 42.h,
+                                  height: 50.h,
                                   width: double.maxFinite,
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 24.w),
                                   decoration: BoxDecoration(
-                                      color: CoreStyle.operationDarkGreen,
-                                      borderRadius: BorderRadius.circular(6.r)),
+                                      color: Color(0xF272727).withOpacity(0.7),
+                                      borderRadius:
+                                          BorderRadius.circular(12.r)),
                                   child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Image.asset(
                                           IMG_PIN,
@@ -472,10 +580,13 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                               ? "Pin To Top"
                                               : "UnPin From Top",
                                           style: TextStyle(
-                                              color: CoreStyle
-                                                  .operationLightTextColor,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w200),
+                                            color: CoreStyle
+                                                .operationLightTextColor,
+                                            fontSize: 20.sp,
+                                            fontFamily:
+                                                CoreStyle.fontWithWeight(
+                                                    FontWeight.w400),
+                                          ),
                                         ),
                                         Container(
                                           width: 10,
@@ -496,18 +607,20 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                                   .showSubjectData = true;
                             },
                             child: Container(
-                              height: 42.h,
+                              height: 50.h,
                               width: double.maxFinite,
                               decoration: BoxDecoration(
-                                  color: CoreStyle.operationDarkGreen,
-                                  borderRadius: BorderRadius.circular(6.r)),
+                                  color: Color(0xF272727).withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(12.r)),
                               child: Center(
                                 child: Text(
                                   "Suspect Data",
                                   style: TextStyle(
-                                      color: CoreStyle.operationLightTextColor,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w200),
+                                    color: CoreStyle.operationLightTextColor,
+                                    fontSize: 20.sp,
+                                    fontFamily: CoreStyle.fontWithWeight(
+                                        FontWeight.w400),
+                                  ),
                                 ),
                               ),
                             ),
@@ -518,73 +631,139 @@ class _IncidentSubjectWidgetState extends State<IncidentSubjectWidget> {
                           InkWell(
                             onTap: () {},
                             child: Container(
-                              height: 42.h,
+                              height: 50.h,
                               width: double.maxFinite,
                               decoration: BoxDecoration(
-                                  color: CoreStyle.operationDarkGreen,
-                                  borderRadius: BorderRadius.circular(6.r)),
+                                  color: Color(0xF272727).withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(12.r)),
                               child: Center(
                                 child: Text(
                                   "Criminal Logic Report",
                                   style: TextStyle(
-                                      color: CoreStyle.operationLightTextColor,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w200),
+                                    color: CoreStyle.operationLightTextColor,
+                                    fontSize: 20.sp,
+                                    fontFamily: CoreStyle.fontWithWeight(
+                                        FontWeight.w400),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                           SizedBox(
-                            height: 6.h,
+                            height: 12.h,
                           ),
-                          InkWell(
-                            onTap: () {
-                              if (state.currentIncident.classification ==
-                                  "gamma") {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                        content: Container(
-                                  height: 40.h,
-                                  child: Center(
-                                    child: Text("Can't upgrade Gamma Incident"),
+                          Row(
+                            children: [
+
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    if (state.currentIncident.classification ==
+                                        "gamma") {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Container(
+                                        height: 40.h,
+                                        child: Center(
+                                          child: Text(
+                                              "Can't upgrade Gamma Incident"),
+                                        ),
+                                      )));
+                                    } else if (state
+                                            .currentIncident.classification ==
+                                        "delta") {
+                                      _incidentsBloc.add(UpgradeIncident(
+                                          UpdateIncidentParam(
+                                              id: _incidentID,
+                                              classification: "gamma")));
+                                      setState(() {
+                                        _isAsync = true;
+                                      });
+                                    } else if (state
+                                            .currentIncident.classification ==
+                                        "beta") {
+                                      _incidentsBloc.add(UpgradeIncident(
+                                          UpdateIncidentParam(
+                                              id: _incidentID,
+                                              classification: "delta")));
+                                      setState(() {
+                                        _isAsync = true;
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 50.h,
+                                    decoration: BoxDecoration(
+                                        color: CoreStyle.operationDarkGreen,
+                                        borderRadius:
+                                            BorderRadius.circular(12.r)),
+                                    child: Center(
+                                      child: Text(
+                                        "Upgrade",
+                                        style: TextStyle(
+                                          color:
+                                              CoreStyle.operationLightTextColor,
+                                          fontSize: 20.sp,
+                                          fontFamily: CoreStyle.fontWithWeight(
+                                              FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                )));
-                              } else if (state.currentIncident.classification ==
-                                  "delta") {
-                                _incidentsBloc.add(UpgradeIncident(
-                                    UpdateIncidentParam(
-                                        id: _incidentID,
-                                        classification: "gamma")));
-                                setState(() {
-                                  _isAsync = true;
-                                });
-                              } else if (state.currentIncident.classification ==
-                                  "beta") {
-                                _incidentsBloc.add(UpgradeIncident(
-                                    UpdateIncidentParam(
-                                        id: _incidentID,
-                                        classification: "delta")));
-                                setState(() {
-                                  _isAsync = true;
-                                });
-                              }
-                            },
-                            child: Container(
-                              height: 42.h,
-                              width: double.maxFinite,
-                              decoration: BoxDecoration(
-                                  color: CoreStyle.operationDarkGreen,
-                                  borderRadius: BorderRadius.circular(6.r)),
-                              child: Center(
-                                child: Text(
-                                  "Upgrade",
-                                  style: TextStyle(
-                                      color: CoreStyle.operationLightTextColor,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w200),
                                 ),
                               ),
-                            ),
+                              SizedBox(width: 12.w,),
+                              Expanded(
+                                child: BlocListener(
+                                  bloc: _incidentsBloc,
+                                  listener: (context, state) {
+
+                                    if (state is DeleteIncidentSuccessState) {
+
+                                      setState(() {
+                                        _isAsync = false;
+                                      });
+                                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                        Provider.of<IncidentsChangeNotifier>(context, listen: false)
+                                            .updateHomeIncidentClassifications = true;
+                                      });
+                                    } else if (state is GetIncidentFailureState) {
+                                      setState(() {
+                                        _isAsync = false;
+                                      });
+                                    }
+                                  },
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        _isAsync = true;
+                                      });
+
+                                      _incidentsBloc.add(DeleteIncident(
+                                          SingleIncidentParam(
+                                              id: state.currentIncident.id)));
+                                    },
+                                    child: Container(
+                                      height: 50.h,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12.r),
+                                          color: CoreStyle.operationRose2Color),
+                                      child: Center(
+                                        child: Text(
+                                          "Dismiss",
+                                          style: TextStyle(
+                                              color:
+                                                  CoreStyle.operationLightTextColor,
+                                              fontFamily: CoreStyle.fontWithWeight(
+                                                  FontWeight.w600)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                            ],
                           ),
                           SizedBox(
                             height: 20.h,

@@ -3,10 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/core/Common/CoreStyle.dart';
 import 'package:micropolis_test/core/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:micropolis_test/core/params/no_params.dart';
+import 'package:micropolis_test/features/incident/data/model/incidents_classification_model.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_bloc.dart';
+import 'package:micropolis_test/features/incident/presentation/bloc/incident_event.dart';
 import 'package:micropolis_test/features/incident/presentation/bloc/incident_state.dart';
 import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
+
+import 'package:rxdart/rxdart.dart';
 
 class IncidentsTopBar extends StatefulWidget {
   final String type;
@@ -21,6 +27,17 @@ class IncidentsTopBar extends StatefulWidget {
 
 class _IncidentsTopBarState extends State<IncidentsTopBar> {
   var _selectedIndex = 0;
+  var _incidentClassificationCount = IncidentsListBloc();
+
+  List<ClassificationDatum> betaCount = [];
+  List<ClassificationDatum> gammaCount = [];
+  List<ClassificationDatum> deltaCount = [];
+
+  @override
+  void dispose() {
+    _incidentClassificationCount.close();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -67,7 +84,7 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                           });
                         },
                         child: Container(
-                          width: 225.w,
+                          width: 275.w,
                           height: 85.h,
                           color: Colors.transparent,
                           child: Stack(
@@ -88,8 +105,9 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                     Text(
                                       "Beta",
                                       style: TextStyle(
-                                          fontFamily: CoreStyle.fontWithWeight(
-                                              FontWeight.w400),
+                                          fontFamily:
+                                              CoreStyle.fontWithWeight(
+                                                  FontWeight.w400),
                                           fontSize: 30.sp,
                                           color: _selectedIndex == 0
                                               ? CoreStyle.white
@@ -105,15 +123,17 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                       builder: (context, state) {
                                         if (state
                                             is GetIncidentsClassificationSuccessState) {
-                                          var classifications = state
+                                          betaCount = state
                                               .classifications.data
                                               .where((element) =>
                                                   element.id.classification
                                                       .toLowerCase()
                                                       .contains("beta") ==
-                                                  true);
+                                                  true)
+                                              .toList();
+
                                           return Text(
-                                            "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
+                                            "${betaCount.length == 0 ? 0 : betaCount?.first?.count ?? 0}",
                                             style: TextStyle(
                                                 color: _selectedIndex == 0
                                                     ? CoreStyle.white
@@ -126,7 +146,8 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                             width: 20.w,
                                             height: 20.w,
                                             child: Center(
-                                              child: CircularProgressIndicator(
+                                              child:
+                                                  CircularProgressIndicator(
                                                 strokeWidth: 2,
                                               ),
                                             ),
@@ -166,7 +187,7 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                           });
                         },
                         child: Container(
-                          width: 225.w,
+                          width: 275.w,
                           height: 85.h,
                           color: Colors.transparent,
                           child: Stack(
@@ -187,8 +208,9 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                     Text(
                                       "Delta",
                                       style: TextStyle(
-                                          fontFamily: CoreStyle.fontWithWeight(
-                                              FontWeight.w400),
+                                          fontFamily:
+                                              CoreStyle.fontWithWeight(
+                                                  FontWeight.w400),
                                           fontSize: 30.sp,
                                           color: _selectedIndex == 1
                                               ? CoreStyle.white
@@ -206,16 +228,17 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                       builder: (context, state) {
                                         if (state
                                             is GetIncidentsClassificationSuccessState) {
-                                          var classifications = state
+                                          deltaCount = state
                                               .classifications.data
                                               .where((element) =>
                                                   element.id.classification
                                                       .toLowerCase()
                                                       .contains("delta") ==
-                                                  true);
+                                                  true)
+                                              .toList();
 
                                           return Text(
-                                            "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
+                                            "${deltaCount.length == 0 ? 0 : deltaCount?.first?.count ?? 0}",
                                             style: TextStyle(
                                                 color: _selectedIndex == 1
                                                     ? CoreStyle.white
@@ -228,7 +251,8 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                             width: 20.w,
                                             height: 20.w,
                                             child: Center(
-                                              child: CircularProgressIndicator(
+                                              child:
+                                                  CircularProgressIndicator(
                                                 strokeWidth: 2,
                                               ),
                                             ),
@@ -268,7 +292,7 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                           });
                         },
                         child: Container(
-                          width: 250.w,
+                          width: 275.w,
                           height: 85.h,
                           color: Colors.transparent,
                           child: Stack(
@@ -291,8 +315,9 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                     Text(
                                       "Gamma",
                                       style: TextStyle(
-                                          fontFamily: CoreStyle.fontWithWeight(
-                                              FontWeight.w400),
+                                          fontFamily:
+                                              CoreStyle.fontWithWeight(
+                                                  FontWeight.w400),
                                           fontSize: 30.sp,
                                           color: _selectedIndex == 2
                                               ? CoreStyle.white
@@ -310,15 +335,16 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                       builder: (context, state) {
                                         if (state
                                             is GetIncidentsClassificationSuccessState) {
-                                          var classifications = state
+                                          gammaCount = state
                                               .classifications.data
                                               .where((element) =>
                                                   element.id.classification
                                                       .toLowerCase()
                                                       .contains("gamma") ==
-                                                  true);
+                                                  true)
+                                              .toList();
                                           return Text(
-                                            "${classifications.length == 0 ? 0 : classifications?.first?.count ?? 0}",
+                                            "${gammaCount.length == 0 ? 0 : gammaCount?.first?.count ?? 0}",
                                             style: TextStyle(
                                                 color: _selectedIndex == 2
                                                     ? CoreStyle.white
@@ -331,7 +357,8 @@ class _IncidentsTopBarState extends State<IncidentsTopBar> {
                                             width: 20.w,
                                             height: 20.w,
                                             child: Center(
-                                              child: CircularProgressIndicator(
+                                              child:
+                                                  CircularProgressIndicator(
                                                 strokeWidth: 2,
                                               ),
                                             ),

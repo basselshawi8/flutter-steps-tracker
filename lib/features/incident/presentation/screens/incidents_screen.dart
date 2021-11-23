@@ -102,14 +102,17 @@ class _IncidentsScreenState extends State<IncidentsScreen>
 
           String imageCapDecoded = null;
           String imageMathcDecoded = null;
-          if (state?.currentIncident?.capturedPhotosIds?.capArr != null) {
+          if (state?.currentIncident?.capturedPhotosIds?.capArr != null &&
+              state.currentIncident.capturedPhotosIds.capArr.length > 0) {
             imageCapDecoded =
-                "http://94.206.14.42:5000/incident/image/${state.currentIncident?.capturedPhotosIds?.capArr[0]}";
+                "http://94.206.14.42:5003/aifile/incidentimage/${state.currentIncident?.capturedPhotosIds?.capArr[0]}";
           }
 
-          if (state?.currentIncident?.capturedPhotosIds?.capArr != null) {
+          if (state?.currentIncident?.capturedPhotosIds?.capArr != null &&
+              state.currentIncident.capturedPhotosIds.capArr.length > 0) {
             imageMathcDecoded =
-                "http://94.206.14.42:5000/incident/image/${state.currentIncident?.capturedPhotosIds?.capArr[1]}";
+                "http://94.206.14.42:5003/aifile/matchimage/${state.currentIncident?.personId?.perId?.first}";
+
           }
 
           return Container(
@@ -130,9 +133,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                       ),
                       markers: _markers.values.toSet(),
                     )),
-                if (imageMathcDecoded != null &&
-                    imageCapDecoded != null &&
-                    state?.currentIncident?.videoIds?.vidArr?.isEmpty == true)
+                if (imageMathcDecoded != null && imageCapDecoded != null)
                   Positioned(
                       top: 25.h + 80.h,
                       left: 30.w,
@@ -145,9 +146,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(8.r)),
                       )),
-                if (imageMathcDecoded != null &&
-                    imageCapDecoded != null &&
-                    state?.currentIncident?.videoIds?.vidArr?.isEmpty == true)
+                if (imageMathcDecoded != null && imageCapDecoded != null)
                   Positioned(
                       top: 25.h + 80.h,
                       left: 300.w,
@@ -167,7 +166,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                 if (state?.currentIncident?.videoIds?.vidArr?.isEmpty == false)
                   BehaviorVideoWidget(
                     videoURL:
-                        "$API_OPERATION_BASE${state.currentIncident.videoIds.vidArr.first ?? ""}",
+                        "http://94.206.14.42:5003/aifile/incidentvideo/${state.currentIncident.videoIds.vidArr.first ?? ""}",
                   ),
                 IncidentActionsWidget(
                   incidentID: state?.currentIncident?.id ?? "",
