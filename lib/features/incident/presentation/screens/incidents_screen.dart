@@ -39,6 +39,7 @@ class _IncidentsScreenState extends State<IncidentsScreen>
   GoogleMapController _controller;
 
   List<LatLng> _locations = [LatLng(40.7831, -73.9712)];
+  LatLng _currentCoordinate = LatLng(23.4, 53.8);
 
   @override
   void initState() {
@@ -81,6 +82,20 @@ class _IncidentsScreenState extends State<IncidentsScreen>
       count += 1;
       _markers["robot $count"] = marker;
     }
+    if (_currentCoordinate != null) {
+      var robotIcon = await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration.empty, IMG_VEHICLE);
+      final marker = Marker(
+          markerId: MarkerId("m2"),
+          position: _currentCoordinate,
+          infoWindow: InfoWindow(
+            title: "m2",
+            snippet: "m2 position",
+          ),
+          icon: robotIcon);
+      count += 1;
+      _markers["robot $count"] = marker;
+    }
   }
 
   @override
@@ -112,7 +127,6 @@ class _IncidentsScreenState extends State<IncidentsScreen>
               state.currentIncident.capturedPhotosIds.capArr.length > 0) {
             imageMathcDecoded =
                 "http://94.206.14.42:5003/aifile/matchimage/${state.currentIncident?.personId?.perId?.first}";
-
           }
 
           return Container(
@@ -125,13 +139,23 @@ class _IncidentsScreenState extends State<IncidentsScreen>
                     left: 0,
                     bottom: 0,
                     right: 800.w,
-                    child: GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      initialCameraPosition: CameraPosition(
-                        target: localLocation,
-                        zoom: 12,
-                      ),
-                      markers: _markers.values.toSet(),
+                    child: StreamBuilder(
+                      stream: mqttHelper.locationReceived,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data is LatLng) {
+                          var coordinate = snapshot.data as LatLng;
+                          _currentCoordinate = coordinate;
+                          _buildMarkers();
+                        }
+                        return GoogleMap(
+                          onMapCreated: _onMapCreated,
+                          initialCameraPosition: CameraPosition(
+                            target: localLocation,
+                            zoom: 12,
+                          ),
+                          markers: _markers.values.toSet(),
+                        );
+                      },
                     )),
                 if (imageMathcDecoded != null && imageCapDecoded != null)
                   Positioned(

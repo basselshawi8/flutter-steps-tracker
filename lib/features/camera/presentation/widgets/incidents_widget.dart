@@ -47,7 +47,7 @@ class _IncidentsWidgetState extends State<IncidentsWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        top: 30.h,
+        top: 70.h,
         right: 32.w,
         child: Consumer<IncidentsChangeNotifier>(
           builder: (context, state, _) {

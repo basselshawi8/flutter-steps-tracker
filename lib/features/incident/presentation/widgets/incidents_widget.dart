@@ -45,7 +45,8 @@ class IncidentsListWidget extends StatefulWidget {
 
 class _IncidentsListWidgetState extends State<IncidentsListWidget>
     with SingleTickerProviderStateMixin {
-  var _incidentsBloc = IncidentsListBloc();
+  IncidentsListBloc _incidentsBloc;
+  IncidentsListBloc _newIncidentsBloc;
 
   var _currentPage = 0;
   var _stopFetchingData = false;
@@ -60,12 +61,16 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
   void initState() {
     _type = widget.type;
 
-    if (_selectedItem >= incidentsList.length) {
-      _selectedItem = 0;
+    if (_incidentsBloc == null) {
+      _incidentsBloc = IncidentsListBloc();
+    }
+    if (_newIncidentsBloc == null) {
+      _newIncidentsBloc = IncidentsListBloc();
     }
 
-    _incidentsBloc.add(GetIncidents(
-        IncidentsParam(sort: "published_at", populate: "[\"vehicle\"]")));
+    if (_incidentsBloc.state is GetIncidentsWaitingState == false)
+      _incidentsBloc.add(GetIncidents(
+          IncidentsParam(sort: "published_at", populate: "[\"vehicle\"]")));
 
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));
@@ -99,6 +104,7 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
   void dispose() {
     _cancelToken.cancel();
     _incidentsBloc.close();
+    _newIncidentsBloc.close();
     _animationController.removeListener(() {});
 
     Future.delayed(Duration(milliseconds: 200)).then((value) =>
@@ -146,10 +152,11 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                       .values
                       .first as Map<String, dynamic>;
                   var id = data["body"]["incident_id"];
-                  _incidentsBloc.add(GetIncidents(IncidentsParam(
-                      sort: "published_at", populate: "[\"vehicle\"]")));
 
                   if (id != null) {
+                    _newIncidentsBloc.add(
+                        GetSingleIncident(
+                            SingleIncidentParam(id: id)));
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Container(
@@ -160,6 +167,10 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                         ),
                       )));
                     });
+                  }
+                  else {
+                    _incidentsBloc.add(GetIncidents(IncidentsParam(
+                        sort: "published_at", populate: "[\"vehicle\"]")));
                   }
                 }
                 return Container(
@@ -240,56 +251,78 @@ class _IncidentsListWidgetState extends State<IncidentsListWidget>
                         SizedBox(
                           height: 20.h,
                         ),
-                        BlocBuilder<IncidentsListBloc, IncidentsState>(
-                          bloc: _incidentsBloc,
-                          builder: (context, state) {
-                            print(state);
-                            if (state is GetIncidentsSuccessState) {
-                              print(state.incidents.data.length);
-
-                              incidentsList.clear();
-                              var typeToQuery = _type;
-
-                              var incidents = state.incidents.data
-                                  .where((element) =>
-                                      element.classification == typeToQuery)
-                                  .toList()
-                                  .reversed;
-
-                              incidentsList.addAll(incidents);
-
-                              var pinned = Provider.of<IncidentsChangeNotifier>(
-                                      context,
-                                      listen: false)
-                                  .incidents;
-
-                              for (var inc in pinned) {
-                                if (incidentsList.firstWhere(
-                                        (element) => element.id == inc.id,
-                                        orElse: () => null) ==
-                                    null) {
-                                  incidentsList.add(inc);
-                                }
-                              }
-
-                              return _refreshIncidents();
-                            } else if (state is GetIncidentsWaitingState) {
-                              return Container(
-                                width: 60.w,
-                                height: 60.w,
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              );
+                        BlocListener<IncidentsListBloc, IncidentsState>(
+                          bloc: _newIncidentsBloc,
+                          listenWhen: (context, state) {
+                            if (state is GetSingleIncidentSuccessState) {
+                              return true;
                             } else {
-                              return incidentsList.length > 0
-                                  ? fullSize == true &&
-                                          _animationController.isAnimating ==
-                                              false
-                                      ? _buildIncidentsContent(true)
-                                      : _buildIncidentsContentSmall(true)
-                                  : Container();
+                              return false;
                             }
                           },
+                          listener: (context, state) {
+                            if (state is GetSingleIncidentSuccessState) {
+                              print("new incident arrived");
+                              setState(() {
+                                incidentsList.insert(0, state.incident);
+                              });
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback((timeStamp) {
+                                _loadData(0);
+                              });
+                            }
+                          },
+                          child: BlocBuilder<IncidentsListBloc, IncidentsState>(
+                            bloc: _incidentsBloc,
+                            builder: (context, state) {
+                              if (state is GetIncidentsSuccessState) {
+                                print(state.incidents.data.length);
+
+                                incidentsList.clear();
+                                var typeToQuery = _type;
+
+                                var incidents = state.incidents.data
+                                    .where((element) =>
+                                        element.classification == typeToQuery)
+                                    .toList()
+                                    .reversed;
+
+                                incidentsList.addAll(incidents);
+
+                                var pinned =
+                                    Provider.of<IncidentsChangeNotifier>(
+                                            context,
+                                            listen: false)
+                                        .incidents;
+
+                                for (var inc in pinned) {
+                                  if (incidentsList.firstWhere(
+                                          (element) => element.id == inc.id,
+                                          orElse: () => null) ==
+                                      null) {
+                                    incidentsList.add(inc);
+                                  }
+                                }
+
+                                return _refreshIncidents();
+                              } else if (state is GetIncidentsWaitingState) {
+                                return Container(
+                                  width: 60.w,
+                                  height: 60.w,
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                );
+                              } else {
+                                return incidentsList.length > 0
+                                    ? fullSize == true &&
+                                            _animationController.isAnimating ==
+                                                false
+                                        ? _buildIncidentsContent(true)
+                                        : _buildIncidentsContentSmall(true)
+                                    : Container();
+                              }
+                            },
+                          ),
                         )
                       ],
                     ),

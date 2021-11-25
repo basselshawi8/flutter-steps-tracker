@@ -26,6 +26,7 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
   int _currentAccumValue = 10;
   Timer _accumTimer;
   Future<Offset> futureOffset;
+  Offset wheelLocalPosition = Offset.zero;
 
   @override
   void initState() {
@@ -77,20 +78,92 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
                     Positioned(
                       top: 88.5.h +
                           (_currentDirection == Directions.bottom
-                              ? 10.h
+                              ? 20.h
                               : _currentDirection == Directions.top
-                                  ? -10.h
+                                  ? -20.h
                                   : 0),
                       left: 97.5.h +
                           (_currentDirection == Directions.right
-                              ? 10.h
+                              ? 20.h
                               : _currentDirection == Directions.left
-                                  ? -10.h
+                                  ? -20.h
                                   : 0),
-                      child: Image.asset(
-                        IMG_WHEEL_GREY,
-                        width: 165.h,
-                        height: 165.h,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+
+                          return GestureDetector(
+                            onPanStart: (details) {
+                              _accumTimer?.cancel();
+                              _accumTimer =
+                                  Timer.periodic(Duration(seconds: 1), (timer) {
+                                _sendDirectionToMqtt();
+                                _currentAccumValue += 10;
+                                _currentAccumValue =
+                                    min(_currentAccumValue, 100);
+                              });
+                            },
+                            onPanUpdate: (details) {
+                              wheelLocalPosition = details.localPosition;
+
+                              if (details.localPosition.dx.h > 45) {
+                                setState(() {
+                                  if (_currentDirection != Directions.right)
+                                    _currentAccumValue = 10;
+                                  _currentDirection = Directions.right;
+                                });
+                              } else if (details.localPosition.dx.h < 13) {
+                                setState(() {
+                                  if (_currentDirection != Directions.left)
+                                    _currentAccumValue = 10;
+                                  _currentDirection = Directions.left;
+                                });
+                              } else if (details.localPosition.dy.h > 45) {
+                                setState(() {
+                                  if (_currentDirection != Directions.bottom)
+                                    _currentAccumValue = 10;
+                                  _currentDirection = Directions.bottom;
+                                });
+                              } else if (details.localPosition.dy.h < 10) {
+                                setState(() {
+                                  if (_currentDirection != Directions.top)
+                                    _currentAccumValue = 10;
+                                  _currentDirection = Directions.top;
+                                });
+                              } else {
+                                setState(() {
+                                  _currentDirection = Directions.none;
+                                });
+                              }
+                            },
+                            onPanCancel: () {
+                              setState(() {
+                                _currentDirection = Directions.none;
+                                _accumTimer?.cancel();
+                                if (_currentAccumValue >= 80) {
+                                  mqttHelper.publishStop();
+                                }
+                                _currentAccumValue = 10;
+                              });
+                              _sendDirectionToMqtt();
+                            },
+                            onPanEnd: (details) {
+                              setState(() {
+                                _currentDirection = Directions.none;
+                                _accumTimer?.cancel();
+                                if (_currentAccumValue >= 80) {
+                                  mqttHelper.publishStop();
+                                }
+                                _currentAccumValue = 10;
+                              });
+                              _sendDirectionToMqtt();
+                            },
+                            child: Image.asset(
+                              IMG_WHEEL_GREY,
+                              width: 165.h,
+                              height: 165.h,
+                            ),
+                          );
+                        },
                       ),
                     ),
                     Positioned.fill(
@@ -107,45 +180,45 @@ class _CameraDirectionWidgetState extends State<CameraDirectionWidget> {
                                 _currentAccumValue =
                                     min(_currentAccumValue, 100);
                                 if (details.localPosition.dy < height / 3.5) {
-                                  setState(() {
-                                    _currentDirection = Directions.top;
-                                  });
+                                  _currentDirection = Directions.top;
                                 } else if (details.localPosition.dx <
                                     width / 3.5) {
-                                  setState(() {
-                                    _currentDirection = Directions.left;
-                                  });
+                                  _currentDirection = Directions.left;
                                 } else if (details.localPosition.dx >
                                     width * 0.65) {
-                                  setState(() {
-                                    _currentDirection = Directions.right;
-                                  });
+                                  _currentDirection = Directions.right;
                                 } else if (details.localPosition.dy >
                                     height * 0.65) {
-                                  setState(() {
-                                    _currentDirection = Directions.bottom;
-                                  });
+                                  _currentDirection = Directions.bottom;
                                 } else {
-                                  setState(() {
-                                    _currentDirection = Directions.none;
-                                  });
+                                  _currentDirection = Directions.none;
                                 }
 
                                 _sendDirectionToMqtt();
                               });
                               if (details.localPosition.dy < height / 3.5) {
-                                _currentDirection = Directions.top;
+                                setState(() {
+                                  _currentDirection = Directions.top;
+                                });
                               } else if (details.localPosition.dx <
                                   width / 3.5) {
-                                _currentDirection = Directions.left;
+                                setState(() {
+                                  _currentDirection = Directions.left;
+                                });
                               } else if (details.localPosition.dx >
                                   width * 0.65) {
-                                _currentDirection = Directions.right;
+                                setState(() {
+                                  _currentDirection = Directions.right;
+                                });
                               } else if (details.localPosition.dy >
                                   height * 0.65) {
-                                _currentDirection = Directions.bottom;
+                                setState(() {
+                                  _currentDirection = Directions.bottom;
+                                });
                               } else {
-                                _currentDirection = Directions.none;
+                                setState(() {
+                                  _currentDirection = Directions.none;
+                                });
                               }
                               _sendDirectionToMqtt();
                             },
