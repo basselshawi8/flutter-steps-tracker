@@ -36,7 +36,7 @@ class ApiProvider {
   }
 
   final option = BaseOptions(
-    baseUrl: API_OPERATION_BASE,
+    baseUrl: API_BASE,
     connectTimeout: 20000,
   );
   Dio _dio;
@@ -88,9 +88,9 @@ class ApiProvider {
             data: data != null ? data : dataString,
             queryParameters: queryParameters,
             options: Options(
-              headers: headers,
-              contentType: dataString!=null ? "text/plain" : "application/json"
-            ),
+                headers: headers,
+                contentType:
+                    dataString != null ? "text/plain" : "application/json"),
             cancelToken: cancelToken,
           );
           print(response.data.toString());
@@ -127,24 +127,15 @@ class ApiProvider {
       if (response.data != null) {
         // Here we send the data from response to Models factory
         // to assign data as model
-        if (response.data is List) {
-          try {
-            model = ModelsFactory.getInstance().createModel<T>(response.data);
-          } catch (e) {
-            print(e);
-            return Left(CustomError(message: e.toString()));
-          }
-          return Right(model);
-        } else {
-          try {
-            model = ModelsFactory.getInstance().createModel<T>(response.data);
-          } catch (e, stack) {
-            print(stack);
-            print(e);
-            return Left(CustomError(message: e.toString()));
-          }
-          return Right(model);
+
+        try {
+          model = ModelsFactory.getInstance().createModel<T>(response.data);
+        } catch (e, stack) {
+          print(stack);
+          print(e);
+          return Left(CustomError(message: e.toString()));
         }
+        return Right(model);
       } else if (!response.data["succeed"]) {
         return Left(CustomError(message: response.data["message"]));
       } else

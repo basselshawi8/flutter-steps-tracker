@@ -1,8 +1,4 @@
 import 'package:get_it/get_it.dart';
-import 'package:micropolis_test/features/camera/data/datasource/iIncidents_datasource.dart';
-import 'package:micropolis_test/features/camera/data/datasource/incidents_datasource.dart';
-import 'package:micropolis_test/features/camera/domain/repository/iIncidents_repository.dart';
-import 'features/camera/data/repository/incident_repository.dart';
 import 'features/restaurants/data/datasource/irestaurants_datasource.dart';
 import 'features/restaurants/data/datasource/restaurants_datasource.dart';
 import 'features/restaurants/data/repository/restaurant_repository.dart';
@@ -21,9 +17,4 @@ void setupLocator() {
   locator.registerFactory<IRestaurantsRepository>(
       () => RestaurantsRepository(locator<IRestaurantsRemoteDataSource>()));
 
-  locator.registerFactory<IIncidentsRemoteDataSource>(
-    () => IncidentsRemoteDataSource(),
-  );
-  locator.registerFactory<IIncidentsRepository>(
-      () => IncidentRepository(locator<IIncidentsRemoteDataSource>()));
 }

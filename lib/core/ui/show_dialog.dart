@@ -105,7 +105,6 @@ void textFieldDialog({BuildContext context, String message, String title,
               validator: (value) {
                 return value;
               },
-              autovalidate: false,
               onChanged: (value) {},
               maxLines: linesNumber,
               minLines: 1,

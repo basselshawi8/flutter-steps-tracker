@@ -79,7 +79,6 @@ class PhoneNumberFieldWidget extends StatelessWidget {
         else
           return Translations.of(context).translate('error_phone_invalid');
       },
-      autovalidate: false,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
     );

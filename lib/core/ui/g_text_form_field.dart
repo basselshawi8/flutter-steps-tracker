@@ -87,7 +87,6 @@ class GTextFormField extends StatelessWidget {
         errorStyle: const TextStyle(height: 0.8),
       ),
       validator: validator,
-      autovalidate: false,
       onFieldSubmitted: onFieldSubmitted,
       onChanged: onChanged,
       obscureText: obscureText,

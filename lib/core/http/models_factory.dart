@@ -34,7 +34,6 @@ class ModelsFactory {
   // Generate the desired T model.
   T createModel<T extends BaseModel>(json) {
     final modelName = T.toString();
-//    assert(_modelsMap.containsKey(modelName));
     final model = json is List == false ? _modelsMap[modelName](json) as T : _modelsList[modelName](json) as T;
     return model;
   }

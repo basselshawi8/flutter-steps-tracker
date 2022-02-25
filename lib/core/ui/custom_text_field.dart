@@ -76,7 +76,6 @@ class CustomTextField extends StatelessWidget {
                     errorStyle:
                         const TextStyle(color: CoreStyle.operationBlack2Color)),
                 validator: validator,
-                autovalidate: false,
                 onFieldSubmitted: onFieldSubmitted,
                 onChanged: onChanged,
                 obscureText: obscureText,

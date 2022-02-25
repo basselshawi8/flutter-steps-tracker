@@ -1,5 +1,5 @@
 
-import 'package:dio/dio.dart';
+import 'dart:ui';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:micropolis_test/features/restaurants/domain/entity/menu_entity.dart';

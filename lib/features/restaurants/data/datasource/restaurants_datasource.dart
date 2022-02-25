@@ -21,6 +21,7 @@ class RestaurantsRemoteDataSource extends IRestaurantsRemoteDataSource {
         method: HttpMethod.GET,
         url: API_RESTAURANTS,
         withAuthentication: true,
+        isList: true,
         cancelToken: params.cancelToken);
 
   }
@@ -33,6 +34,7 @@ class RestaurantsRemoteDataSource extends IRestaurantsRemoteDataSource {
         method: HttpMethod.GET,
         url: "$API_MENUS/${params.restaurantID}",
         withAuthentication: true,
+        isList: true,
         cancelToken: params.cancelToken);
 
   }

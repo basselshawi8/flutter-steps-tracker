@@ -3,25 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:micropolis_test/features/incident/presentation/notifiers/incidents_notifier.dart';
 import 'package:provider/provider.dart';
 import 'core/Common/Common.dart';
 import 'core/Common/route_generator.dart';
 import 'core/constants.dart';
 import 'core/localization/flutter_localization.dart';
 
-import 'features/camera/presentation/bloc/incident_bloc.dart';
-import 'features/camera/presentation/notifiers/actions_change_notifier.dart';
-import 'features/camera/presentation/screens/main_window_screen.dart';
-import 'features/incident/presentation/bloc/incident_bloc.dart';
-import 'features/incident/presentation/widgets/incident_top_bar.dart';
-import 'features/map/presentation/bloc/map_bloc.dart';
-import 'features/map/presentation/screen/polygon_drawer.dart';
 import 'features/restaurants/presentation/bloc/restaurants_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'features/user_managment/presentation/bloc/usermanagement_bloc.dart';
-import 'features/user_managment/presentation/change_notifiers/user_managment_change_notifier.dart';
-import 'features/user_managment/presentation/screen/login_screen.dart';
+import 'features/restaurants/presentation/screen/restaurants_screen.dart';
 import 'navigation_service.dart';
 import 'service_locator.dart';
 
@@ -47,35 +37,10 @@ class _AppState extends State<App> {
         ChangeNotifierProvider.value(
           value: widget.appLanguage,
         ),
-        ChangeNotifierProvider.value(
-          value: ActionsChangeNotifier(),
-        ),
-        ChangeNotifierProvider.value(
-          value: IncidentsChangeNotifier(),
-        ),
-        ChangeNotifierProvider.value(
-          value: UserManagementChangeNotifier(),
-        ),
         BlocProvider(
           create: (_) => RestaurantsBloc(),
           lazy: true,
         ),
-        BlocProvider(
-          create: (_) => MapBloc(),
-          lazy: true,
-        ),
-        BlocProvider(
-          create: (_) => IncidentsBloc(),
-          lazy: true,
-        ),
-        BlocProvider(
-          create: (_) => IncidentsListBloc(),
-          lazy: true,
-        ),
-        BlocProvider(
-          create: (_) => UserManagementBloc(),
-          lazy: true,
-        )
       ],
       child: Consumer<AppConfigProvider>(builder: (_, provider, __) {
         return ScreenUtilInit(
@@ -161,8 +126,8 @@ class _AppState extends State<App> {
                 DefaultCupertinoLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate
               ],
-              //home: SplashScreen()));
-              home: MainWindowScreen()),
+              //home: PolygonDrawer())
+              home: RestaurantsScreen()),
         );
       }),
     );
@@ -171,11 +136,6 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     super.dispose();
-
-    BlocProvider.of<MapBloc>(context).close();
     BlocProvider.of<RestaurantsBloc>(context).close();
-    BlocProvider.of<IncidentsBloc>(context).close();
-    BlocProvider.of<IncidentsListBloc>(context).close();
-    BlocProvider.of<UserManagementBloc>(context).close();
   }
 }
