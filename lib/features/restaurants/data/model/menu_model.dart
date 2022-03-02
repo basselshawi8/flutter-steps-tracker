@@ -8,7 +8,7 @@ import 'package:micropolis_test/core/models/BaseModel.dart';
 import 'package:micropolis_test/features/restaurants/domain/entity/menu_entity.dart';
 
 class RestaurantMenuModel extends BaseModel<RestaurantMenuEntity> {
-  final List<MenuSectionModel> sections;
+  final List<MenuSectionModel>? sections;
 
   RestaurantMenuModel(this.sections);
 
@@ -23,7 +23,7 @@ class RestaurantMenuModel extends BaseModel<RestaurantMenuEntity> {
 
   @override
   RestaurantMenuEntity toEntity() {
-    return RestaurantMenuEntity(sections.map((e) => e?.toEntity()).toList());
+    return RestaurantMenuEntity(sections?.map((e) => e.toEntity()).toList());
   }
 }
 
@@ -33,8 +33,8 @@ class MenuSectionModel extends BaseModel<MenuSectionEntity> {
     this.items,
   });
 
-  final String menu;
-  final List<MenuItemModel> items;
+  final String? menu;
+  final List<MenuItemModel>? items;
 
   factory MenuSectionModel.fromJson(String str) =>
       MenuSectionModel.fromMap(json.decode(str));
@@ -50,13 +50,15 @@ class MenuSectionModel extends BaseModel<MenuSectionEntity> {
 
   Map<String, dynamic> toMap() => {
         "menu": menu,
-        "items": List<dynamic>.from(items.map((x) => x.toMap())),
+        "items": items == null
+            ? null
+            : List<dynamic>.from(items!.map((x) => x.toMap())),
       };
 
   @override
   MenuSectionEntity toEntity() {
     return MenuSectionEntity(
-        menu: this.menu, items: this.items.map((e) => e?.toEntity()).toList());
+        menu: this.menu, items: this.items?.map((e) => e.toEntity()).toList());
   }
 }
 
@@ -69,11 +71,11 @@ class MenuItemModel extends BaseModel<MenuItemEntity> {
     this.price,
   });
 
-  final int id;
-  final String name;
-  final String description;
-  final String image;
-  final String price;
+  final int? id;
+  final String? name;
+  final String? description;
+  final String? image;
+  final String? price;
 
   factory MenuItemModel.fromJson(String str) =>
       MenuItemModel.fromMap(json.decode(str));

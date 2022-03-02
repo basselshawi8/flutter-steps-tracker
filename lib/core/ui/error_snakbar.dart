@@ -72,14 +72,15 @@ class ErrorViewer {
                     backgroundColor: Colors.red,
                   ),
                   Text(
-                    Translations.of(context).translate("error_oops"),
+                    Translations.of(context)?.translate("error_oops") ?? "",
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: ScreenUtil().setSp(42)),
                   ),
                   Text(
-                    Translations.of(context).translate("error_connection"),
+                    Translations.of(context)?.translate("error_connection") ??
+                        "",
                     style: TextStyle(
                         color: Colors.black, fontSize: ScreenUtil().setSp(42)),
                   ),
@@ -87,16 +88,18 @@ class ErrorViewer {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CustomButton(
-                        text:
-                            Translations.of(context).translate("btn_Rty_title"),
+                        text: Translations.of(context)
+                                ?.translate("btn_Rty_title") ??
+                            "",
                         onPressed: () {
                           Navigator.pop(context);
                           callback();
                         },
                       ),
                       CustomButton(
-                        text:
-                            Translations.of(context).translate("btn_close_app"),
+                        text: Translations.of(context)
+                                ?.translate("btn_close_app") ??
+                            "",
                         onPressed: () async => await SystemNavigator.pop(),
                         color: Colors.red,
                       ),
@@ -120,66 +123,71 @@ class ErrorViewer {
 
   static void showUnexpectedError(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text(Translations.of(context).translate('error_general')),
+      content: Text(Translations.of(context)?.translate('error_general') ?? ""),
     );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
   static void showUnauthorizedError(BuildContext context) {
     final snackBar = SnackBar(
-      content:
-          Text(Translations.of(context).translate('error_Unauthorized_Error')),
+      content: Text(
+          Translations.of(context)?.translate('error_Unauthorized_Error') ??
+              ""),
     );
     Scaffold.of(context).showSnackBar(snackBar);
-
   }
 
   static void showBadRequestError(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message ??
-          Translations.of(context).translate('error_BadRequest_Error')),
+          (Translations.of(context)?.translate('error_BadRequest_Error') ??
+              "")),
     );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
   static void showForbiddenError(BuildContext context) {
     final snackBar = SnackBar(
-      content:
-          Text(Translations.of(context).translate('error_forbidden_error')),
+      content: Text(
+          Translations.of(context)?.translate('error_forbidden_error') ?? ""),
     );
     Scaffold.of(context).showSnackBar(snackBar);
-
   }
 
   static void showNotFoundError(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text(Translations.of(context).translate('error_NotFound_Error')),
+      content: Text(
+          Translations.of(context)?.translate('error_NotFound_Error') ?? ""),
     );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
   static void showConflictError(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text(Translations.of(context).translate('error_Conflict_Error')),
+      content: Text(
+          Translations.of(context)?.translate('error_Conflict_Error') ?? ""),
     );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
   static void showTimeoutError(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text(Translations.of(context).translate('error_Timeout_Error')),
+      content: Text(
+          Translations.of(context)?.translate('error_Timeout_Error') ?? ""),
     );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
   static void showUnknownError(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text(Translations.of(context).translate('error_Unknown_Error')),
+      content: Text(
+          Translations.of(context)?.translate('error_Unknown_Error') ?? ""),
     );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
-  static showDialogForSplash(BuildContext context, String message,VoidCallback callback){
+  static showDialogForSplash(
+      BuildContext context, String message, VoidCallback callback) {
     ShowDialog().showElasticDialog(
       context: context,
       barrierDismissible: false,
@@ -192,12 +200,12 @@ class ErrorViewer {
               height: MediaQuery.of(context).size.height * 0.50,
               decoration: BoxDecoration(
                   borderRadius:
-                  BorderRadius.circular(ScreenUtil().setWidth(60))),
+                      BorderRadius.circular(ScreenUtil().setWidth(60))),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    Translations.of(context).translate("error_oops"),
+                    Translations.of(context)?.translate("error_oops") ?? "",
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -212,16 +220,18 @@ class ErrorViewer {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CustomButton(
-                        text:
-                        Translations.of(context).translate("btn_Rty_title"),
+                        text: Translations.of(context)
+                                ?.translate("btn_Rty_title") ??
+                            "",
                         onPressed: () {
                           Navigator.pop(context);
                           callback();
                         },
                       ),
                       CustomButton(
-                        text:
-                        Translations.of(context).translate("btn_close_app"),
+                        text: Translations.of(context)
+                                ?.translate("btn_close_app") ??
+                            "",
                         onPressed: () async => await SystemNavigator.pop(),
                         color: Colors.red,
                       ),

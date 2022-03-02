@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -13,38 +12,44 @@ abstract class RestaurantsState extends Equatable {
 
 class InitialRestaurantState extends RestaurantsState {
   const InitialRestaurantState();
+
   @override
   List<Object> get props => [];
-
 }
 
 /// GetAddress
 class GetRestaurantsWaitingState extends RestaurantsState {
   const GetRestaurantsWaitingState();
+
   @override
   List<Object> get props => [];
 }
 
 class GetRestaurantsSuccessState extends RestaurantsState {
   final RestaurantListEntity restaurantsList;
+
   const GetRestaurantsSuccessState(this.restaurantsList);
+
   @override
   List<Object> get props => [restaurantsList];
 }
 
 class GetRestaurantMenuSuccessState extends RestaurantsState {
   final RestaurantMenuEntity menu;
+
   const GetRestaurantMenuSuccessState(this.menu);
+
   @override
   List<Object> get props => [menu];
 }
 
 class GetRestaurantsFailureState extends RestaurantsState {
-  final BaseError error;
-  final VoidCallback callback;
+  final BaseError? error;
+  final VoidCallback? callback;
 
   const GetRestaurantsFailureState({this.error, this.callback});
 
   @override
-  List<Object> get props => [error, callback];
+  List<Object> get props =>
+      [if (error != null) error!, if (callback != null) callback!];
 }

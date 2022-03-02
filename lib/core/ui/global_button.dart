@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class GlobalButton extends StatelessWidget {
-  final Widget title;
-  final Color color;
-  final Icon icon;
-  final Function onClick;
-  final double borderRadius;
-  final bool withIconBackground;
+  final Widget? title;
+  final Color? color;
+  final Icon? icon;
+  final Function? onClick;
+  final double? borderRadius;
+  final bool? withIconBackground;
 
   const GlobalButton(
-      {Key key,
+      {Key? key,
       this.title,
       this.color,
       this.icon,
@@ -23,10 +23,10 @@ class GlobalButton extends StatelessWidget {
     return RaisedButton(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
-            this.borderRadius == null ? 30.0 : this.borderRadius,
+            this.borderRadius == null ? 30.0 : this.borderRadius!,
           ),
         ),
-        onPressed: this.onClick,
+        onPressed: this.onClick != null ? this.onClick!() : null,
         textColor: Colors.white,
         color: color,
         child: Padding(
@@ -48,13 +48,13 @@ class GlobalButton extends StatelessWidget {
                             child: icon,
                             decoration: BoxDecoration(
                               color: withIconBackground != null &&
-                                      withIconBackground
+                                      withIconBackground!
                                   ? Colors.white
                                   : Colors.transparent,
                               shape: BoxShape.circle,
                             ),
                           ),
-                    title
+                    if (title != null) title!
                   ],
                 ),
         ));

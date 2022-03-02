@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void showGuestDialog({
-  @required BuildContext context,
+  required BuildContext context,
 }) {
   ShowDialog().showElasticDialog(
     context: context,
@@ -46,7 +46,7 @@ void showGuestDialog({
                         ),
                         SizedBox(height: ScreenUtil().setHeight(35),),
                         Text(Translations.of(context)
-                            .translate("label_log_in_as_guest"),)
+                            ?.translate("label_log_in_as_guest") ?? "",)
                       ],
                     ),
                     Column(
@@ -64,7 +64,7 @@ void showGuestDialog({
                         ),
                         SizedBox(height: ScreenUtil().setHeight(35),),
                         Text(Translations.of(context)
-                            .translate("label_log_in"))
+                            ?.translate("label_log_in") ?? "")
                       ],
                     )
                   ],

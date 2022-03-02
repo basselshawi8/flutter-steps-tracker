@@ -1,4 +1,3 @@
-
 // this class for restart app from main
 // wrap whole app into a statefulwidget. And when we want to restart app,
 // rebuild that statefulwidget with a child that possess a different Key.
@@ -10,13 +9,12 @@ import 'package:flutter/material.dart';
 class RestartWidget extends StatefulWidget {
   final Widget child;
 
-  RestartWidget({this.child});
+  RestartWidget({required this.child});
 
   static restartApp(BuildContext context) {
-
     final _RestartWidgetState state =
-    context.findAncestorStateOfType();
-    print("restart");
+        context.findAncestorStateOfType() as _RestartWidgetState;
+
     state?.restartApp();
   }
 

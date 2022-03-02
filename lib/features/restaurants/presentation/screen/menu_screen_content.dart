@@ -11,9 +11,9 @@ import 'package:micropolis_test/features/restaurants/presentation/widgets/menu_s
 import 'package:micropolis_test/features/restaurants/presentation/widgets/restaurant_list_item.dart';
 
 class MenuScreenContent extends StatefulWidget {
-  final RestaurantMenuEntity menu;
+  final RestaurantMenuEntity? menu;
 
-  const MenuScreenContent({Key key, this.menu}) : super(key: key);
+  const MenuScreenContent({Key? key, this.menu}) : super(key: key);
 
   @override
   _MenuScreenContentState createState() {
@@ -31,12 +31,13 @@ class _MenuScreenContentState extends State<MenuScreenContent> {
           child: ListView.builder(
             itemBuilder: (context, index) {
               return Padding(
-                padding:  EdgeInsets.only(top:index==0 ? 30.h : 0 ),
-                child: MenuSectionWidget(section: widget.menu.sections[index]),
+                padding: EdgeInsets.only(top: index == 0 ? 30.h : 0),
+                child:
+                    MenuSectionWidget(section: widget.menu!.sections![index]),
               );
             },
             shrinkWrap: true,
-            itemCount: widget.menu.sections.length,
+            itemCount: widget.menu?.sections?.length ?? 0,
           ),
         )
       ]),

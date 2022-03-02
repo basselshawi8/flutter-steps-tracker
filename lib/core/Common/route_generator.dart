@@ -6,7 +6,7 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
-    var pathName = settings.name.split("?").first;
+    var pathName = settings.name?.split("?").first;
     switch (pathName) {
       case MenuScreen.routeName:
         if (args is Map) {
@@ -41,7 +41,7 @@ class RouteGenerator {
 class FadeRoute extends PageRouteBuilder {
   final Widget page;
 
-  FadeRoute({this.page})
+  FadeRoute({required this.page})
       : super(
           pageBuilder: (
             BuildContext context,
@@ -65,7 +65,7 @@ class FadeRoute extends PageRouteBuilder {
 class SlideRightRoute extends PageRouteBuilder {
   final Widget page;
 
-  SlideRightRoute({this.page})
+  SlideRightRoute({required this.page})
       : super(
           pageBuilder: (
             BuildContext context,
@@ -93,7 +93,7 @@ class SlideRightRoute extends PageRouteBuilder {
 class SlideLeftRoute extends PageRouteBuilder {
   final Widget page;
 
-  SlideLeftRoute({this.page})
+  SlideLeftRoute({required this.page})
       : super(
           pageBuilder: (
             BuildContext context,
@@ -121,7 +121,7 @@ class SlideLeftRoute extends PageRouteBuilder {
 class ScaleRoute extends PageRouteBuilder {
   final Widget page;
 
-  ScaleRoute({this.page})
+  ScaleRoute({required this.page})
       : super(pageBuilder: (BuildContext context, Animation<double> animation,
             Animation<double> secondaryAnimation) {
           return page;

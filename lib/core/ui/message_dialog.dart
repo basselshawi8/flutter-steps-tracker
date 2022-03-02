@@ -7,12 +7,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'custom_button.dart';
 
 showMessageDialog(BuildContext context,
-    {IconData topIcon,
-    Color iconColor,
-    Color iconBackgroundColor,
-    String message,
-    ErrorScreenWidget errorWidget,
-    Function onConfirmPressed}) {
+    {IconData? topIcon,
+    Color? iconColor,
+    Color? iconBackgroundColor,
+    String? message,
+    ErrorScreenWidget? errorWidget,
+    Function? onConfirmPressed}) {
   ShowDialog().showElasticDialog(
       context: context,
       barrierDismissible: false,
@@ -41,7 +41,9 @@ showMessageDialog(BuildContext context,
                   if (errorWidget == null)
                     Text(
                       message ??
-                          Translations.of(context).translate("order_success"),
+                          (Translations.of(context)
+                                  ?.translate("order_success") ??
+                              ""),
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: ScreenUtil().setSp(42)),
@@ -53,10 +55,12 @@ showMessageDialog(BuildContext context,
                     children: [
                       CustomButton(
                         text: errorWidget == null
-                            ? Translations.of(context)
-                                .translate("label_confirm")
-                            : Translations.of(context)
-                                .translate("label_cancel"),
+                            ? (Translations.of(context)
+                                    ?.translate("label_confirm") ??
+                                "")
+                            : (Translations.of(context)
+                                    ?.translate("label_cancel") ??
+                                ""),
                         onPressed: onConfirmPressed ?? () {},
                       ),
                     ],

@@ -6,7 +6,7 @@ class Message {
   final String body;
 
   const Message({
-    @required this.title,
-    @required this.body,
+    required this.title,
+    required this.body,
   });
 }

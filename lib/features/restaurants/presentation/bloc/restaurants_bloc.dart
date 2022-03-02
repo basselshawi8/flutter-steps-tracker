@@ -21,7 +21,7 @@ class RestaurantsBloc extends Bloc<RestaurantsEvent, RestaurantsState> {
           await GetRestaurantsUseCase(locator<IRestaurantsRepository>())
               .call(NoParams(cancelToken: event.cancelToken));
       if (result.hasDataOnly) {
-        yield GetRestaurantsSuccessState(result.data);
+        yield GetRestaurantsSuccessState(result.data!);
       } else if (result.hasErrorOnly) {
         yield GetRestaurantsFailureState(
             error: result.error,
@@ -38,7 +38,7 @@ class RestaurantsBloc extends Bloc<RestaurantsEvent, RestaurantsState> {
                   cancelToken: event.cancelToken,
                   restaurantID: event.restaurantID));
       if (result.hasDataOnly) {
-        yield GetRestaurantMenuSuccessState(result.data);
+        yield GetRestaurantMenuSuccessState(result.data!);
       } else if (result.hasErrorOnly) {
         yield GetRestaurantsFailureState(
             error: result.error,

@@ -14,10 +14,9 @@ import 'menu_screen_content.dart';
 class MenuScreen extends StatefulWidget {
   static const routeName = '/menu';
 
-  final RestaurantEntity restaurant;
+  final RestaurantEntity? restaurant;
 
-  const MenuScreen({Key key, this.restaurant})
-      : super(key: key);
+  const MenuScreen({Key? key, this.restaurant}) : super(key: key);
 
   @override
   _MenuScreenState createState() {
@@ -26,14 +25,13 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-
   final RestaurantsBloc _restaurantsBloc = RestaurantsBloc();
   CancelToken _cancelToken = CancelToken();
 
   @override
   void initState() {
     _restaurantsBloc
-        .add(GetRestaurantMenu(_cancelToken, widget.restaurant.id));
+        .add(GetRestaurantMenu(_cancelToken, widget.restaurant?.id ?? 0));
     super.initState();
   }
 
@@ -49,34 +47,35 @@ class _MenuScreenState extends State<MenuScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            MenuAppBar(restaurant: widget.restaurant,),
-            Expanded(
-              child: Container(
-                color: CoreStyle.restaurantBackground,
-                child: BlocBuilder<RestaurantsBloc, RestaurantsState>(
-                  bloc: _restaurantsBloc,
-                  builder: (context, state) {
-                    if (state is GetRestaurantsWaitingState) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (state is GetRestaurantsFailureState) {
-                      return CustomErrorScreenWidget(
-                          message: state.error.toString());
-                    } else if (state is GetRestaurantMenuSuccessState) {
-                      return MenuScreenContent(
-                        menu: state.menu,
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
+          child: Column(
+        children: [
+          MenuAppBar(
+            restaurant: widget.restaurant,
+          ),
+          Expanded(
+            child: Container(
+              color: CoreStyle.restaurantBackground,
+              child: BlocBuilder<RestaurantsBloc, RestaurantsState>(
+                bloc: _restaurantsBloc,
+                builder: (context, state) {
+                  if (state is GetRestaurantsWaitingState) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is GetRestaurantsFailureState) {
+                    return CustomErrorScreenWidget(
+                        message: state.error.toString());
+                  } else if (state is GetRestaurantMenuSuccessState) {
+                    return MenuScreenContent(
+                      menu: state.menu,
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
               ),
-            )
-          ],
-        )
-      ),
+            ),
+          )
+        ],
+      )),
     );
   }
 }

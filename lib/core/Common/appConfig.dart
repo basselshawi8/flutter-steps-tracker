@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../constants.dart';
 import 'shared_preference.dart';
@@ -9,12 +9,12 @@ import 'shared_preference.dart';
 // for get device info
 // and for get and set language and check if has token or not
 class AppConfig {
-  static String lang;
+  static String? lang;
 
-  int os;
-  String currentVersion;
-  String buildNumber;
-  String appName;
+  int? os;
+  String? currentVersion;
+  String? buildNumber;
+  String? appName;
 
   initVersion() async {
     /// get OS
@@ -47,7 +47,7 @@ class AppConfig {
     } catch (e) {
       lang = LANG_AR;
     }
-    return lang;
+    return lang!;
   }
 }
 

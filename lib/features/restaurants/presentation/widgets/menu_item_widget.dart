@@ -6,10 +6,10 @@ import 'package:micropolis_test/features/restaurants/domain/entity/menu_entity.d
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MenuItemWidget extends StatelessWidget {
-  final MenuItemEntity item;
+  final MenuItemEntity? item;
   final bool isLastElement;
 
-  const MenuItemWidget({Key key, this.item, @required this.isLastElement})
+  const MenuItemWidget({Key? key, this.item, required this.isLastElement})
       : super(key: key);
 
   @override
@@ -27,7 +27,7 @@ class MenuItemWidget extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(16.h)),
                     child: FadeInImage(
                       placeholder: const AssetImage(IMG_NETWORK_PLACEHOLDER),
-                      image: NetworkImage(item.image),
+                      image: NetworkImage(item?.image ?? ""),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -39,7 +39,7 @@ class MenuItemWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.name,
+                          item?.name ?? "",
                           overflow: TextOverflow.clip,
                           maxLines: 1,
                           style: TextStyle(
@@ -48,7 +48,7 @@ class MenuItemWidget extends StatelessWidget {
                               color: CoreStyle.restaurantHeaderColor),
                         ),
                         Text(
-                          item.price,
+                          item?.price ?? "",
                           maxLines: 1,
                           overflow: TextOverflow.clip,
                           style: TextStyle(

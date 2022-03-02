@@ -9,8 +9,8 @@ class EmptyResponse extends BaseModel {
 
 
   EmptyResponse({
-    @required this.succeed,
-    @required this.message,
+    required this.succeed,
+    required this.message,
   });
 
 

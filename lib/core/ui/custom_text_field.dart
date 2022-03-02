@@ -9,24 +9,24 @@ class CustomTextField extends StatelessWidget {
   final TextInputAction textInputAction;
   final TextInputType keyboardType;
   final FocusNode focusNode;
-  final String labelText;
-  final Widget suffixIcon;
-  final Widget prefixIcon;
-  final FormFieldValidator<String> validator;
-  final ValueChanged<String> onFieldSubmitted;
-  final ValueChanged<String> onChanged;
+  final String? labelText;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onFieldSubmitted;
+  final ValueChanged<String>? onChanged;
   final bool obscureText;
-  final String helperText;
-  final int maxLength;
-  final bool isPhone;
+  final String? helperText;
+  final int? maxLength;
+  final bool? isPhone;
 
   const CustomTextField(
-      {Key key,
-      @required this.textKey,
-      @required this.controller,
-      @required this.textInputAction,
-      @required this.keyboardType,
-      @required this.focusNode,
+      {Key? key,
+      required this.textKey,
+      required this.controller,
+      required this.textInputAction,
+      required this.keyboardType,
+      required this.focusNode,
       this.labelText,
       this.suffixIcon,
       this.prefixIcon,

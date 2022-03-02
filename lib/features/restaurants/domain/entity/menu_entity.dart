@@ -1,13 +1,13 @@
 import 'package:micropolis_test/core/entities/base_entity.dart';
 
 class RestaurantMenuEntity extends BaseEntity {
-  final List<MenuSectionEntity> sections;
+  final List<MenuSectionEntity>? sections;
 
   RestaurantMenuEntity(this.sections);
 
   @override
   // TODO: implement props
-  List<Object> get props => [this.sections];
+  List<Object> get props => [if (this.sections != null) this.sections!];
 }
 
 class MenuSectionEntity extends BaseEntity {
@@ -16,12 +16,13 @@ class MenuSectionEntity extends BaseEntity {
     this.items,
   });
 
-  final String menu;
-  final List<MenuItemEntity> items;
+  final String? menu;
+  final List<MenuItemEntity>? items;
 
   @override
   // TODO: implement props
-  List<Object> get props => [this.menu, this.items];
+  List<Object> get props =>
+      [if (this.menu != null) this.menu!, if (this.items != null) this.items!];
 }
 
 class MenuItemEntity extends BaseEntity {
@@ -33,14 +34,19 @@ class MenuItemEntity extends BaseEntity {
     this.price,
   });
 
-  final int id;
-  final String name;
-  final String description;
-  final String image;
-  final String price;
+  final int? id;
+  final String? name;
+  final String? description;
+  final String? image;
+  final String? price;
 
   @override
   // TODO: implement props
-  List<Object> get props =>
-      [this.id, this.name, this.description, this.image, this.price];
+  List<Object> get props => [
+        if (this.id != null) this.id!,
+        if (this.name != null) this.name!,
+        if (this.description != null) this.description!,
+        if (this.image != null) this.image!,
+        if (this.price != null) this.price!
+      ];
 }

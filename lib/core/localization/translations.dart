@@ -8,17 +8,17 @@ import 'package:flutter/services.dart';
 class Translations {
   final Locale locale;
 
-  Translations(this.locale);
+  Translations( this.locale);
 
   static const LocalizationsDelegate<Translations> delegate =
   _AppLocalizationsDelegate();
   // Helper method to keep the code in the widgets concise
   // Localizations are accessed using an InheritedWidget "of" syntax
-  static Translations of(BuildContext context) {
+  static Translations? of(BuildContext context) {
     return Localizations.of<Translations>(context, Translations);
   }
 
-  Map<String, String> _localizedStrings;
+  Map<String, String>? _localizedStrings;
 
   Future<bool> load() async {
     String  jsonString =
@@ -32,7 +32,7 @@ class Translations {
   // This method will be called from every widget which needs a localized text
   String translate(String key) {
     if (_localizedStrings == null) return '';
-    return _localizedStrings[key] ?? '** $key not found.';
+    return _localizedStrings?[key] ?? '** $key not found.';
   }
 }
 

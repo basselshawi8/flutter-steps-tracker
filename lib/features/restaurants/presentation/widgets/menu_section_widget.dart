@@ -5,9 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/features/restaurants/presentation/widgets/menu_item_widget.dart';
 
 class MenuSectionWidget extends StatelessWidget {
-  final MenuSectionEntity section;
+  final MenuSectionEntity? section;
 
-  const MenuSectionWidget({Key key, this.section}) : super(key: key);
+  const MenuSectionWidget({Key? key, this.section}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class MenuSectionWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          section.menu,
+          section?.menu ?? "",
           style: TextStyle(
               color: CoreStyle.restaurantMenuSectionColor,
               fontWeight: FontWeight.w700,
@@ -38,11 +38,11 @@ class MenuSectionWidget extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (context, index) {
               return MenuItemWidget(
-                item: section.items[index],
-                isLastElement: index == section.items.length - 1,
+                item: section!.items![index],
+                isLastElement: index == section!.items!.length - 1,
               );
             },
-            itemCount: section.items.length,
+            itemCount: section?.items?.length ?? 0,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
           ),

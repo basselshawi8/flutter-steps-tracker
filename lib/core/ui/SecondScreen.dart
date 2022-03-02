@@ -5,7 +5,7 @@ class SecondScreen extends StatelessWidget {
   var title;
   var message;
   SecondScreen({
-    Key key,
+    Key? key,
     this.title,
     this.message,
   }) : super(key: key);

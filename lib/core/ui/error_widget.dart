@@ -12,12 +12,12 @@ import 'package:micropolis_test/core/localization/translations.dart';
 import 'package:flutter/material.dart';
 
 class ErrorScreenWidget extends StatelessWidget {
-  final BaseError error;
+  final BaseError? error;
   final dynamic state;
   final bool disableRetryButton;
 
   const ErrorScreenWidget(
-      {Key key, this.error, this.state, this.disableRetryButton = false})
+      {Key? key, this.error, this.state, this.disableRetryButton = false})
       : super(key: key);
 
   @override
@@ -79,10 +79,10 @@ class ErrorScreenWidget extends StatelessWidget {
 
 class ConnectionErrorScreenWidget extends StatelessWidget {
   final VoidCallback callback;
-  final bool disableRetryButton;
+  final bool? disableRetryButton;
   const ConnectionErrorScreenWidget({
-    Key key,
-    @required this.callback,
+    Key? key,
+    required this.callback,
     this.disableRetryButton,
   }) : super(key: key);
 
@@ -94,14 +94,14 @@ class ConnectionErrorScreenWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            Translations.of(context).translate('error_connection'),
+            Translations.of(context)?.translate('error_connection') ?? "",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           if (disableRetryButton == null || disableRetryButton == false)
             RaisedButton(
               onPressed: callback,
               child: Text(
-                Translations.of(context).translate('btn_Rty_title'),
+                Translations.of(context)?.translate('btn_Rty_title') ?? "",
                 style: TextStyle(fontSize: 14, color: Colors.white),
               ),
               color: Theme.of(context).accentColor,
@@ -114,9 +114,9 @@ class ConnectionErrorScreenWidget extends StatelessWidget {
 
 class TimeOutErrorScreenWidget extends StatelessWidget {
   final VoidCallback callback;
-  final bool disableRetryButton;
+  final bool? disableRetryButton;
   const TimeOutErrorScreenWidget(
-      {Key key, @required this.callback, this.disableRetryButton})
+      {Key? key, required this.callback, this.disableRetryButton})
       : super(key: key);
 
   @override
@@ -127,14 +127,14 @@ class TimeOutErrorScreenWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            Translations.of(context).translate('error_timeout'),
+            Translations.of(context)?.translate('error_timeout') ?? "",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           if (disableRetryButton == null || disableRetryButton == false)
             RaisedButton(
               onPressed: callback,
               child: Text(
-                Translations.of(context).translate('btn_Rty_title'),
+                Translations.of(context)?.translate('btn_Rty_title') ?? "",
                 style: TextStyle(fontSize: 14, color: Colors.white),
               ),
               color: Theme.of(context).accentColor,
@@ -147,9 +147,9 @@ class TimeOutErrorScreenWidget extends StatelessWidget {
 
 class InternalServerErrorScreenWidget extends StatelessWidget {
   final VoidCallback callback;
-  final bool disableRetryButton;
+  final bool? disableRetryButton;
   const InternalServerErrorScreenWidget(
-      {Key key, @required this.callback, this.disableRetryButton})
+      {Key? key, required this.callback, this.disableRetryButton})
       : super(key: key);
 
   @override
@@ -160,14 +160,14 @@ class InternalServerErrorScreenWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            Translations.of(context).translate('error_internal_server'),
+            Translations.of(context)?.translate('error_internal_server') ?? "",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           if (disableRetryButton == null || disableRetryButton == false)
             RaisedButton(
               onPressed: callback,
               child: Text(
-                Translations.of(context).translate('btn_Rty_title'),
+                Translations.of(context)?.translate('btn_Rty_title') ?? "",
                 style: TextStyle(fontSize: 14, color: Colors.white),
               ),
               color: Theme.of(context).accentColor,
@@ -184,7 +184,7 @@ class ForbiddenErrorScreenWidget extends StatelessWidget {
 
     return Center(
       child: Text(
-        Translations.of(context).translate('error_forbidden_error'),
+        Translations.of(context)?.translate('error_forbidden_error') ?? "",
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
@@ -192,14 +192,14 @@ class ForbiddenErrorScreenWidget extends StatelessWidget {
 }
 
 class BadRequestErrorScreenWidget extends StatelessWidget {
-  final String message;
-  const BadRequestErrorScreenWidget({Key key, this.message}) : super(key: key);
+  final String? message;
+  const BadRequestErrorScreenWidget({Key? key, this.message}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        message ?? Translations.of(context).translate('error_BadRequest_Error'),
+        message ?? Translations.of(context)?.translate('error_BadRequest_Error') ?? "",
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
@@ -208,9 +208,9 @@ class BadRequestErrorScreenWidget extends StatelessWidget {
 
 class NotFoundErrorScreenWidget extends StatelessWidget {
   final VoidCallback callback;
-  final bool disableRetryButton;
+  final bool? disableRetryButton;
   const NotFoundErrorScreenWidget(
-      {Key key, @required this.callback, this.disableRetryButton})
+      {Key? key, required this.callback, this.disableRetryButton})
       : super(key: key);
 
   @override
@@ -221,14 +221,14 @@ class NotFoundErrorScreenWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            Translations.of(context).translate('error_NotFound_Error'),
+            Translations.of(context)?.translate('error_NotFound_Error') ?? "",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           if (disableRetryButton == null || disableRetryButton == false)
             RaisedButton(
               onPressed: callback,
               child: Text(
-                Translations.of(context).translate('btn_Rty_title'),
+                Translations.of(context)?.translate('btn_Rty_title') ?? "",
                 style: TextStyle(fontSize: 14, color: Colors.white),
               ),
               color: Theme.of(context).accentColor,
@@ -245,7 +245,7 @@ class UnauthorizedErrorScreenWidget extends StatelessWidget {
 
     return Center(
       child: Text(
-        Translations.of(context).translate('error_Unauthorized_Error'),
+        Translations.of(context)?.translate('error_Unauthorized_Error') ?? "",
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
@@ -254,10 +254,10 @@ class UnauthorizedErrorScreenWidget extends StatelessWidget {
 
 class CustomErrorScreenWidget extends StatelessWidget {
   final String message;
-  final VoidCallback callback;
-  final bool disableRetryButton;
+  final VoidCallback? callback;
+  final bool? disableRetryButton;
   const CustomErrorScreenWidget(
-      {Key key, @required this.message, this.callback, this.disableRetryButton})
+      {Key? key, required this.message, this.callback, this.disableRetryButton})
       : assert(message != null),
         super(key: key);
 
@@ -278,7 +278,7 @@ class CustomErrorScreenWidget extends StatelessWidget {
               : RaisedButton(
                   onPressed: callback,
                   child: Text(
-                    Translations.of(context).translate('btn_Rty_title'),
+                    Translations.of(context)?.translate('btn_Rty_title') ?? "",
                     style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                   color: Theme.of(context).accentColor,
@@ -291,9 +291,9 @@ class CustomErrorScreenWidget extends StatelessWidget {
 
 class UnexpectedErrorScreenWidget extends StatelessWidget {
   final VoidCallback callback;
-  final bool disableRetryButton;
+  final bool? disableRetryButton;
   const UnexpectedErrorScreenWidget(
-      {Key key, @required this.callback, this.disableRetryButton})
+      {Key? key, required this.callback, this.disableRetryButton})
       : super(key: key);
 
   @override
@@ -304,14 +304,14 @@ class UnexpectedErrorScreenWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            Translations.of(context).translate('error_general'),
+            Translations.of(context)?.translate('error_general') ?? "",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           if (disableRetryButton == null || disableRetryButton == false)
             RaisedButton(
               onPressed: callback,
               child: Text(
-                Translations.of(context).translate('btn_Rty_title'),
+                Translations.of(context)?.translate('btn_Rty_title') ?? "",
                 style: TextStyle(fontSize: 14, color: Colors.white),
               ),
               color: Theme.of(context).accentColor,
@@ -323,10 +323,10 @@ class UnexpectedErrorScreenWidget extends StatelessWidget {
 }
 
 class TimeoutErrorScreenWidget extends StatelessWidget {
-  final VoidCallback callback;
-  final bool disableRetryButton;
+  final VoidCallback? callback;
+  final bool? disableRetryButton;
   const TimeoutErrorScreenWidget(
-      {Key key, @required this.callback, this.disableRetryButton})
+      {Key? key, @required this.callback, this.disableRetryButton})
       : super(key: key);
 
   @override
@@ -337,14 +337,14 @@ class TimeoutErrorScreenWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            Translations.of(context).translate('error_Timeout_Error'),
+            Translations.of(context)?.translate('error_Timeout_Error') ?? "",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           if (disableRetryButton == null || disableRetryButton == false)
             RaisedButton(
               onPressed: callback,
               child: Text(
-                Translations.of(context).translate('btn_Rty_title'),
+                Translations.of(context)?.translate('btn_Rty_title') ?? "",
                 style: TextStyle(fontSize: 14, color: Colors.white),
               ),
               color: Theme.of(context).accentColor,

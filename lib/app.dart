@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,19 +16,47 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'features/restaurants/presentation/screen/restaurants_screen.dart';
 import 'navigation_service.dart';
 import 'service_locator.dart';
+import 'package:uni_links/uni_links.dart';
 
 class App extends StatefulWidget {
-  final AppConfigProvider appLanguage;
+  final AppConfigProvider? appLanguage;
 
-  const App({Key key, this.appLanguage}) : super(key: key);
+  const App({Key? key, this.appLanguage}) : super(key: key);
 
   @override
   _AppState createState() => _AppState();
 }
 
 class _AppState extends State<App> {
+  StreamSubscription? _sub;
+
+  Future<void> initUniLinks() async {
+    // ... check initialLink
+
+    // Attach a listener to the stream
+    _sub = linkStream.listen((String? link) {
+      // Parse the link and warn the user, if it is not correct
+      print(link);
+      var context =
+          locator<NavigationService>().getNavigationKey.currentContext;
+      if (context != null)
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Container(
+          height: 40.h,
+          child: Center(
+            child: Text(link ?? "no link"),
+          ),
+        )));
+    }, onError: (err) {
+      // Handle exception by warning the user their action did not succeed
+    });
+
+    // NOTE: Don't forget to call _sub.cancel() in dispose()
+  }
+
   @override
   void initState() {
+    initUniLinks();
     super.initState();
   }
 
@@ -97,7 +127,8 @@ class _AppState extends State<App> {
                 if (provider.firstStart == true) {
                   // Check if the current device locale is supported
                   for (var supportedLocale in supportedLocales) {
-                    if (supportedLocale.languageCode == locale.languageCode) {
+                    if (locale != null &&
+                        supportedLocale.languageCode == locale.languageCode) {
                       provider.changeLanguageWithoutRestart(
                           Locale(locale.languageCode), context);
                       // set _firstStart false

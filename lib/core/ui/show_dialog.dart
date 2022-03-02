@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ShowDialog {
-  Future<T> showElasticDialog<T>({
-    @required BuildContext context,
+  Future<T?> showElasticDialog<T>({
+    required BuildContext context,
     bool barrierDismissible = true,
-    WidgetBuilder builder,
+    required WidgetBuilder builder,
   }) {
     final ThemeData theme = Theme.of(context);
     return showGeneralDialog(
@@ -18,9 +18,7 @@ class ShowDialog {
         final Widget pageChild = Builder(builder: builder);
         return SafeArea(
           child: Builder(builder: (BuildContext context) {
-            return theme != null
-                ? Theme(data: theme, child: pageChild)
-                : pageChild;
+            return Theme(data: theme, child: pageChild);
           }),
         );
       },
@@ -55,8 +53,13 @@ class ShowDialog {
   }
 }
 
-void textFieldDialog({BuildContext context, String message, String title,
-  int linesNumber = 1, int maxChars, Function(String value) onAccept}) async {
+void textFieldDialog(
+    {required BuildContext context,
+    String? message,
+    required String title,
+    int linesNumber = 1,
+    int? maxChars,
+    Function(String value)? onAccept}) async {
   final messageController = TextEditingController();
 
   showDialog(
@@ -114,7 +117,7 @@ void textFieldDialog({BuildContext context, String message, String title,
         actions: <Widget>[
           FlatButton(
             child: Text(
-              Translations.of(context).translate("label_cancel"),
+              Translations.of(context)?.translate("label_cancel") ?? "",
               style: CommonTextStyle.normalPrimarySmallText,
             ),
             onPressed: () {
@@ -123,12 +126,12 @@ void textFieldDialog({BuildContext context, String message, String title,
           ),
           FlatButton(
             child: Text(
-              Translations.of(context).translate("label_confirm"),
+              Translations.of(context)?.translate("label_confirm") ?? "",
               style: CommonTextStyle.normalPrimarySmallText,
             ),
             onPressed: () {
               Navigator.of(context).pop();
-              onAccept(messageController.text);
+              if (onAccept != null) onAccept(messageController.text);
             },
           )
         ],

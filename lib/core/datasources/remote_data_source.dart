@@ -13,28 +13,19 @@ import '../http/http_method.dart';
 
 abstract class RemoteDataSource {
   Future<Either<BaseError, T>> request<T extends BaseModel>({
-    @required T Function(dynamic) converter,
-    @required HttpMethod method,
-    @required String url,
-    Map<String, dynamic> queryParameters,
-    Map<String, dynamic> data,
-    String dataString,
+    required T Function(dynamic) converter,
+    required HttpMethod method,
+    required String url,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? data,
+    String? dataString,
     bool withAuthentication = false,
     bool withCurrency = false,
     bool isList = false,
-    String baseURL,
-    CancelToken cancelToken,
+    String? baseURL,
+    CancelToken? cancelToken,
   }) async {
-    assert(converter != null);
-    assert(method != null);
-    assert(url != null);
-
-    // Register the response.
-    ModelsFactory.getInstance().registerModel(
-      T.toString(),
-      converter,
-      isList
-    );
+    ModelsFactory.getInstance().registerModel(T.toString(), converter, isList);
     // Specify the headers.
     final Map<String, dynamic> headers = {};
     // Get the language.
@@ -71,29 +62,21 @@ abstract class RemoteDataSource {
         return Left(CustomError(message: "Catch error in remote data source"));
       }
     } else
-      return null;
+      return Left(CustomError(message: "Unknown Error"));
   }
 
   Future<Either<BaseError, T>> requestUploadFile<T extends BaseModel>({
-    @required T Function(dynamic) converter,
-    @required String url,
-    @required String fileKey,
-    @required String filePath,
-    ProgressCallback onSendProgress,
-    ProgressCallback onReceiveProgress,
+    required T Function(dynamic) converter,
+    required String url,
+    required String fileKey,
+    required String filePath,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
     bool withAuthentication = false,
     bool isList = false,
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   }) async {
-    assert(converter != null);
-    assert(url != null);
-
-    // Register the response.
-    ModelsFactory.getInstance().registerModel(
-      T.toString(),
-      converter,
-        isList
-    );
+    ModelsFactory.getInstance().registerModel(T.toString(), converter, isList);
 
     // Specify the headers.
     final Map<String, String> headers = {};
@@ -128,8 +111,7 @@ abstract class RemoteDataSource {
         cancelToken: cancelToken,
       );
     } catch (e) {
-      print(e);
-      return Left(CustomError(message: e));
+      return Left(CustomError(message: e is String ? e : "Error"));
     }
 
     if (response.isLeft()) {
@@ -143,6 +125,6 @@ abstract class RemoteDataSource {
         return Left(CustomError(message: "Catch error in remote data source"));
       }
     } else
-      return null;
+      return Left(CustomError(message: "Unknown Error"));
   }
 }

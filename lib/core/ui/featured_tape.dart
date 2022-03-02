@@ -4,19 +4,19 @@ import 'package:micropolis_test/core/Common/Common.dart';
 import 'package:flutter/material.dart';
 
 class FeaturedTape extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
   final String message;
   final double topPosition;
-  final bool isLeft;
-  final Color tapeColor;
+  final bool? isLeft;
+  final Color? tapeColor;
   final textStyle;
-  final bool showTape;
+  final bool? showTape;
 
   const FeaturedTape(
-      {Key key,
+      {Key? key,
       this.child,
-      @required this.message,
-      @required this.topPosition,
+      required this.message,
+      required this.topPosition,
       this.isLeft,
       this.tapeColor,
       this.textStyle,
@@ -28,13 +28,13 @@ class FeaturedTape extends StatelessWidget {
     return Stack(
       children: <Widget>[
         child ?? Container(),
-        showTape == null || showTape
+        showTape == null || showTape!
             ? Positioned(
                 top: topPosition ?? 20,
-          left: isLeft == null || isLeft ? 0 : null,
-          right: isLeft == null || isLeft ? null : 0,
+          left: isLeft == null || isLeft! ? 0 : null,
+          right: isLeft == null || isLeft! ? null : 0,
                 child: ClipPath(
-                  clipper: TapeClipper(isLeft),
+                  clipper: TapeClipper(isLeft ?? false),
                   child: Container(
                     height: 30,
                     width: 100,
@@ -43,11 +43,11 @@ class FeaturedTape extends StatelessWidget {
                       builder: (context, constraints) {
                         return Container(
                           padding: EdgeInsets.only(
-                            left: isLeft == null || isLeft
+                            left: isLeft == null || isLeft!
                                 ? 10
                                 : constraints.maxWidth / 4,
                             bottom: 6,
-                            right: isLeft == null || isLeft
+                            right: isLeft == null || isLeft!
                                 ? constraints.maxWidth / 4
                                 : 10,
                           ),

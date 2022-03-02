@@ -67,23 +67,16 @@ class AnimatedSizeAndFade extends StatelessWidget {
   final bool show;
 
   AnimatedSizeAndFade({
-    Key key,
-    this.child,
-    @required this.vsync,
+    Key? key,
+    required this.child,
+    required this.vsync,
     this.fadeDuration = const Duration(milliseconds: 500),
     this.sizeDuration = const Duration(milliseconds: 500),
     this.fadeInCurve = Curves.easeInOut,
     this.fadeOutCurve = Curves.easeInOut,
     this.sizeCurve = Curves.easeInOut,
     this.alignment = Alignment.centerLeft,
-  })  : show = null,
-        assert(vsync != null),
-        assert(fadeDuration != null),
-        assert(sizeDuration != null),
-        assert(fadeInCurve != null),
-        assert(fadeOutCurve != null),
-        assert(sizeCurve != null),
-        assert(alignment != null),
+  })  : show = false,
         super(key: key);
 
   /// Use this constructor when you want to show/hide the child, by doing a
@@ -91,25 +84,17 @@ class AnimatedSizeAndFade extends StatelessWidget {
   /// simply change [show]. Note this widget will try to have its width as
   /// big as possible, so put it in a parent with limited width constraints.
   AnimatedSizeAndFade.showHide({
-    Key key,
-    this.child,
-    @required this.show,
-    @required this.vsync,
+    Key? key,
+    required this.child,
+    required this.show,
+    required this.vsync,
     this.fadeDuration = const Duration(milliseconds: 500),
     this.sizeDuration = const Duration(milliseconds: 500),
     this.fadeInCurve = Curves.easeInOut,
     this.fadeOutCurve = Curves.easeInOut,
     this.sizeCurve = Curves.easeInOut,
     this.alignment = Alignment.center,
-  })  : assert(show != null),
-        assert(vsync != null),
-        assert(fadeDuration != null),
-        assert(sizeDuration != null),
-        assert(fadeInCurve != null),
-        assert(fadeOutCurve != null),
-        assert(sizeCurve != null),
-        assert(alignment != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +105,7 @@ class AnimatedSizeAndFade extends StatelessWidget {
       reverseDuration: sizeDuration,
       child: AnimatedSwitcher(
         reverseDuration: sizeDuration,
-        child: (show == null || show)
+        child: (show)
             ? child
             : Container(key: _key, width: double.infinity, height: 0),
         duration: fadeDuration,
@@ -133,7 +118,7 @@ class AnimatedSizeAndFade extends StatelessWidget {
     return ClipRect(child: animatedSize);
   }
 
-  Widget _layoutBuilder(Widget currentChild, List<Widget> previousChildren) {
+  Widget _layoutBuilder(Widget? currentChild, List<Widget> previousChildren) {
     List<Widget> children = previousChildren;
 
     if (currentChild != null) {

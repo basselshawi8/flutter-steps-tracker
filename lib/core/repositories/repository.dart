@@ -9,7 +9,7 @@ import '../results/result.dart';
 abstract class Repository {
   Result<BaseError, Entity>
       execute<Model extends BaseModel<Entity>, Entity extends BaseEntity>({
-    @required Either<BaseError, Model> remoteResult,
+    required Either<BaseError, Model> remoteResult,
   }) {
     if (remoteResult.isRight()) {
       return Result(
@@ -21,18 +21,20 @@ abstract class Repository {
   }
 
   Result<BaseError, T> executeForNoEntity<T>({
-    @required Either<BaseError, T> remoteResult,
+    required Either<BaseError, T> remoteResult,
   }) {
     if (remoteResult.isRight()) {
-      return Result(data: (remoteResult as Right<BaseError, T>).value,);
+      return Result(
+        data: (remoteResult as Right<BaseError, T>).value,
+      );
     } else {
       return Result(error: (remoteResult as Left<BaseError, T>).value);
     }
   }
 
   Result<BaseError, List<Entity>> executeForList<
-  Model extends BaseModel<Entity>, Entity extends BaseEntity>(
-      {@required Either<BaseError, Entity> remoteResult}) {
+          Model extends BaseModel<Entity>, Entity extends BaseEntity>(
+      {required Either<BaseError, Entity> remoteResult}) {
     if (remoteResult.isRight()) {
       return Result(
         data: (remoteResult as Right<BaseError, List<Model>>)
@@ -48,12 +50,11 @@ abstract class Repository {
   }
 
   Result<BaseError, Object> executeForNoData({
-    @required Either<BaseError, Object> remoteResult,
+    required Either<BaseError, Object> remoteResult,
   }) {
     if (remoteResult.isRight()) {
       return Result(data: (remoteResult as Right<BaseError, Object>).value);
-    }
-    else {
+    } else {
       return Result(error: (remoteResult as Left<BaseError, Object>).value);
     }
   }

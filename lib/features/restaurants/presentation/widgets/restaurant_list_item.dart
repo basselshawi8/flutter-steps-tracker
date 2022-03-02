@@ -8,9 +8,9 @@ import 'package:micropolis_test/features/restaurants/presentation/screen/menu_sc
 import 'package:micropolis_test/features/restaurants/presentation/widgets/rate_widget.dart';
 
 class RestaurantListItemWidget extends StatelessWidget {
-  final RestaurantEntity restaurant;
+  final RestaurantEntity? restaurant;
 
-  const RestaurantListItemWidget({Key key, this.restaurant}) : super(key: key);
+  const RestaurantListItemWidget({Key? key, this.restaurant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +41,13 @@ class RestaurantListItemWidget extends StatelessWidget {
                       options: CarouselOptions(
                         initialPage: 0,
                         autoPlay: true,
-
                         viewportFraction: 1.0,
                         height: 650.h,
                         scrollDirection: Axis.horizontal,
                       ),
-                      itemCount: restaurant.images.length,
-                      itemBuilder: (BuildContext context, int itemIndex) =>
+                      itemCount: restaurant?.images?.length ?? 0,
+                      itemBuilder: (BuildContext context, int itemIndex,
+                              int pageIndex) =>
                           Container(
                               width: double.infinity,
                               padding: EdgeInsets.all(22.h),
@@ -58,7 +58,7 @@ class RestaurantListItemWidget extends StatelessWidget {
                                   placeholder:
                                       const AssetImage(IMG_NETWORK_PLACEHOLDER),
                                   image: NetworkImage(
-                                      restaurant.images[itemIndex]),
+                                      restaurant!.images?[itemIndex] ?? ""),
                                   fit: BoxFit.cover,
                                 ),
                               )),
@@ -66,7 +66,7 @@ class RestaurantListItemWidget extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 22.h),
                       child: Text(
-                        restaurant.name,
+                        restaurant?.name ?? " ",
                         style: TextStyle(
                             color: CoreStyle.restaurantHeaderColor,
                             fontSize: 40.sp,
@@ -76,7 +76,7 @@ class RestaurantListItemWidget extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 22.h),
                       child: Text(
-                        restaurant.cuisine,
+                        restaurant?.cuisine ?? " ",
                         style: TextStyle(
                             color: CoreStyle.restaurantHeaderColor,
                             fontSize: 35.sp,
@@ -92,7 +92,7 @@ class RestaurantListItemWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           RateWidget(
-                            rate: restaurant.rate,
+                            rate: restaurant?.rate ?? 5,
                           ),
                           Text(
                             "Open Now",

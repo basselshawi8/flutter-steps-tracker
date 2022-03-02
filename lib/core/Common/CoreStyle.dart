@@ -16,7 +16,7 @@ abstract class CoreStyle {
       return MediaQuery.of(context).size.height;
   }
 
-  static String fontWithWeight(FontWeight weight) {
+  static String? fontWithWeight(FontWeight weight) {
     return GoogleFonts.poppins(fontWeight: weight)
         .fontFamily;
   }
@@ -579,7 +579,7 @@ class CustomText extends StatelessWidget {
   final TextStyle textStyle;
   final top, bottom;
 
-  const CustomText(this.text, {Key key, this.textStyle, this.top, this.bottom})
+  const CustomText(this.text, {required Key key, required this.textStyle, this.top, this.bottom})
       : super(key: key);
 
   @override
@@ -589,7 +589,7 @@ class CustomText extends StatelessWidget {
           top: top == null ? 4 : top, bottom: bottom == null ? 4 : bottom),
       child: Text(
         this.text,
-        style: textStyle == null ? null : textStyle,
+        style: textStyle,
         overflow: TextOverflow.ellipsis,
         maxLines: 5,
       ),

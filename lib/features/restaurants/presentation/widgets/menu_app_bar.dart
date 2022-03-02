@@ -6,9 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:micropolis_test/features/restaurants/presentation/widgets/rate_widget.dart';
 
 class MenuAppBar extends StatelessWidget {
-  final RestaurantEntity restaurant;
+  final RestaurantEntity? restaurant;
 
-  const MenuAppBar({Key key, this.restaurant}) : super(key: key);
+  const MenuAppBar({Key? key, this.restaurant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class MenuAppBar extends StatelessWidget {
               ),
               SizedBox(width: 30.w,),
               Text(
-                restaurant.name,
+                restaurant?.name ?? " ",
                 style: TextStyle(
                     color: CoreStyle.restaurantHeaderColor,
                     fontWeight: FontWeight.bold,
@@ -48,7 +48,7 @@ class MenuAppBar extends StatelessWidget {
             height: 40.h,
           ),
           Text(
-            restaurant.cuisine,
+            restaurant?.cuisine ?? "",
             style: TextStyle(
                 color: CoreStyle.restaurantHeaderColor,
                 fontSize: 35.sp,
@@ -61,7 +61,7 @@ class MenuAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               RateWidget(
-                rate: restaurant.rate,
+                rate: restaurant?.rate ?? 5,
               ),
               Text(
                 "Open Now",

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final Function onPressed;
-  final Color color;
+  final Function? onPressed;
+  final Color? color;
 
-  const CustomButton({this.text, this.onPressed, this.color});
+  const CustomButton({required this.text, this.onPressed, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +18,11 @@ class CustomButton extends StatelessWidget {
           height: 50,
           width: CoreStyle.setWidthPercentage(35, context),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              color: color??Theme.of(context).primaryColor
-
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              color: color ?? Theme.of(context).primaryColor),
           child: RaisedButton(
-            color: color??Theme.of(context).primaryColor,
-            splashColor: color??Theme.of(context).accentColor,
+            color: color ?? Theme.of(context).primaryColor,
+            splashColor: color ?? Theme.of(context).accentColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
@@ -34,7 +32,7 @@ class CustomButton extends StatelessWidget {
                 style: CommonTextStyle.normalTextWhite,
               ),
             ),
-            onPressed: onPressed,
+            onPressed: onPressed != null ? onPressed!() : () {},
           ),
         ),
       ),

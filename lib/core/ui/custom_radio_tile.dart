@@ -6,14 +6,14 @@ class CustomRadioTile extends StatefulWidget {
   final int val;
   final Widget child;
   final Function(int) onChange;
-  final double top, bottom;
+  final double? top, bottom;
 
   const CustomRadioTile(
-      {Key key,
-      @required this.groupVal,
-      @required this.val,
-      this.child,
-      @required this.onChange,
+      {Key? key,
+      required this.groupVal,
+      required this.val,
+      required this.child,
+      required this.onChange,
       this.top,
       this.bottom})
       : super(key: key);
@@ -26,8 +26,9 @@ class _CustomRadioTileState extends State<CustomRadioTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: widget.top == null ? 0 : widget.top,
-      bottom: widget.bottom == null ? 0 : widget.bottom),
+      padding: EdgeInsets.only(
+          top: widget.top == null ? 0 : widget.top!,
+          bottom: widget.bottom == null ? 0 : widget.bottom!),
       child: InkWell(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           onTap: () {

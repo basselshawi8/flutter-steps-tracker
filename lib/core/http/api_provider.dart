@@ -2,13 +2,10 @@ import 'dart:io';
 
 import 'package:micropolis_test/core/errors/custom_error.dart';
 import 'package:micropolis_test/core/models/BaseModel.dart';
-import 'package:micropolis_test/core/models/bad_request_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
-
 import '../errors/bad_request_error.dart';
 import '../errors/base_error.dart';
 import '../errors/cancel_error.dart';
@@ -27,32 +24,30 @@ import 'models_factory.dart';
 
 class ApiProvider {
   // Singleton handling.
-  static ApiProvider _instance;
+  static ApiProvider? _instance;
 
   static ApiProvider getInstance() {
-    if (_instance != null) return _instance;
+    if (_instance != null) return _instance!;
     _instance = ApiProvider();
-    return _instance;
+    return _instance!;
   }
 
   final option = BaseOptions(
     baseUrl: API_BASE,
     connectTimeout: 20000,
   );
-  Dio _dio;
+  Dio? _dio;
 
   Future<Either<BaseError, T>> sendRequest<T extends BaseModel>({
-    @required HttpMethod method,
-    @required String url,
-    Map<String, dynamic> data,
-    String dataString,
-    Map<String, dynamic> headers,
-    String baseURL,
-    Map<String, dynamic> queryParameters,
-    CancelToken cancelToken,
+    required HttpMethod method,
+    required String url,
+    Map<String, dynamic>? data,
+    String? dataString,
+    Map<String, dynamic>? headers,
+    String? baseURL,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
   }) async {
-    assert(method != null);
-    assert(url != null);
     if (baseURL != null) {
       _dio = Dio(BaseOptions(
         baseUrl: baseURL,
@@ -61,8 +56,8 @@ class ApiProvider {
     } else {
       _dio = Dio(option);
     }
-    if (_dio.httpClientAdapter is DefaultHttpClientAdapter) {
-      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    if (_dio!.httpClientAdapter is DefaultHttpClientAdapter) {
+      (_dio!.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
@@ -75,7 +70,7 @@ class ApiProvider {
       switch (method) {
         case HttpMethod.GET:
           // Get the response from the server
-          response = await _dio.get(
+          response = await _dio!.get(
             url,
             queryParameters: queryParameters,
             options: Options(headers: headers),
@@ -83,7 +78,7 @@ class ApiProvider {
           );
           break;
         case HttpMethod.POST:
-          response = await _dio.post(
+          response = await _dio!.post(
             url,
             data: data != null ? data : dataString,
             queryParameters: queryParameters,
@@ -96,7 +91,7 @@ class ApiProvider {
           print(response.data.toString());
           break;
         case HttpMethod.PUT:
-          response = await _dio.put(
+          response = await _dio!.put(
             url,
             data: data,
             queryParameters: queryParameters,
@@ -105,7 +100,7 @@ class ApiProvider {
           );
           break;
         case HttpMethod.DELETE:
-          response = await _dio.delete(
+          response = await _dio!.delete(
             url,
             data: data,
             queryParameters: queryParameters,
@@ -157,19 +152,16 @@ class ApiProvider {
   }
 
   Future<Either<BaseError, T>> upload<T extends BaseModel>({
-    @required String url,
-    @required String fileKey,
-    @required String filePath,
-    @required String fileName,
-    Map<String, dynamic> data,
-    Map<String, String> headers,
-    ProgressCallback onSendProgress,
-    ProgressCallback onReceiveProgress,
-    CancelToken cancelToken,
+    required String url,
+    required String fileKey,
+    required String filePath,
+    String? fileName,
+    Map<String, dynamic>? data,
+    Map<String, String>? headers,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+    CancelToken? cancelToken,
   }) async {
-    assert(url != null);
-    assert(fileKey != null);
-
     Map<String, dynamic> dataMap = {};
     if (data != null) {
       dataMap.addAll(data);
@@ -184,7 +176,7 @@ class ApiProvider {
       });
     }
     try {
-      final response = await _dio.post(
+      final response = await _dio!.post(
         url,
         data: FormData.fromMap(dataMap),
         onSendProgress: onSendProgress,
@@ -239,19 +231,9 @@ class ApiProvider {
       if (error.error is SocketException)
         return SocketError();
       else if (error.type == DioErrorType.response) {
-        switch (error.response.statusCode) {
+        switch (error.response?.statusCode) {
           case 400:
-            if (error.response?.data == null)
-              return BadRequestError();
-            else {
-              try {
-                return BadRequestError(
-                    message:
-                        "${AddAddressRequest.fromMap(error.response?.data).validationErrors[0]?.erros[0]}");
-              } catch (ex) {
-                return BadRequestError(message: "error performing action");
-              }
-            }
+            return BadRequestError(message: "Bad Request Error");
             break;
           case 401:
             return UnauthorizedError();
@@ -265,7 +247,7 @@ class ApiProvider {
             if (error.response?.data["message"] == null) {
               return InternalServerError();
             } else if (error.response?.data["data"] == null) {
-              return CustomError(message: error.response.data["message"]);
+              return CustomError(message: error.response?.data["message"]);
             }
 
             break;

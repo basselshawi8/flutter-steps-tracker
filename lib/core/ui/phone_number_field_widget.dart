@@ -13,12 +13,12 @@ class PhoneNumberFieldWidget extends StatelessWidget {
   final bool showhelper;
 
   const PhoneNumberFieldWidget({
-    Key key,
-    @required this.textKey,
-    @required this.controller,
-    @required this.focusNode,
-    @required this.onChanged,
-    @required this.onFieldSubmitted,
+    Key? key,
+    required this.textKey,
+    required this.controller,
+    required this.focusNode,
+    required this.onChanged,
+    required this.onFieldSubmitted,
     this.showhelper = false,
   }) : super(key: key);
 
@@ -40,7 +40,7 @@ class PhoneNumberFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
         counterText: "",
         helperText: showhelper
-            ? Translations.of(context).translate("text_helper_phone")
+            ? (Translations.of(context)?.translate("text_helper_phone") ?? "")
             : null,
         helperStyle: const TextStyle(color: CoreStyle.White400),
         focusedBorder: const UnderlineInputBorder(
@@ -67,17 +67,18 @@ class PhoneNumberFieldWidget extends StatelessWidget {
         border: const UnderlineInputBorder(),
         isDense: false,
         labelStyle: CommonTextStyle.labelUserManagement,
-        labelText: Translations.of(context).translate('hint_phone'),
+        labelText: Translations.of(context)?.translate('hint_phone') ?? "",
         prefixIcon: Icon(
           Icons.phone,
           color: CoreStyle.primaryTheme,
         ),
       ),
       validator: (value) {
-        if (Validators.isValidPhoneNumber(value))
+        if (Validators.isValidPhoneNumber(value ?? ""))
           return null;
         else
-          return Translations.of(context).translate('error_phone_invalid');
+          return Translations.of(context)?.translate('error_phone_invalid') ??
+              "";
       },
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,

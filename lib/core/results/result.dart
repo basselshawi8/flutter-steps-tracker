@@ -1,8 +1,8 @@
 import '../errors/base_error.dart';
 
 class Result<Error extends BaseError, Data> {
-  final Data data;
-  final Error error;
+  final Data? data;
+  final Error? error;
 
   Result({this.data, this.error}) : assert(data != null || error != null);
 
@@ -14,10 +14,11 @@ class Result<Error extends BaseError, Data> {
 }
 
 class TwoModelsResult<FailureData, Data> {
-  final Data dataSucceed;
-  final FailureData dataFailuer;
+  final Data? dataSucceed;
+  final FailureData? dataFailuer;
 
-  TwoModelsResult({this.dataSucceed, this.dataFailuer}) : assert(dataSucceed != null || dataFailuer != null);
+  TwoModelsResult({this.dataSucceed, this.dataFailuer})
+      : assert(dataSucceed != null || dataFailuer != null);
 
   bool get hasSuccessOnly => dataSucceed != null && dataFailuer == null;
 
