@@ -269,7 +269,7 @@ class CustomErrorScreenWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            message ?? "",
+            message,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           callback == null ||

@@ -16,7 +16,7 @@ class AppConfigProvider extends ChangeNotifier {
   }
 
   /// Get current Locale supported
-  Locale get appLocal => _appLocale ?? Locale(LANG_AR);
+  Locale get appLocal => _appLocale;
   fetchLocale() async {
     var prefs = await SpUtil.getInstance();
 

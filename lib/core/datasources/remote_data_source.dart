@@ -104,7 +104,7 @@ abstract class RemoteDataSource {
         url: url,
         fileKey: fileKey,
         filePath: filePath,
-        fileName: filePath?.substring(filePath.lastIndexOf('/') + 1),
+        fileName: filePath.substring(filePath.lastIndexOf('/') + 1),
         headers: headers,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
