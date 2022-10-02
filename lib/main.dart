@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:micropolis_test/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ main() async {
   // Init Language.
   setupLocator();
 
+  await Firebase.initializeApp();
   await _appLanguage.fetchLocale();
   appConfig.initVersion();
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,22 +1,20 @@
-import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:micropolis_test/features/home/presentation/bloc/steps_bloc.dart';
+import 'package:micropolis_test/features/home/presentation/presentation/screen/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'core/Common/Common.dart';
 import 'core/Common/route_generator.dart';
 import 'core/constants.dart';
 import 'core/localization/flutter_localization.dart';
 
-import 'features/restaurants/presentation/bloc/restaurants_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'features/restaurants/presentation/screen/restaurants_screen.dart';
 import 'navigation_service.dart';
 import 'service_locator.dart';
-import 'package:uni_links/uni_links.dart';
 
 class App extends StatefulWidget {
   final AppConfigProvider? appLanguage;
@@ -28,35 +26,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  StreamSubscription? _sub;
-
-  Future<void> initUniLinks() async {
-    // ... check initialLink
-
-    // Attach a listener to the stream
-    _sub = linkStream.listen((String? link) {
-      // Parse the link and warn the user, if it is not correct
-      print(link);
-      var context =
-          locator<NavigationService>().getNavigationKey.currentContext;
-      if (context != null)
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Container(
-          height: 40.h,
-          child: Center(
-            child: Text(link ?? "no link"),
-          ),
-        )));
-    }, onError: (err) {
-      // Handle exception by warning the user their action did not succeed
-    });
-
-    // NOTE: Don't forget to call _sub.cancel() in dispose()
-  }
-
   @override
   void initState() {
-    initUniLinks();
     super.initState();
   }
 
@@ -68,13 +39,13 @@ class _AppState extends State<App> {
           value: widget.appLanguage,
         ),
         BlocProvider(
-          create: (_) => RestaurantsBloc(),
+          create: (_) => StepsBloc(),
           lazy: true,
         ),
       ],
       child: Consumer<AppConfigProvider>(builder: (_, provider, __) {
         return ScreenUtilInit(
-          designSize: Size(1920, 1080),
+          designSize: Size(320, 640),
           builder: () => MaterialApp(
               debugShowCheckedModeBanner: false,
               // Will use While create notification
@@ -83,7 +54,7 @@ class _AppState extends State<App> {
               //Provider.of<Profile>(context,listen: false).navigationKey,
               onGenerateRoute: RouteGenerator.generateRoute,
               initialRoute: "/",
-              title: "Operation Room",
+              title: "Steps Counter",
               themeMode: ThemeMode.light,
               theme: ThemeData(
                 appBarTheme: AppBarTheme(
@@ -103,18 +74,16 @@ class _AppState extends State<App> {
                 ),
                 colorScheme: ColorScheme(
                     secondary: CoreStyle.operationBlackColor,
-                    primary: CoreStyle.operationGreenContent,
-                    primaryVariant: CoreStyle.operationGreenContent,
-                    secondaryVariant: CoreStyle.operationRose2Color,
+                    primary: CoreStyle.tchpinOrangeColor,
                     surface: CoreStyle.operationBorder3Color,
-                    background: CoreStyle.operationGreenContent,
+                    background: CoreStyle.tchpinOrangeColor,
                     onBackground: CoreStyle.primaryDarkValue,
                     onPrimary: CoreStyle.darkRedColor,
-                    onSecondary: CoreStyle.operationGreenContent,
+                    onSecondary: CoreStyle.tchpinOrangeColor,
                     onSurface: CoreStyle.White400,
                     onError: CoreStyle.operationLightTextColor,
                     brightness: Brightness.light,
-                    error: CoreStyle.operationGreenContent),
+                    error: CoreStyle.tchpinOrangeColor),
                 scaffoldBackgroundColor: CoreStyle.backGroundColor,
               ),
               supportedLocales: [
@@ -157,8 +126,7 @@ class _AppState extends State<App> {
                 DefaultCupertinoLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate
               ],
-              //home: PolygonDrawer())
-              home: RestaurantsScreen()),
+              home: SplashScreen()),
         );
       }),
     );
@@ -167,6 +135,6 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     super.dispose();
-    BlocProvider.of<RestaurantsBloc>(context).close();
+    BlocProvider.of<StepsBloc>(context).close();
   }
 }

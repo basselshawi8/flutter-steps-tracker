@@ -1,4 +1,21 @@
-# micropolis Flutter starer app
+# Step Counter Test Code 
+
+
+# points done in the test:
+
+Functional points accomplished:
+1,2,3,4,5,6,7,8
+
+Non Functional points
+1,2,3 (clearn code TDD), 4,5,8
+
+Software Requirements
+1,3
+
+To run the project no need to external files, just flutter pub get and it should run on both Android and iOS,
+but the test is heavily test on Android
+
+
 
 The architecture that the project follows is Clean Architecture TDD (Test Driven Design)
 

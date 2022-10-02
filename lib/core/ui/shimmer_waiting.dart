@@ -24,8 +24,8 @@ Widget listWaitingWidget(BuildContext context, bool withImage) {
               CrossAxisAlignment.start,
               children: [
                 withImage ? Shimmer.fromColors(
-                  baseColor: Colors.grey[300],
-                  highlightColor: Colors.grey[100],
+                  baseColor: Colors.grey,
+                  highlightColor: Colors.grey,
                   enabled: true,
                   child: Container(
                     height: ScreenUtil().setHeight(270),

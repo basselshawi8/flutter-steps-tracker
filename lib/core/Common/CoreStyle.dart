@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class CoreStyle {
   static double setWidthPercentage(percentage, context) {
@@ -17,8 +18,7 @@ abstract class CoreStyle {
   }
 
   static String? fontWithWeight(FontWeight weight) {
-    return GoogleFonts.poppins(fontWeight: weight)
-        .fontFamily;
+    return GoogleFonts.poppins(fontWeight: weight).fontFamily;
   }
 
   static const Color operationBlack3Color = Color(0xFF141414);
@@ -45,7 +45,8 @@ abstract class CoreStyle {
   static const Color operationDarkTextColor = Color(0xFF292929);
   static const Color operationGrayTextColor = Color(0xFF464646);
   static const Color operationLittleBoxColor = Color(0xFFF2F2F2);
-  static const Color operationGrayBackgroundColor = Color.fromARGB(255, 237, 237, 237);
+  static const Color operationGrayBackgroundColor =
+      Color.fromARGB(255, 237, 237, 237);
   static const Color operationBlackTextColor = Color(0xFF141313);
   static const Color operationBoxShadow = Color.fromARGB(255, 237, 238, 241);
 
@@ -67,7 +68,6 @@ abstract class CoreStyle {
   static const Color restaurantYellowColor = Color(0xFFFFCD3F);
   static const Color restaurantBorderColor = Color(0xFF232323);
   static const Color restaurantMenuSectionColor = Color(0xFF6A6A6A);
-
 
   static const Color primaryTheme = Color(0xFFFF7010);
   static const Color primaryValue = Color(0xFF24292E);
@@ -106,9 +106,66 @@ abstract class CoreStyle {
   static const lightRedColor = Color(0xffE44E00);
   static const darkRedColor = Color(0xffE82B45);
   static const importantHighlight = Color(0xffffc93c);
+
+  static const tchpinOrangeColor = Color(0xfffd7e49);
+  static const tchpinWhiteColor = Color(0xfff8f8f8);
+  static const tchpinGrayColor = Color(0xffe8e8ea);
+  static const tchpinLightGrayColor = Color.fromARGB(255, 248, 248, 248);
+  static const tchpinDarkGrayColor = Color(0xff70707a);
+  static const tchpinBlack = Color(0xff000000);
+
+  static BoxShadow blackShadow = BoxShadow(
+    color: tchpinBlack.withOpacity(0.06),
+    blurRadius: 6,
+    spreadRadius: 2,
+  );
+}
+
+abstract class TchipinFontWeight {
+  static const thin = FontWeight.w100;
+  static const light = FontWeight.w300;
+  static const medium = FontWeight.w500;
+  static const regular = FontWeight.w700;
+  static const bold = FontWeight.w900;
 }
 
 abstract class CommonTextStyle {
+  static TextStyle h1 = TextStyle(
+      color: CoreStyle.tchpinBlack,
+      fontSize: 14.sp,
+      fontWeight: TchipinFontWeight.medium,
+      fontFamily: 'Roboto');
+
+  static TextStyle tabBarSelected = TextStyle(
+      color: CoreStyle.tchpinBlack,
+      fontFamily: 'Roboto',
+      fontWeight: TchipinFontWeight.medium,
+      fontSize: 14.sp);
+
+  static TextStyle tabBarUnSelected = TextStyle(
+      color: CoreStyle.tchpinBlack,
+      fontFamily: 'Roboto',
+      fontWeight: TchipinFontWeight.light,
+      fontSize: 14.sp);
+
+  static TextStyle cardTitle = TextStyle(
+      color: CoreStyle.tchpinBlack,
+      fontFamily: 'Roboto',
+      fontSize: 11.sp,
+      fontWeight: TchipinFontWeight.regular);
+
+  static TextStyle cardDetail = TextStyle(
+      color: CoreStyle.tchpinBlack,
+      fontSize: 10.sp,
+      fontWeight: TchipinFontWeight.thin,
+      fontFamily: 'Roboto');
+
+  static TextStyle cardPrice = TextStyle(
+      color: CoreStyle.tchpinOrangeColor,
+      fontFamily: 'Roboto',
+      fontSize: 18.sp,
+      fontWeight: TchipinFontWeight.regular);
+
   static const sp32 = 32.0 * 2;
   static const sp28 = 28.0 * 2;
   static const sp22 = 22.0 * 2;
@@ -126,6 +183,9 @@ abstract class CommonTextStyle {
   static const smallTextSize14dp = 14.0;
   static const minTextSize12dp = 12.0;
   static const smallestTextSize10dp = 10.0;
+
+  static double horizontalPadding = 20.w;
+  static double verticalPadding = 12.h;
 
   static const textFormFieldUserManagement = const TextStyle(
       color: CoreStyle.primaryTheme,
@@ -536,11 +596,9 @@ abstract class CommonTextStyle {
   );
 
   static const normalBoldDarkBlue = const TextStyle(
-    color: CoreStyle.primaryTheme,
-    fontSize: normalTextSize16dp,
-    fontWeight: FontWeight.w800
-  );
-
+      color: CoreStyle.primaryTheme,
+      fontSize: normalTextSize16dp,
+      fontWeight: FontWeight.w800);
 }
 
 class AddVerticalSpace extends StatelessWidget {
@@ -579,7 +637,8 @@ class CustomText extends StatelessWidget {
   final TextStyle textStyle;
   final top, bottom;
 
-  const CustomText(this.text, {required Key key, required this.textStyle, this.top, this.bottom})
+  const CustomText(this.text,
+      {required Key key, required this.textStyle, this.top, this.bottom})
       : super(key: key);
 
   @override

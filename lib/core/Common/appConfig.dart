@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 
 import '../constants.dart';
 import 'shared_preference.dart';
@@ -15,6 +17,7 @@ class AppConfig {
   String? currentVersion;
   String? buildNumber;
   String? appName;
+  String? deviceUniqueIdentifier;
 
   initVersion() async {
     /// get OS
@@ -30,6 +33,13 @@ class AppConfig {
     currentVersion = packageInfo.version;
     buildNumber = packageInfo.buildNumber;
     appName = packageInfo.appName;
+
+    try {
+      deviceUniqueIdentifier = await PlatformDeviceId.getDeviceId;
+      print(deviceUniqueIdentifier);
+    } on PlatformException {
+      deviceUniqueIdentifier = 'Failed to get deviceId.';
+    }
   }
 
 

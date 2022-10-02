@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:micropolis_test/features/restaurants/presentation/screen/menu_screen.dart';
+import 'package:micropolis_test/features/home/presentation/presentation/screen/home_screen.dart';
+import 'package:micropolis_test/features/home/presentation/presentation/screen/login_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -8,15 +9,12 @@ class RouteGenerator {
     final args = settings.arguments;
     var pathName = settings.name?.split("?").first;
     switch (pathName) {
-      case MenuScreen.routeName:
-        if (args is Map) {
-          return CupertinoPageRoute(
-              builder: (_) => MenuScreen(
-                    restaurant: args["restaurant"],
-                  ),
-              settings: settings);
-        }
-        return _errorRoute();
+      case HomeScreen.routeName:
+        return CupertinoPageRoute(
+            builder: (_) => HomeScreen(), settings: settings);
+      case LoginScreen.routeName:
+        return CupertinoPageRoute(
+            builder: (_) => LoginScreen(), settings: settings);
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

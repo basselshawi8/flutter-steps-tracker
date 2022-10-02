@@ -143,7 +143,6 @@ class AnimatedSizeAndFade extends StatelessWidget {
     }
 
     return Stack(
-      overflow: Overflow.visible,
       children: children,
       alignment: alignment,
     );

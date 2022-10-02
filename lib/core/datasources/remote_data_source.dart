@@ -6,6 +6,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../service_locator.dart';
 import '../constants.dart';
 import '../errors/base_error.dart';
 import '../http/api_provider.dart';
@@ -35,8 +36,9 @@ abstract class RemoteDataSource {
 
     print(headers);
     // Get auth token (if withAuthentication)
+    var token =  '';
     if (withAuthentication) {
-      headers.putIfAbsent(HEADER_AUTH, () => 'token goes here');
+      headers.putIfAbsent(HEADER_AUTH, () => token);
     }
 
     // Send the request.
@@ -93,7 +95,8 @@ abstract class RemoteDataSource {
 
     // Get auth token (if withAuthentication)
     if (withAuthentication) {
-      headers.putIfAbsent(HEADER_AUTH, () => 'token goes here');
+      var token = '';
+      headers.putIfAbsent(HEADER_AUTH, () => token);
     }
     print(headers);
 
@@ -104,7 +107,7 @@ abstract class RemoteDataSource {
         url: url,
         fileKey: fileKey,
         filePath: filePath,
-        fileName: filePath.substring(filePath.lastIndexOf('/') + 1),
+        fileName: fileKey,
         headers: headers,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,

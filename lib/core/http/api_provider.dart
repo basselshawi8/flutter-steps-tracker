@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:micropolis_test/core/errors/custom_error.dart';
@@ -133,6 +134,8 @@ class ApiProvider {
         return Right(model);
       } else if (!response.data["succeed"]) {
         return Left(CustomError(message: response.data["message"]));
+      } else if (!response.data["message"]) {
+        return Left(CustomError(message: response.data["message"]));
       } else
         return Left(CustomError(message: "Null Json response in api provider"));
     }
@@ -166,7 +169,8 @@ class ApiProvider {
     if (data != null) {
       dataMap.addAll(data);
     }
-    if (filePath != null && fileName != null) {
+
+    if (fileName != null) {
       dataMap.addAll({
         fileKey: await MultipartFile.fromFile(
           filePath,
@@ -186,34 +190,25 @@ class ApiProvider {
       );
 
       var model;
-      // Get the decoded json
-      if (response.data["succeed"]) {
+      if (response.data != null) {
         // Here we send the data from response to Models factory
         // to assign data as model
-        if (response.data["data"] == null) {
-          try {
-            model = ModelsFactory.getInstance().createModel<T>(response.data);
-          } catch (e) {
-            print(e);
-            return Left(CustomError(message: e.toString()));
-          }
-          return Right(model);
-        } else {
-          try {
-            model = ModelsFactory.getInstance().createModel<T>(response.data);
-          } catch (e, stack) {
-            print(stack);
-            print(e);
-            return Left(CustomError(message: e.toString()));
-          }
-          return Right(model);
+
+        try {
+          model = ModelsFactory.getInstance().createModel<T>(response.data);
+        } catch (e, stack) {
+          print(stack);
+          print(e);
+          return Left(CustomError(message: e.toString()));
         }
+        return Right(model);
       } else if (!response.data["succeed"]) {
+        return Left(CustomError(message: response.data["message"]));
+      } else if (!response.data["message"]) {
         return Left(CustomError(message: response.data["message"]));
       } else
         return Left(CustomError(message: "Null Json response in api provider"));
-    } // Handling errors
-    on DioError catch (e) {
+    } on DioError catch (e) {
       return Left(_handleDioError(e));
     }
 
@@ -233,8 +228,13 @@ class ApiProvider {
       else if (error.type == DioErrorType.response) {
         switch (error.response?.statusCode) {
           case 400:
-            return BadRequestError(message: "Bad Request Error");
-            break;
+            print(error.response?.data);
+            return BadRequestError(
+                message: (error.response?.data is Map<String, dynamic>)
+                    ? (error.response?.data?['message'] ?? "Bad Request Error")
+                    : (json.decode(error.response?.data)['title'] ??
+                        "Bad Request Error"));
+
           case 401:
             return UnauthorizedError();
           case 403:

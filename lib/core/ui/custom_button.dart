@@ -20,12 +20,15 @@ class CustomButton extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(25.0)),
               color: color ?? Theme.of(context).primaryColor),
-          child: RaisedButton(
-            color: color ?? Theme.of(context).primaryColor,
-            splashColor: color ?? Theme.of(context).accentColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color ?? Theme.of(context).primaryColor,
+              foregroundColor: color ?? Theme.of(context).accentColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
             ),
+
             child: FittedBox(
               child: Text(
                 text,

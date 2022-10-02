@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "997572281202",
+    "project_id": "basseltest-115fd",
+    "storage_bucket": "basseltest-115fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997572281202:android:45fa3c6cf0142e8cc613eb",
+        "android_client_info": {
+          "package_name": "com.mootawer.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997572281202-9uubmvbt8ksa3v3p2rb2mkbndj5dfqnr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl7ns1IvU-4kgVZjnUkyrTN8kjkYotDus"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997572281202-9uubmvbt8ksa3v3p2rb2mkbndj5dfqnr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
